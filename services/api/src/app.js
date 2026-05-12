@@ -1,4 +1,6 @@
 const { createServer } = require("node:http");
+const { existsSync, readFileSync } = require("node:fs");
+const path = require("node:path");
 
 const dashboardPayload = {
   shellSignals: [
@@ -204,6 +206,82 @@ const assetsOverview = {
   ]
 };
 
+function resolveSnapshotPath() {
+  if (process.env.NOVA_INDEXER_SNAPSHOT_PATH) {
+    return path.resolve(process.env.NOVA_INDEXER_SNAPSHOT_PATH);
+  }
+
+  const candidates = [
+    path.resolve(process.cwd(), "../indexer/runtime/indexed-snapshot.json"),
+    path.resolve(process.cwd(), "services/indexer/runtime/indexed-snapshot.json"),
+    path.resolve(process.cwd(), "runtime/indexed-snapshot.json")
+  ];
+
+  return candidates.find((candidate) => existsSync(candidate));
+}
+
+function formatCurrency(value) {
+  if (value >= 1000000) {
+    return `$${(value / 1000000).toFixed(2)}M`;
+  }
+
+  if (value >= 1000) {
+    return `$${(value / 1000).toFixed(0)}K`;
+  }
+
+  return `$${value}`;
+}
+
+function formatDateTime(timestamp) {
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) {
+    return timestamp;
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(date);
+}
+
+function loadAssetsOverview() {
+  const snapshotPath = resolveSnapshotPath();
+  if (!snapshotPath || !existsSync(snapshotPath)) {
+    return assetsOverview;
+  }
+
+  try {
+    const payload = JSON.parse(readFileSync(snapshotPath, "utf8"));
+    const assets = Array.isArray(payload.assets) ? payload.assets : [];
+    const issuanceRequests = Array.isArray(payload.issuanceRequests) ? payload.issuanceRequests : [];
+    const liveAssets = assets.filter((item) => item.status === "Live").length;
+    const issuanceInFlight = issuanceRequests.filter((item) => item.status !== "Scheduled").length;
+    const totalNotional = assets.reduce((total, item) => total + item.issueSize, 0);
+
+    return {
+      shellSignals: dashboardPayload.shellSignals,
+      assetMetrics: [
+        { label: "Tokenized products", value: String(assets.length), delta: `${liveAssets} live` },
+        { label: "Issuance in flight", value: String(issuanceInFlight), delta: "maker-checker active" },
+        { label: "Program notional", value: formatCurrency(totalNotional), delta: "across all launched assets" },
+        { label: "Factory readiness", value: "Ready", delta: "indexer snapshot active" }
+      ],
+      assetInsights: assetsOverview.assetInsights,
+      assets: assets.map((asset) => ({
+        ...asset,
+        issueSize: formatCurrency(asset.issueSize),
+        createdAt: formatDateTime(asset.createdAt)
+      })),
+      issuanceRequests,
+      issuanceControls: assetsOverview.issuanceControls
+    };
+  } catch {
+    return assetsOverview;
+  }
+}
+
 const accessPolicies = {
   "/api/dashboard": ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
   "/api/admin/queue": ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "AUDITOR"],
@@ -263,7 +341,7 @@ createServer((request, response) => {
     }
 
     if (request.url === "/api/assets") {
-      response.end(JSON.stringify(assetsOverview, null, 2));
+      response.end(JSON.stringify(loadAssetsOverview(), null, 2));
       return;
     }
 

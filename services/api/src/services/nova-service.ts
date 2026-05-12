@@ -1,4 +1,5 @@
 import { novaDashboardSnapshot, novaUiSeed } from "../data/mock";
+import { loadIndexedAssetsSnapshot } from "./indexed-assets";
 
 export class NovaService {
   getHealth() {
@@ -161,16 +162,19 @@ export class NovaService {
   }
 
   getAssetsOverview() {
-    const liveAssets = novaDashboardSnapshot.assets.filter((item) => item.status === "Live").length;
-    const issuanceInFlight = novaDashboardSnapshot.issuanceRequests.filter((item) => item.status !== "Scheduled").length;
-    const totalNotional = novaDashboardSnapshot.assets.reduce((total, item) => total + item.issueSize, 0);
+    const indexedSnapshot = loadIndexedAssetsSnapshot();
+    const assets = indexedSnapshot?.assets ?? novaDashboardSnapshot.assets;
+    const issuanceRequests = indexedSnapshot?.issuanceRequests ?? novaDashboardSnapshot.issuanceRequests;
+    const liveAssets = assets.filter((item) => item.status === "Live").length;
+    const issuanceInFlight = issuanceRequests.filter((item) => item.status !== "Scheduled").length;
+    const totalNotional = assets.reduce((total, item) => total + item.issueSize, 0);
 
     return {
       shellSignals: novaUiSeed.shellSignals,
       assetMetrics: [
         {
           label: "Tokenized products",
-          value: `${novaDashboardSnapshot.assets.length}`,
+          value: `${assets.length}`,
           delta: `${liveAssets} live`
         },
         {
@@ -203,12 +207,12 @@ export class NovaService {
           value: "Pre-mint checks enforced"
         }
       ],
-      assets: novaDashboardSnapshot.assets.map((asset) => ({
+      assets: assets.map((asset) => ({
         ...asset,
         issueSize: this.formatCurrency(asset.issueSize),
         createdAt: this.formatDateTime(asset.createdAt)
       })),
-      issuanceRequests: novaDashboardSnapshot.issuanceRequests,
+      issuanceRequests,
       issuanceControls: [
         {
           title: "Issuance policy",
