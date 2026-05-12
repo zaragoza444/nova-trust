@@ -111,10 +111,104 @@ const dashboardPayload = {
   ]
 };
 
+const assetsOverview = {
+  shellSignals: dashboardPayload.shellSignals,
+  assetMetrics: [
+    { label: "Tokenized products", value: "3", delta: "1 live" },
+    { label: "Issuance in flight", value: "2", delta: "maker-checker active" },
+    { label: "Program notional", value: "$45.00M", delta: "across all launched assets" },
+    { label: "Factory readiness", value: "Ready", delta: "NovaAssetFactory wired" }
+  ],
+  assetInsights: [
+    { label: "Primary issuance rail", value: "NovaAssetFactory" },
+    { label: "Custody destination", value: "Treasury vaults bound" },
+    { label: "Compliance posture", value: "Pre-mint checks enforced" }
+  ],
+  assets: [
+    {
+      assetId: "NST-2026-001",
+      name: "Nova Settlement Token",
+      symbol: "NST",
+      assetClass: "Cash equivalent",
+      jurisdiction: "AE",
+      contractAddress: "0x8F4B0D4CcA83fF4dD08f0f5f2E1f3B9E15B93521",
+      issueSize: "$25.00M",
+      issuer: "Treasury Ops",
+      treasury: "Primary Treasury Vault",
+      status: "Live",
+      createdAt: "May 11, 10:15 AM"
+    },
+    {
+      assetId: "NBI-2026-002",
+      name: "Nova Bond Income Series A",
+      symbol: "NBI-A",
+      assetClass: "Bond",
+      jurisdiction: "EU",
+      contractAddress: "0x6F903A9A517D6fD0f6E0aF5C6404A5e6bB953142",
+      issueSize: "$12.00M",
+      issuer: "Capital Markets Desk",
+      treasury: "Investor Distribution Vault",
+      status: "Bookbuilding",
+      createdAt: "May 12, 08:00 AM"
+    },
+    {
+      assetId: "NMM-2026-003",
+      name: "Nova Money Market Token",
+      symbol: "NMM",
+      assetClass: "Fund",
+      jurisdiction: "SG",
+      contractAddress: "0x4eC74F5E67E43c5f86D1E71B0c8187b2c63B96EE",
+      issueSize: "$8.00M",
+      issuer: "Structured Products",
+      treasury: "Fund Reserve Wallet",
+      status: "Pre-issuance",
+      createdAt: "May 12, 12:25 PM"
+    }
+  ],
+  issuanceRequests: [
+    {
+      id: "AS-104",
+      assetId: "NBI-2026-002",
+      name: "Nova Bond Income Series A",
+      owner: "Capital Markets Desk",
+      stage: "Legal review",
+      status: "Awaiting checker",
+      targetRaise: "$12.0M",
+      jurisdiction: "EU"
+    },
+    {
+      id: "AS-105",
+      assetId: "NMM-2026-003",
+      name: "Nova Money Market Token",
+      owner: "Structured Products",
+      stage: "Metadata mint prep",
+      status: "Scheduled",
+      targetRaise: "$8.0M",
+      jurisdiction: "SG"
+    },
+    {
+      id: "AS-106",
+      assetId: "NCP-2026-004",
+      name: "Nova Commercial Paper 30D",
+      owner: "Treasury Ops",
+      stage: "Compliance screening",
+      status: "In review",
+      targetRaise: "$5.5M",
+      jurisdiction: "AE"
+    }
+  ],
+  issuanceControls: [
+    { title: "Issuance policy", detail: "Require maker-checker approval, approved metadata, and treasury destination before mint." },
+    { title: "Compliance gate", detail: "Bind jurisdiction, sanctions screening, and participant controls before activation." },
+    { title: "Operational release", detail: "Promote assets from pre-issuance to live only after contract verification and vault funding." }
+  ]
+};
+
 const accessPolicies = {
   "/api/dashboard": ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
   "/api/admin/queue": ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "AUDITOR"],
-  "/api/admin/overview": ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "AUDITOR"]
+  "/api/admin/overview": ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "AUDITOR"],
+  "/api/assets": ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"]
 };
 
 const port = Number(process.env.PORT || 4000);
@@ -137,7 +231,7 @@ createServer((request, response) => {
     return;
   }
 
-  if (request.url === "/api/dashboard" || request.url === "/api/admin/queue" || request.url === "/api/admin/overview") {
+  if (request.url === "/api/dashboard" || request.url === "/api/admin/queue" || request.url === "/api/admin/overview" || request.url === "/api/assets") {
     const role = request.headers["x-nova-role"];
     if (!role || !accessPolicies[request.url].includes(role)) {
       response.writeHead(403, { "content-type": "application/json" });
@@ -165,6 +259,11 @@ createServer((request, response) => {
           2
         )
       );
+      return;
+    }
+
+    if (request.url === "/api/assets") {
+      response.end(JSON.stringify(assetsOverview, null, 2));
       return;
     }
 

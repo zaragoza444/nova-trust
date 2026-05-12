@@ -50,7 +50,7 @@ export interface QueueItem {
   action: string;
   owner: string;
   status: string;
-  risk?: string;
+  risk: string;
 }
 
 export interface BlockItem {
@@ -75,6 +75,31 @@ export interface ValidatorItem {
   status: string;
   peerCount: number;
   signedBlocks: string;
+}
+
+export interface AssetItem {
+  assetId: string;
+  name: string;
+  symbol: string;
+  assetClass: string;
+  jurisdiction: string;
+  contractAddress: string;
+  issueSize: string;
+  issuer: string;
+  treasury: string;
+  status: string;
+  createdAt: string;
+}
+
+export interface IssuanceRequestItem {
+  id: string;
+  assetId: string;
+  name: string;
+  owner: string;
+  stage: string;
+  status: string;
+  targetRaise: string;
+  jurisdiction: string;
 }
 
 export interface AdminDomain {
@@ -115,12 +140,114 @@ export interface AdminOverviewData {
   alerts: AlertItem[];
 }
 
+export interface AssetsOverviewData {
+  shellSignals: Signal[];
+  assetMetrics: Metric[];
+  assetInsights: Insight[];
+  assets: AssetItem[];
+  issuanceRequests: IssuanceRequestItem[];
+  issuanceControls: FeatureChecklistItem[];
+}
+
 const fallbackFeatureChecklist: FeatureChecklistItem[] = [
   { title: "Explorer and network", detail: "Track blocks, transactions, validators, and gas posture." },
   { title: "Treasury and settlement", detail: "Watch liquidity, approve mint/redeem flows, and monitor failures." },
   { title: "Identity and compliance", detail: "Review participant onboarding, freezes, sanctions checks, and approvals." },
   { title: "Release and governance", detail: "Coordinate validator changes, release windows, and audit-ready runbooks." }
 ];
+
+const fallbackAssetsOverview: AssetsOverviewData = {
+  shellSignals,
+  assetMetrics: [
+    { label: "Tokenized products", value: "3", delta: "1 live" },
+    { label: "Issuance in flight", value: "2", delta: "maker-checker active" },
+    { label: "Program notional", value: "$45.00M", delta: "across all launched assets" },
+    { label: "Factory readiness", value: "Ready", delta: "NovaAssetFactory wired" }
+  ],
+  assetInsights: [
+    { label: "Primary issuance rail", value: "NovaAssetFactory" },
+    { label: "Custody destination", value: "Treasury vaults bound" },
+    { label: "Compliance posture", value: "Pre-mint checks enforced" }
+  ],
+  assets: [
+    {
+      assetId: "NST-2026-001",
+      name: "Nova Settlement Token",
+      symbol: "NST",
+      assetClass: "Cash equivalent",
+      jurisdiction: "AE",
+      contractAddress: "0x8F4B0D4CcA83fF4dD08f0f5f2E1f3B9E15B93521",
+      issueSize: "$25.00M",
+      issuer: "Treasury Ops",
+      treasury: "Primary Treasury Vault",
+      status: "Live",
+      createdAt: "May 11, 10:15 AM"
+    },
+    {
+      assetId: "NBI-2026-002",
+      name: "Nova Bond Income Series A",
+      symbol: "NBI-A",
+      assetClass: "Bond",
+      jurisdiction: "EU",
+      contractAddress: "0x6F903A9A517D6fD0f6E0aF5C6404A5e6bB953142",
+      issueSize: "$12.00M",
+      issuer: "Capital Markets Desk",
+      treasury: "Investor Distribution Vault",
+      status: "Bookbuilding",
+      createdAt: "May 12, 08:00 AM"
+    },
+    {
+      assetId: "NMM-2026-003",
+      name: "Nova Money Market Token",
+      symbol: "NMM",
+      assetClass: "Fund",
+      jurisdiction: "SG",
+      contractAddress: "0x4eC74F5E67E43c5f86D1E71B0c8187b2c63B96EE",
+      issueSize: "$8.00M",
+      issuer: "Structured Products",
+      treasury: "Fund Reserve Wallet",
+      status: "Pre-issuance",
+      createdAt: "May 12, 12:25 PM"
+    }
+  ],
+  issuanceRequests: [
+    {
+      id: "AS-104",
+      assetId: "NBI-2026-002",
+      name: "Nova Bond Income Series A",
+      owner: "Capital Markets Desk",
+      stage: "Legal review",
+      status: "Awaiting checker",
+      targetRaise: "$12.0M",
+      jurisdiction: "EU"
+    },
+    {
+      id: "AS-105",
+      assetId: "NMM-2026-003",
+      name: "Nova Money Market Token",
+      owner: "Structured Products",
+      stage: "Metadata mint prep",
+      status: "Scheduled",
+      targetRaise: "$8.0M",
+      jurisdiction: "SG"
+    },
+    {
+      id: "AS-106",
+      assetId: "NCP-2026-004",
+      name: "Nova Commercial Paper 30D",
+      owner: "Treasury Ops",
+      stage: "Compliance screening",
+      status: "In review",
+      targetRaise: "$5.5M",
+      jurisdiction: "AE"
+    }
+  ],
+  issuanceControls: [
+    { title: "Issuance policy", detail: "Require maker-checker approval, approved metadata, and treasury destination before mint." },
+    { title: "Compliance gate", detail: "Bind jurisdiction, sanctions screening, and participant controls before activation." },
+    { title: "Operational release", detail: "Promote assets from pre-issuance to live only after contract verification and vault funding." }
+  ]
+};
 
 const apiBaseUrl = process.env.NOVA_API_URL ?? "http://127.0.0.1:4000";
 const apiHeaders = {
@@ -133,6 +260,10 @@ export async function getDashboardData(): Promise<DashboardPageData> {
 
 export async function getAdminOverviewData(): Promise<AdminOverviewData> {
   return fetchJson<AdminOverviewData>("/api/admin/overview", isAdminOverviewData, getFallbackAdminOverviewData);
+}
+
+export async function getAssetsOverviewData(): Promise<AssetsOverviewData> {
+  return fetchJson<AssetsOverviewData>("/api/assets", isAssetsOverviewData, getFallbackAssetsOverviewData);
 }
 
 async function fetchJson<T>(path: string, validate: (value: unknown) => value is T, fallback: () => T): Promise<T> {
@@ -184,6 +315,10 @@ function getFallbackAdminOverviewData(): AdminOverviewData {
   };
 }
 
+function getFallbackAssetsOverviewData(): AssetsOverviewData {
+  return fallbackAssetsOverview;
+}
+
 function isDashboardPageData(value: unknown): value is DashboardPageData {
   if (!value || typeof value !== "object") {
     return false;
@@ -213,5 +348,21 @@ function isAdminOverviewData(value: unknown): value is AdminOverviewData {
     Array.isArray(candidate.adminQueue) &&
     Array.isArray(candidate.adminDomains) &&
     Array.isArray(candidate.alerts)
+  );
+}
+
+function isAssetsOverviewData(value: unknown): value is AssetsOverviewData {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const candidate = value as Partial<AssetsOverviewData>;
+  return (
+    Array.isArray(candidate.shellSignals) &&
+    Array.isArray(candidate.assetMetrics) &&
+    Array.isArray(candidate.assetInsights) &&
+    Array.isArray(candidate.assets) &&
+    Array.isArray(candidate.issuanceRequests) &&
+    Array.isArray(candidate.issuanceControls)
   );
 }

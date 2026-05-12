@@ -1,6 +1,7 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { loadApiConfig } from "./config";
 import { handleAdminOverview, handleAdminQueue } from "./routes/admin";
+import { handleAssetsOverview } from "./routes/assets";
 import { handleDashboard } from "./routes/dashboard";
 import { handleHealth } from "./routes/health";
 import { canAccess, type NovaRole } from "./services/rbac";
@@ -52,6 +53,16 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     handleAdminOverview(request, response);
+    return;
+  }
+
+  if (request.url === "/api/assets") {
+    if (!requestRole || !canAccess("/api/assets", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleAssetsOverview(request, response);
     return;
   }
 
