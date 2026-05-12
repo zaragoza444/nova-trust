@@ -3,8 +3,8 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "dev": "node ./src/app.js",
+    "dev": "npm run build && node ./dist/app.js",
     "build": "tsc -p tsconfig.json",
-    "start": "node ./src/app.js"
+    "start": "node ./dist/app.js"
   }
 }

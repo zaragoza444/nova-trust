@@ -4,7 +4,7 @@ import { writeIndexedSnapshot } from "./pipeline/snapshot-store";
 
 async function main() {
   const config = loadConfig();
-  const snapshot = buildIndexedSnapshot();
+  const snapshot = await buildIndexedSnapshot(config);
   const snapshotPath = writeIndexedSnapshot(snapshot);
 
   console.log("Nova indexer booting");

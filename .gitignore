@@ -34,3 +34,5 @@ logs/
 *.tsbuildinfo
 *.seed
 data/
+services/indexer/runtime/
+contracts/deployments/*.json

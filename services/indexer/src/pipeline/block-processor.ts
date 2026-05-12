@@ -1,4 +1,8 @@
+import { Contract, EventLog, JsonRpcProvider } from "ethers";
+import type { IndexerConfig } from "../config";
 import type { AssetIssuanceRecord, AssetRecord, BlockRecord, TransactionRecord, ValidatorRecord } from "../domain/types";
+import { loadDeploymentManifest } from "../sources/deployment-manifest";
+import { NovaRpcClient } from "../sources/rpc-client";
 import { materializeDashboardMetrics } from "./analytics-service";
 
 export interface IndexedSnapshot {
@@ -10,7 +14,50 @@ export interface IndexedSnapshot {
   metrics: ReturnType<typeof materializeDashboardMetrics>;
 }
 
-export function buildIndexedSnapshot(): IndexedSnapshot {
+interface RawRpcTransaction {
+  hash: string;
+  blockNumber: string;
+  from: string;
+  to: string | null;
+  value: string;
+}
+
+interface RawRpcBlock {
+  number: string;
+  hash: string;
+  timestamp: string;
+  gasUsed: string;
+  miner?: string;
+  transactions: RawRpcTransaction[];
+}
+
+interface RawRpcReceipt {
+  status?: string;
+}
+
+const assetFactoryAbi = [
+  "function getAssets() view returns ((address assetToken,string assetId,string assetClass,string jurisdiction,uint256 issueSize,address issuer,uint64 createdAt)[])"
+];
+
+const assetTokenAbi = [
+  "function name() view returns (string)",
+  "function symbol() view returns (string)",
+  "event Transfer(address indexed from, address indexed to, uint256 value)"
+];
+
+function hexToNumber(value: string | null | undefined) {
+  if (!value) {
+    return 0;
+  }
+
+  return Number(BigInt(value));
+}
+
+function toIsoTimestamp(unixSecondsHex: string) {
+  return new Date(hexToNumber(unixSecondsHex) * 1000).toISOString();
+}
+
+function buildFallbackSnapshot(): IndexedSnapshot {
   const blocks: BlockRecord[] = [
     {
       number: 12402,
@@ -160,4 +207,165 @@ export function buildIndexedSnapshot(): IndexedSnapshot {
     issuanceRequests,
     metrics: materializeDashboardMetrics(blocks, transactions, validators)
   };
+}
+
+async function readValidators(rpcClient: NovaRpcClient): Promise<ValidatorRecord[]> {
+  try {
+    const [validatorAddresses, peerCountHex] = await Promise.all([
+      rpcClient.request<string[]>({ method: "qbft_getValidatorsByBlockNumber", params: ["latest"] }),
+      rpcClient.request<string>({ method: "net_peerCount" })
+    ]);
+
+    if (!Array.isArray(validatorAddresses) || validatorAddresses.length === 0) {
+      return buildFallbackSnapshot().validators;
+    }
+
+    const peerCount = hexToNumber(peerCountHex);
+    return validatorAddresses.map((address, index) => ({
+      address,
+      moniker: `Validator ${index + 1}`,
+      status: "active",
+      peerCount: Math.max(peerCount, 1),
+      signedBlocks24h: 0
+    }));
+  } catch {
+    return buildFallbackSnapshot().validators;
+  }
+}
+
+async function readAssetsFromChain(provider: JsonRpcProvider, assetFactoryAddress: string): Promise<AssetRecord[]> {
+  const factory = new Contract(assetFactoryAddress, assetFactoryAbi, provider);
+  const definitions = (await factory.getAssets()) as Array<{
+    assetToken: string;
+    assetId: string;
+    assetClass: string;
+    jurisdiction: string;
+    issueSize: bigint;
+    issuer: string;
+    createdAt: bigint;
+  }>;
+
+  const assets = await Promise.all(
+    definitions.map(async (definition) => {
+      const token = new Contract(definition.assetToken, assetTokenAbi, provider);
+      const [name, symbol, transferEvents] = await Promise.all([
+        token.name() as Promise<string>,
+        token.symbol() as Promise<string>,
+        token.queryFilter(token.filters.Transfer(), 0, "latest")
+      ]);
+
+      const firstTransferEvent = transferEvents.find((event): event is EventLog => "args" in event);
+      const treasury = firstTransferEvent?.args?.to ? String(firstTransferEvent.args.to) : "Unknown treasury";
+
+      return {
+        assetId: definition.assetId,
+        name,
+        symbol,
+        assetClass: definition.assetClass,
+        jurisdiction: definition.jurisdiction,
+        contractAddress: definition.assetToken,
+        issueSize: Number(definition.issueSize),
+        issuer: definition.issuer,
+        treasury,
+        status: "Live" as const,
+        createdAt: new Date(Number(definition.createdAt) * 1000).toISOString()
+      };
+    })
+  );
+
+  return assets;
+}
+
+async function readRecentBlocks(rpcClient: NovaRpcClient, blockWindowSize: number): Promise<RawRpcBlock[]> {
+  const latestBlockHex = await rpcClient.request<string>({ method: "eth_blockNumber" });
+  const latestBlock = hexToNumber(latestBlockHex);
+  const blockNumbers = Array.from({ length: Math.min(blockWindowSize, latestBlock + 1) }, (_, index) => latestBlock - index);
+
+  const rawBlocks = await Promise.all(
+    blockNumbers.map((blockNumber) =>
+      rpcClient.request<RawRpcBlock>({
+        method: "eth_getBlockByNumber",
+        params: [`0x${blockNumber.toString(16)}`, true]
+      })
+    )
+  );
+
+  return rawBlocks.filter(Boolean);
+}
+
+export async function buildIndexedSnapshot(config: IndexerConfig): Promise<IndexedSnapshot> {
+  const fallback = buildFallbackSnapshot();
+
+  try {
+    const rpcClient = new NovaRpcClient(config.rpcUrl);
+    const provider = new JsonRpcProvider(config.rpcUrl);
+    const deploymentManifest = loadDeploymentManifest(config.deploymentManifestPath);
+    const rawBlocks = await readRecentBlocks(rpcClient, config.blockWindowSize);
+    const validators = await readValidators(rpcClient);
+
+    const blocks: BlockRecord[] = rawBlocks.map((block, index) => ({
+      number: hexToNumber(block.number),
+      hash: block.hash,
+      timestamp: toIsoTimestamp(block.timestamp),
+      transactionCount: block.transactions.length,
+      validator: block.miner ?? validators[index % Math.max(validators.length, 1)]?.moniker ?? "Unknown validator",
+      gasUsed: hexToNumber(block.gasUsed)
+    }));
+
+    const assetFactoryAddress = deploymentManifest?.contracts?.assetFactory?.address ?? "";
+    const settlementTokenAddress =
+      deploymentManifest?.contracts?.settlementToken?.address ?? config.settlementTokenAddress ?? "";
+
+    const assets =
+      assetFactoryAddress !== ""
+        ? await readAssetsFromChain(provider, assetFactoryAddress)
+        : fallback.assets;
+
+    const assetAddresses = new Set(assets.map((asset) => asset.contractAddress.toLowerCase()));
+    if (assetFactoryAddress) {
+      assetAddresses.add(assetFactoryAddress.toLowerCase());
+    }
+
+    const transactions: TransactionRecord[] = [];
+
+    for (const block of rawBlocks) {
+      for (const transaction of block.transactions) {
+        const receipt = await rpcClient.request<RawRpcReceipt>({
+          method: "eth_getTransactionReceipt",
+          params: [transaction.hash]
+        });
+
+        const normalizedTo = transaction.to?.toLowerCase() ?? "";
+        const category: TransactionRecord["category"] =
+          normalizedTo === settlementTokenAddress.toLowerCase()
+            ? "settlement"
+            : assetAddresses.has(normalizedTo)
+              ? "asset"
+              : transaction.to === null
+                ? "contract"
+                : "admin";
+
+        transactions.push({
+          hash: transaction.hash,
+          blockNumber: hexToNumber(transaction.blockNumber),
+          from: transaction.from,
+          to: transaction.to ?? "0x0000000000000000000000000000000000000000",
+          value: String(hexToNumber(transaction.value)),
+          status: receipt?.status === "0x0" ? "failed" : "success",
+          category
+        });
+      }
+    }
+
+    return {
+      blocks,
+      transactions,
+      validators,
+      assets,
+      issuanceRequests: assetFactoryAddress ? [] : fallback.issuanceRequests,
+      metrics: materializeDashboardMetrics(blocks, transactions, validators)
+    };
+  } catch {
+    return fallback;
+  }
 }
