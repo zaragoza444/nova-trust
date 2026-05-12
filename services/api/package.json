@@ -1,0 +1,9 @@
+{
+  "name": "@nova/api",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "node ./src/app.js",
+    "build": "tsc -p tsconfig.json"
+  }
+}

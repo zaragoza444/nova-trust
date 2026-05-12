@@ -1,0 +1,9 @@
+[
+  "enode://validator1@validator-1:30303",
+  "enode://validator2@validator-2:30303",
+  "enode://validator3@validator-3:30303",
+  "enode://validator4@validator-4:30303",
+  "enode://rpc1@rpc-1:30303",
+  "enode://rpc2@rpc-2:30303",
+  "enode://bootnode@bootnode:30303"
+]

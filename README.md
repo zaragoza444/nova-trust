@@ -1,1 +1,45 @@
-nova
+# Nova Trust Digital Finance
+
+`Nova Trust Digital Finance` is a production-oriented monorepo for a permissioned EVM financial network, explorer, institutional operations APIs, and compliance-first administration tools.
+
+## Workspace Layout
+
+- `infra/besu/`: Hyperledger Besu network configs, permissioning, and local operations scripts.
+- `contracts/`: Solidity contracts for settlement, tokenization, identity, treasury, and audit workflows.
+- `services/indexer/`: Chain ingestion, decoded event processing, analytics materialization, and explorer data storage.
+- `services/api/`: Admin and explorer APIs for dashboards, approval flows, and reporting.
+- `apps/dashboard/`: Public explorer pages plus protected operations and compliance consoles.
+- `ops/observability/`: Monitoring, alerting, and recovery runbooks.
+- `docs/architecture/`: Environment, governance, and security baseline documentation.
+
+## Delivery Model
+
+The repository is structured to support the build order defined in the implementation plan:
+
+1. Define the network and environment baseline.
+2. Stand up the local Besu network.
+3. Implement the contract suite.
+4. Build the indexer and explorer data model.
+5. Expose business workflows through the API.
+6. Render a feature-rich explorer and admin dashboard.
+7. Add compliance and maker-checker controls.
+8. Harden the platform for regulated production use.
+
+## Initial Components Included
+
+- Besu QBFT genesis, permissioning, and health scripts.
+- Core contract skeletons for settlement, identity, compliance, treasury, and asset issuance.
+- TypeScript API and indexer scaffolds with a shared domain model.
+- A Next.js-style dashboard shell with explorer, finance, and admin pages wired to seed data.
+- Observability and disaster-recovery starter assets.
+
+## Next Steps
+
+Install dependencies with your package manager of choice, then iterate module-by-module:
+
+```bash
+npm install
+npm run dev:dashboard
+```
+
+For infrastructure bring-up and validator operations, start with `infra/besu/README.md`.

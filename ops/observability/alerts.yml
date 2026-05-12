@@ -1,0 +1,34 @@
+groups:
+  - name: nova-platform
+    rules:
+      - alert: NovaValidatorPeerCountLow
+        expr: besu_peers < 4
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Nova validator peer count dropped below quorum comfort level
+
+      - alert: NovaIndexerLagging
+        expr: nova_indexer_block_lag > 12
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: Nova indexer is lagging more than 12 blocks behind
+
+      - alert: NovaFailedSettlementsSpike
+        expr: increase(nova_failed_settlements_total[15m]) > 10
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Nova settlement failures are above the safe threshold
+
+      - alert: NovaAdminApprovalBacklog
+        expr: nova_admin_actions_waiting_approval > 25
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: Too many high-risk admin actions are waiting for checker approval
