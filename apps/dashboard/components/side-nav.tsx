@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { featureGroups } from "../lib/mock-data";
 
 const routeMap: Record<string, string> = {
@@ -18,6 +21,8 @@ const routeMap: Record<string, string> = {
 };
 
 export function SideNav() {
+  const pathname = usePathname();
+
   return (
     <aside className="sideNav">
       <div className="brandBlock">
@@ -34,12 +39,23 @@ export function SideNav() {
           <ul>
             {group.items.map((item) => (
               <li key={item}>
-                <Link href={routeMap[item] ?? "/"}>{item}</Link>
+                <Link
+                  href={routeMap[item] ?? "/"}
+                  className={pathname === (routeMap[item] ?? "/") ? "navLink active" : "navLink"}
+                >
+                  {item}
+                </Link>
               </li>
             ))}
           </ul>
         </section>
       ))}
+
+      <div className="navFooter">
+        <div className="navFooterLabel">Operations posture</div>
+        <strong>Stable</strong>
+        <span>All validators live, 3 approvals waiting, release workflow enabled.</span>
+      </div>
     </aside>
   );
 }

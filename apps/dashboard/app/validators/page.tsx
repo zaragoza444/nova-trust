@@ -1,5 +1,5 @@
 import { PageShell } from "../../components/page-shell";
-import { validators } from "../../lib/mock-data";
+import { validatorInsights, validators } from "../../lib/mock-data";
 
 export default function ValidatorsPage() {
   return (
@@ -7,7 +7,22 @@ export default function ValidatorsPage() {
       title="Validators and nodes"
       description="Monitor consortium validator health, peer counts, and recent signing performance."
     >
+      <section className="insightStrip">
+        {validatorInsights.map((item) => (
+          <article key={item.label} className="insightCard">
+            <span className="signalLabel">{item.label}</span>
+            <strong>{item.value}</strong>
+          </article>
+        ))}
+      </section>
+
       <article className="card">
+        <div className="sectionHeader">
+          <div>
+            <span className="eyebrow">Network</span>
+            <h3>Validator and node posture</h3>
+          </div>
+        </div>
         <div className="tableWrap">
           <table>
             <thead>

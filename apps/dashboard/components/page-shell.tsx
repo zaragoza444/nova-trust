@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { chainTabs } from "../lib/mock-data";
+import { chainTabs, shellSignals } from "../lib/mock-data";
 import { SideNav } from "./side-nav";
 
 interface PageShellProps {
@@ -14,8 +14,11 @@ export function PageShell({ title, description, children }: PageShellProps) {
       <SideNav />
       <main className="mainPanel">
         <header className="topBar">
-          <div>
-            <div className="statusPill">Nova Mainnet</div>
+          <div className="heroIntro">
+            <div className="heroStatusRow">
+              <div className="statusPill">Nova Mainnet</div>
+              <div className="secondaryPill">Permissioned EVM</div>
+            </div>
             <h1>{title}</h1>
             <p>{description}</p>
           </div>
@@ -24,6 +27,15 @@ export function PageShell({ title, description, children }: PageShellProps) {
             <button className="primaryButton">Connect wallet</button>
           </div>
         </header>
+
+        <section className="signalBar">
+          {shellSignals.map((signal) => (
+            <article key={signal.label} className="signalCard">
+              <span className="signalLabel">{signal.label}</span>
+              <strong className={`signalValue ${signal.tone}`}>{signal.value}</strong>
+            </article>
+          ))}
+        </section>
 
         <nav className="chainTabs">
           {chainTabs.map((tab, index) => (

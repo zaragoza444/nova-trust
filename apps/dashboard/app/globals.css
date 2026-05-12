@@ -3,9 +3,11 @@
   --bg: #0b1020;
   --panel: #121932;
   --panel-alt: #0f1730;
+  --panel-soft: rgba(18, 25, 50, 0.72);
   --text: #eff4ff;
   --muted: #9fb0d0;
   --accent: #32c483;
+  --accent-secondary: #2a89ff;
   --border: rgba(255, 255, 255, 0.08);
 }
 
@@ -39,6 +41,9 @@ button {
   border-right: 1px solid var(--border);
   background: rgba(9, 14, 28, 0.9);
   padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .brandBlock {
@@ -69,7 +74,12 @@ button {
 .tableWrap td,
 .tableWrap th,
 .topBar p,
-.navGroup h3 {
+.navGroup h3,
+.signalLabel,
+.navFooterLabel,
+.domainCard p,
+.alertItem p,
+.queueItem p {
   color: var(--muted);
 }
 
@@ -90,14 +100,40 @@ button {
   margin: 0;
 }
 
-.navGroup li a {
+.navLink {
   display: block;
   padding: 10px 12px;
   border-radius: 12px;
 }
 
-.navGroup li a:hover {
+.navLink:hover {
   background: rgba(255, 255, 255, 0.06);
+}
+
+.navLink.active {
+  background: linear-gradient(135deg, rgba(50, 196, 131, 0.18), rgba(42, 137, 255, 0.16));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+}
+
+.navFooter {
+  margin-top: auto;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  display: grid;
+  gap: 6px;
+}
+
+.navFooter strong {
+  font-size: 1.05rem;
+}
+
+.navFooter span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .mainPanel {
@@ -106,7 +142,14 @@ button {
 
 .topBar,
 .grid,
-.twoColumn {
+.twoColumn,
+.heroGrid,
+.dashboardSplit,
+.stackColumn,
+.highlightGrid,
+.domainGrid,
+.signalBar,
+.insightStrip {
   display: grid;
   gap: 18px;
 }
@@ -116,16 +159,31 @@ button {
   align-items: start;
 }
 
+.heroIntro {
+  display: grid;
+  gap: 12px;
+}
+
+.heroStatusRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 .topBar h1 {
-  margin: 10px 0 8px;
-  font-size: 2rem;
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
 }
 
 .statusPill,
+.secondaryPill,
 .chainTab,
 .secondaryButton,
 .primaryButton,
-.statusBadge {
+.statusBadge,
+.actionChip {
   border-radius: 999px;
   padding: 10px 14px;
   border: 1px solid var(--border);
@@ -137,9 +195,15 @@ button {
   color: #95f0c5;
 }
 
+.secondaryPill {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .topBarActions {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 .secondaryButton,
@@ -151,6 +215,33 @@ button {
 .primaryButton {
   background: linear-gradient(135deg, #32c483, #2a89ff);
   border: 0;
+  box-shadow: 0 12px 30px rgba(42, 137, 255, 0.2);
+}
+
+.signalBar {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 22px;
+}
+
+.signalCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  display: grid;
+  gap: 8px;
+}
+
+.signalValue {
+  font-size: 1.05rem;
+}
+
+.signalValue.positive {
+  color: #9ef0ca;
+}
+
+.signalValue.neutral {
+  color: #cfe0ff;
 }
 
 .chainTabs {
@@ -174,22 +265,131 @@ button {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.heroGrid {
+  grid-template-columns: 1.6fr 1fr;
+  margin-bottom: 24px;
+}
+
+.heroCard {
+  min-height: 100%;
+}
+
+.heroCardPrimary {
+  background:
+    radial-gradient(circle at top right, rgba(42, 137, 255, 0.18), transparent 30%),
+    linear-gradient(180deg, rgba(18, 25, 50, 0.94), rgba(12, 18, 36, 0.94));
+}
+
+.heroCard h2 {
+  margin: 0;
+  font-size: 1.7rem;
+  line-height: 1.2;
+}
+
+.heroCard p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.highlightGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 10px;
+}
+
+.highlightItem,
+.insightCard {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: grid;
+  gap: 6px;
+}
+
+.pulseHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 16px;
+}
+
+.pulseValue {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 6px;
+}
+
+.pulseChart {
+  height: 180px;
+  display: flex;
+  align-items: end;
+  gap: 8px;
+  margin: 24px 0 20px;
+  padding: 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pulseChart span {
+  flex: 1;
+  min-height: 16px;
+  border-radius: 999px 999px 12px 12px;
+  background: linear-gradient(180deg, #2a89ff, #32c483);
+  box-shadow: 0 8px 22px rgba(42, 137, 255, 0.16);
+}
+
+.actionChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.actionChip {
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .twoColumn {
   grid-template-columns: 2fr 1fr;
   margin-top: 20px;
 }
 
+.dashboardSplit {
+  grid-template-columns: 1.7fr 1fr;
+  margin-top: 20px;
+}
+
+.stackColumn {
+  grid-template-columns: 1fr;
+  align-content: start;
+}
+
 .card {
-  background: rgba(18, 25, 50, 0.88);
+  background: var(--panel-soft);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 20px;
+  padding: 22px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(12px);
 }
 
 .metricValue {
   display: block;
   margin: 10px 0 6px;
   font-size: 2rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.sectionHeader h3 {
+  margin: 4px 0 0;
+  font-size: 1.15rem;
 }
 
 .tableWrap {
@@ -208,6 +408,11 @@ button {
   border-bottom: 1px solid var(--border);
 }
 
+.tableWrap td:first-child,
+.tableWrap th:first-child {
+  padding-right: 18px;
+}
+
 .statusBadge {
   display: inline-block;
   font-size: 0.85rem;
@@ -215,28 +420,125 @@ button {
 
 .statusBadge.active,
 .statusBadge.success,
-.statusBadge.approved {
+.statusBadge.approved,
+.alertItem.positive {
   background: rgba(50, 196, 131, 0.18);
   color: #9ef0ca;
 }
 
 .statusBadge.warning,
 .statusBadge.pending,
-.statusBadge.scheduled {
+.statusBadge.scheduled,
+.alertItem.warning {
   background: rgba(255, 189, 89, 0.16);
   color: #ffd693;
 }
 
-.statusBadge.high {
+.statusBadge.high,
+.alertItem.critical {
   background: rgba(255, 99, 132, 0.16);
   color: #ffb2c2;
+}
+
+.alertList,
+.queueList {
+  display: grid;
+  gap: 12px;
+}
+
+.alertItem,
+.queueItem,
+.domainCard {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px;
+}
+
+.alertItem,
+.queueItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.alertItem strong,
+.queueItem strong,
+.domainCard strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.alertItem span,
+.queueItem span {
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.alertList.compact .alertItem {
+  padding: 14px;
+}
+
+.featureChecklist {
+  display: grid;
+  gap: 14px;
+}
+
+.featureChecklist > div {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.featureChecklist strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.featureChecklist p {
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.55;
+}
+
+.domainGrid {
+  grid-template-columns: 1fr;
+}
+
+.domainCard ul {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.insightStrip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 20px;
 }
 
 @media (max-width: 1024px) {
   .appShell,
   .grid,
   .twoColumn,
-  .topBar {
+  .topBar,
+  .signalBar,
+  .heroGrid,
+  .dashboardSplit,
+  .insightStrip {
     grid-template-columns: 1fr;
+  }
+
+  .highlightGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sideNav {
+    display: none;
+  }
+
+  .mainPanel {
+    padding: 20px;
   }
 }

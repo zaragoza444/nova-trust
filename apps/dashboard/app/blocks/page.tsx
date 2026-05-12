@@ -1,5 +1,5 @@
 import { PageShell } from "../../components/page-shell";
-import { blocks } from "../../lib/mock-data";
+import { blockInsights, blocks } from "../../lib/mock-data";
 
 export default function BlocksPage() {
   return (
@@ -7,7 +7,22 @@ export default function BlocksPage() {
       title="Blocks explorer"
       description="Inspect recent finality, validator production, and throughput on the Nova permissioned network."
     >
+      <section className="insightStrip">
+        {blockInsights.map((item) => (
+          <article key={item.label} className="insightCard">
+            <span className="signalLabel">{item.label}</span>
+            <strong>{item.value}</strong>
+          </article>
+        ))}
+      </section>
+
       <article className="card">
+        <div className="sectionHeader">
+          <div>
+            <span className="eyebrow">Explorer</span>
+            <h3>Finalized block stream</h3>
+          </div>
+        </div>
         <div className="tableWrap">
           <table>
             <thead>

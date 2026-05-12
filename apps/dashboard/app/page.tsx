@@ -1,6 +1,6 @@
 import { KpiCard } from "../components/kpi-card";
 import { PageShell } from "../components/page-shell";
-import { adminQueue, blocks, metrics, validators } from "../lib/mock-data";
+import { adminQueue, alerts, blocks, homeHighlights, metrics, pulseSeries, quickActions, validators } from "../lib/mock-data";
 
 export default function HomePage() {
   return (
@@ -8,15 +8,66 @@ export default function HomePage() {
       title="Nova chain dashboard"
       description="High-level health for the Nova financial network, including settlement throughput, validator posture, and operational readiness."
     >
+      <section className="heroGrid">
+        <article className="card heroCard heroCardPrimary">
+          <span className="eyebrow">Operations overview</span>
+          <h2>Regulated settlement, treasury control, and network health in one surface.</h2>
+          <p>
+            Nova blends public explorer visibility with institutional workflows, so operators can move from chain health
+            to approvals, treasury activity, and exception handling without context switching.
+          </p>
+
+          <div className="highlightGrid">
+            {homeHighlights.map((item) => (
+              <div key={item.label} className="highlightItem">
+                <span className="signalLabel">{item.label}</span>
+                <strong>{item.value}</strong>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article className="card heroCard">
+          <span className="eyebrow">Chain pulse</span>
+          <div className="pulseHeader">
+            <div>
+              <strong className="pulseValue">82 tx/min</strong>
+              <span className="metricDelta">Current throughput</span>
+            </div>
+            <span className="statusBadge success">Stable</span>
+          </div>
+
+          <div className="pulseChart" aria-label="Throughput trend">
+            {pulseSeries.map((value, index) => (
+              <span key={`${value}-${index}`} style={{ height: `${value}%` }} />
+            ))}
+          </div>
+
+          <div className="actionChips">
+            {quickActions.map((action) => (
+              <span key={action} className="actionChip">
+                {action}
+              </span>
+            ))}
+          </div>
+        </article>
+      </section>
+
       <section className="grid">
         {metrics.map((metric) => (
           <KpiCard key={metric.label} label={metric.label} value={metric.value} delta={metric.delta} />
         ))}
       </section>
 
-      <section className="twoColumn">
+      <section className="dashboardSplit">
         <article className="card">
-          <span className="eyebrow">Latest blocks</span>
+          <div className="sectionHeader">
+            <div>
+              <span className="eyebrow">Latest blocks</span>
+              <h3>Recent finalized blocks</h3>
+            </div>
+            <span className="metricDelta">Finality window 5.2s avg</span>
+          </div>
           <div className="tableWrap">
             <table>
               <thead>
@@ -43,14 +94,69 @@ export default function HomePage() {
           </div>
         </article>
 
+        <div className="stackColumn">
+          <article className="card">
+            <div className="sectionHeader">
+              <div>
+                <span className="eyebrow">Operations radar</span>
+                <h3>Current alerts</h3>
+              </div>
+            </div>
+
+            <div className="alertList">
+              {alerts.map((alert) => (
+                <article key={alert.title} className={`alertItem ${alert.severity}`}>
+                  <div>
+                    <strong>{alert.title}</strong>
+                    <p>{alert.detail}</p>
+                  </div>
+                  <span>{alert.time}</span>
+                </article>
+              ))}
+            </div>
+          </article>
+
+          <article className="card">
+            <div className="sectionHeader">
+              <div>
+                <span className="eyebrow">Approval queue</span>
+                <h3>High-value operator actions</h3>
+              </div>
+            </div>
+            <div className="queueList">
+              {adminQueue.map((item) => (
+                <article key={item.id} className="queueItem">
+                  <div>
+                    <strong>{item.action}</strong>
+                    <p>
+                      {item.id} · {item.owner}
+                    </p>
+                  </div>
+                  <span className={`statusBadge ${item.status.toLowerCase().replaceAll(" ", "-")}`}>{item.status}</span>
+                </article>
+              ))}
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section className="twoColumn">
         <article className="card">
-          <span className="eyebrow">Validator posture</span>
+          <div className="sectionHeader">
+            <div>
+              <span className="eyebrow">Validator posture</span>
+              <h3>Consortium node health</h3>
+            </div>
+            <span className="metricDelta">1 warning, quorum intact</span>
+          </div>
           <div className="tableWrap">
             <table>
               <thead>
                 <tr>
                   <th>Validator</th>
                   <th>Status</th>
+                  <th>Peers</th>
+                  <th>Signed blocks</th>
                 </tr>
               </thead>
               <tbody>
@@ -60,46 +166,39 @@ export default function HomePage() {
                     <td>
                       <span className={`statusBadge ${validator.status.toLowerCase()}`}>{validator.status}</span>
                     </td>
+                    <td>{validator.peerCount}</td>
+                    <td>{validator.signedBlocks}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </article>
-      </section>
-
-      <section className="twoColumn">
-        <article className="card">
-          <span className="eyebrow">Reference-style feature map</span>
-          <p>
-            Nova combines public explorer views with regulated financial operations, treasury controls, participant
-            approvals, and audit-ready workflows in one console.
-          </p>
-        </article>
 
         <article className="card">
-          <span className="eyebrow">Approval queue</span>
-          <div className="tableWrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Action</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {adminQueue.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.id}</td>
-                    <td>{item.action}</td>
-                    <td>
-                      <span className={`statusBadge ${item.status.toLowerCase().replaceAll(" ", "-")}`}>{item.status}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="sectionHeader">
+            <div>
+              <span className="eyebrow">Platform map</span>
+              <h3>What operators can do next</h3>
+            </div>
+          </div>
+          <div className="featureChecklist">
+            <div>
+              <strong>Explorer and network</strong>
+              <p>Track blocks, transactions, validators, and gas posture.</p>
+            </div>
+            <div>
+              <strong>Treasury and settlement</strong>
+              <p>Watch liquidity, approve mint/redeem flows, and monitor failures.</p>
+            </div>
+            <div>
+              <strong>Identity and compliance</strong>
+              <p>Review participant onboarding, freezes, sanctions checks, and approvals.</p>
+            </div>
+            <div>
+              <strong>Release and governance</strong>
+              <p>Coordinate validator changes, release windows, and audit-ready runbooks.</p>
+            </div>
           </div>
         </article>
       </section>

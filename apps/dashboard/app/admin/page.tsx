@@ -1,5 +1,6 @@
 import { PageShell } from "../../components/page-shell";
-import { adminQueue } from "../../lib/mock-data";
+import { adminDomains, adminMetrics, adminQueue, alerts } from "../../lib/mock-data";
+import { KpiCard } from "../../components/kpi-card";
 
 export default function AdminPage() {
   return (
@@ -7,9 +8,21 @@ export default function AdminPage() {
       title="Operations and compliance"
       description="Maker-checker approvals, participant controls, treasury oversight, and audit-ready operator workflows."
     >
+      <section className="grid">
+        {adminMetrics.map((metric) => (
+          <KpiCard key={metric.label} label={metric.label} value={metric.value} delta={metric.delta} />
+        ))}
+      </section>
+
       <section className="twoColumn">
         <article className="card">
-          <span className="eyebrow">Admin action queue</span>
+          <div className="sectionHeader">
+            <div>
+              <span className="eyebrow">Admin action queue</span>
+              <h3>Maker-checker workflow</h3>
+            </div>
+            <span className="metricDelta">Prioritize high-risk approvals first</span>
+          </div>
           <div className="tableWrap">
             <table>
               <thead>
@@ -40,16 +53,50 @@ export default function AdminPage() {
           </div>
         </article>
 
-        <article className="card">
-          <span className="eyebrow">Control domains</span>
-          <ul>
-            <li>Identity onboarding and participant lifecycle</li>
-            <li>Sanctions, freezes, and transfer restriction actions</li>
-            <li>Treasury mint, redeem, and rebalance operations</li>
-            <li>Validator governance, upgrades, and key rotations</li>
-            <li>Immutable audit review and reporting exports</li>
-          </ul>
-        </article>
+        <div className="stackColumn">
+          <article className="card">
+            <div className="sectionHeader">
+              <div>
+                <span className="eyebrow">Control domains</span>
+                <h3>What the ops console manages</h3>
+              </div>
+            </div>
+
+            <div className="domainGrid">
+              {adminDomains.map((domain) => (
+                <article key={domain.title} className="domainCard">
+                  <strong>{domain.title}</strong>
+                  <p>{domain.summary}</p>
+                  <ul>
+                    {domain.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </article>
+
+          <article className="card">
+            <div className="sectionHeader">
+              <div>
+                <span className="eyebrow">Incident watch</span>
+                <h3>Open operator signals</h3>
+              </div>
+            </div>
+            <div className="alertList compact">
+              {alerts.map((alert) => (
+                <article key={alert.title} className={`alertItem ${alert.severity}`}>
+                  <div>
+                    <strong>{alert.title}</strong>
+                    <p>{alert.detail}</p>
+                  </div>
+                  <span>{alert.time}</span>
+                </article>
+              ))}
+            </div>
+          </article>
+        </div>
       </section>
     </PageShell>
   );
