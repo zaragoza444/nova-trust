@@ -62,7 +62,7 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       response.end(JSON.stringify({ error: "Forbidden" }));
       return;
     }
-    handleAssetsOverview(request, response);
+    void handleAssetsOverview(request, response);
     return;
   }
 

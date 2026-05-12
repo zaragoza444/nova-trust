@@ -1,6 +1,7 @@
 export interface BlockRecord {
   number: number;
   hash: string;
+  parentHash: string;
   timestamp: string;
   transactionCount: number;
   validator: string;

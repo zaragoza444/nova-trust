@@ -161,8 +161,8 @@ export class NovaService {
     };
   }
 
-  getAssetsOverview() {
-    const indexedSnapshot = loadIndexedAssetsSnapshot();
+  async getAssetsOverview() {
+    const indexedSnapshot = await loadIndexedAssetsSnapshot();
     const assets = indexedSnapshot?.assets ?? novaDashboardSnapshot.assets;
     const issuanceRequests = indexedSnapshot?.issuanceRequests ?? novaDashboardSnapshot.issuanceRequests;
     const liveAssets = assets.filter((item) => item.status === "Live").length;

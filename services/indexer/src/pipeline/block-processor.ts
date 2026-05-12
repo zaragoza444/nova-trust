@@ -25,6 +25,7 @@ interface RawRpcTransaction {
 interface RawRpcBlock {
   number: string;
   hash: string;
+  parentHash: string;
   timestamp: string;
   gasUsed: string;
   miner?: string;
@@ -62,6 +63,7 @@ function buildFallbackSnapshot(): IndexedSnapshot {
     {
       number: 12402,
       hash: "0xblock12402",
+      parentHash: "0xblock12401",
       timestamp: "2026-05-12T00:00:00Z",
       transactionCount: 42,
       validator: "Validator Alpha",
@@ -70,6 +72,7 @@ function buildFallbackSnapshot(): IndexedSnapshot {
     {
       number: 12401,
       hash: "0xblock12401",
+      parentHash: "0xblock12400",
       timestamp: "2026-05-11T23:59:55Z",
       transactionCount: 37,
       validator: "Validator Beta",
@@ -306,6 +309,7 @@ export async function buildIndexedSnapshot(config: IndexerConfig): Promise<Index
     const blocks: BlockRecord[] = rawBlocks.map((block, index) => ({
       number: hexToNumber(block.number),
       hash: block.hash,
+      parentHash: block.parentHash,
       timestamp: toIsoTimestamp(block.timestamp),
       transactionCount: block.transactions.length,
       validator: block.miner ?? validators[index % Math.max(validators.length, 1)]?.moniker ?? "Unknown validator",

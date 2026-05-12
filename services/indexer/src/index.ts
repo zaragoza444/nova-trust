@@ -1,10 +1,14 @@
 import { loadConfig } from "./config";
+import { ensureIndexerSchema } from "./db/client";
+import { persistIndexedSnapshot } from "./db/state-store";
 import { buildIndexedSnapshot } from "./pipeline/block-processor";
 import { writeIndexedSnapshot } from "./pipeline/snapshot-store";
 
 async function main() {
   const config = loadConfig();
+  await ensureIndexerSchema(config);
   const snapshot = await buildIndexedSnapshot(config);
+  await persistIndexedSnapshot(config, snapshot);
   const snapshotPath = writeIndexedSnapshot(snapshot);
 
   console.log("Nova indexer booting");
