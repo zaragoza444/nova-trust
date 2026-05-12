@@ -1,15 +1,18 @@
 import { PageShell } from "../../components/page-shell";
-import { adminDomains, adminMetrics, adminQueue, alerts } from "../../lib/mock-data";
 import { KpiCard } from "../../components/kpi-card";
+import { getAdminOverviewData } from "../../lib/dashboard-data";
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const data = await getAdminOverviewData();
+
   return (
     <PageShell
       title="Operations and compliance"
       description="Maker-checker approvals, participant controls, treasury oversight, and audit-ready operator workflows."
+      signals={data.shellSignals}
     >
       <section className="grid">
-        {adminMetrics.map((metric) => (
+        {data.adminMetrics.map((metric) => (
           <KpiCard key={metric.label} label={metric.label} value={metric.value} delta={metric.delta} />
         ))}
       </section>
@@ -35,7 +38,7 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {adminQueue.map((item) => (
+                {data.adminQueue.map((item) => (
                   <tr key={item.id}>
                     <td>{item.id}</td>
                     <td>{item.action}</td>
@@ -63,7 +66,7 @@ export default function AdminPage() {
             </div>
 
             <div className="domainGrid">
-              {adminDomains.map((domain) => (
+              {data.adminDomains.map((domain) => (
                 <article key={domain.title} className="domainCard">
                   <strong>{domain.title}</strong>
                   <p>{domain.summary}</p>
@@ -85,7 +88,7 @@ export default function AdminPage() {
               </div>
             </div>
             <div className="alertList compact">
-              {alerts.map((alert) => (
+              {data.alerts.map((alert) => (
                 <article key={alert.title} className={`alertItem ${alert.severity}`}>
                   <div>
                     <strong>{alert.title}</strong>

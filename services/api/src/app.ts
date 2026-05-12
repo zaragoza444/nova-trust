@@ -1,6 +1,6 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { loadApiConfig } from "./config";
-import { handleAdminQueue } from "./routes/admin";
+import { handleAdminOverview, handleAdminQueue } from "./routes/admin";
 import { handleDashboard } from "./routes/dashboard";
 import { handleHealth } from "./routes/health";
 import { canAccess, type NovaRole } from "./services/rbac";
@@ -42,6 +42,16 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     handleAdminQueue(request, response);
+    return;
+  }
+
+  if (request.url === "/api/admin/overview") {
+    if (!requestRole || !canAccess("/api/admin/overview", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleAdminOverview(request, response);
     return;
   }
 

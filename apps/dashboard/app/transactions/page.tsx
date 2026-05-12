@@ -1,14 +1,17 @@
 import { PageShell } from "../../components/page-shell";
-import { transactionInsights, transactions } from "../../lib/mock-data";
+import { getDashboardData } from "../../lib/dashboard-data";
 
-export default function TransactionsPage() {
+export default async function TransactionsPage() {
+  const data = await getDashboardData();
+
   return (
     <PageShell
       title="Transactions explorer"
       description="Review settlement, asset, governance, and administrative activity across Nova."
+      signals={data.shellSignals}
     >
       <section className="insightStrip">
-        {transactionInsights.map((item) => (
+        {data.transactionInsights.map((item) => (
           <article key={item.label} className="insightCard">
             <span className="signalLabel">{item.label}</span>
             <strong>{item.value}</strong>
@@ -36,7 +39,7 @@ export default function TransactionsPage() {
               </tr>
             </thead>
             <tbody>
-              {transactions.map((transaction) => (
+              {data.transactions.map((transaction) => (
                 <tr key={transaction.hash}>
                   <td>{transaction.hash}</td>
                   <td>{transaction.type}</td>

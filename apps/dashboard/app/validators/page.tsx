@@ -1,14 +1,17 @@
 import { PageShell } from "../../components/page-shell";
-import { validatorInsights, validators } from "../../lib/mock-data";
+import { getDashboardData } from "../../lib/dashboard-data";
 
-export default function ValidatorsPage() {
+export default async function ValidatorsPage() {
+  const data = await getDashboardData();
+
   return (
     <PageShell
       title="Validators and nodes"
       description="Monitor consortium validator health, peer counts, and recent signing performance."
+      signals={data.shellSignals}
     >
       <section className="insightStrip">
-        {validatorInsights.map((item) => (
+        {data.validatorInsights.map((item) => (
           <article key={item.label} className="insightCard">
             <span className="signalLabel">{item.label}</span>
             <strong>{item.value}</strong>
@@ -34,7 +37,7 @@ export default function ValidatorsPage() {
               </tr>
             </thead>
             <tbody>
-              {validators.map((validator) => (
+              {data.validators.map((validator) => (
                 <tr key={validator.name}>
                   <td>{validator.name}</td>
                   <td>

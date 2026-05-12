@@ -18,6 +18,11 @@ export const accessPolicies: AccessPolicy[] = [
     approvalRequired: true
   },
   {
+    route: "/api/admin/overview",
+    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "AUDITOR"],
+    approvalRequired: false
+  },
+  {
     route: "/api/dashboard",
     roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
     approvalRequired: false

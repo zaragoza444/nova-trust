@@ -1,14 +1,17 @@
 import { PageShell } from "../../components/page-shell";
-import { blockInsights, blocks } from "../../lib/mock-data";
+import { getDashboardData } from "../../lib/dashboard-data";
 
-export default function BlocksPage() {
+export default async function BlocksPage() {
+  const data = await getDashboardData();
+
   return (
     <PageShell
       title="Blocks explorer"
       description="Inspect recent finality, validator production, and throughput on the Nova permissioned network."
+      signals={data.shellSignals}
     >
       <section className="insightStrip">
-        {blockInsights.map((item) => (
+        {data.blockInsights.map((item) => (
           <article key={item.label} className="insightCard">
             <span className="signalLabel">{item.label}</span>
             <strong>{item.value}</strong>
@@ -35,7 +38,7 @@ export default function BlocksPage() {
               </tr>
             </thead>
             <tbody>
-              {blocks.map((block) => (
+              {data.blocks.map((block) => (
                 <tr key={block.number}>
                   <td>{block.number}</td>
                   <td>{block.validator}</td>

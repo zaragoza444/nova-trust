@@ -1,12 +1,15 @@
 import { KpiCard } from "../components/kpi-card";
 import { PageShell } from "../components/page-shell";
-import { adminQueue, alerts, blocks, homeHighlights, metrics, pulseSeries, quickActions, validators } from "../lib/mock-data";
+import { getDashboardData } from "../lib/dashboard-data";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const data = await getDashboardData();
+
   return (
     <PageShell
       title="Nova chain dashboard"
       description="High-level health for the Nova financial network, including settlement throughput, validator posture, and operational readiness."
+      signals={data.shellSignals}
     >
       <section className="heroGrid">
         <article className="card heroCard heroCardPrimary">
@@ -18,7 +21,7 @@ export default function HomePage() {
           </p>
 
           <div className="highlightGrid">
-            {homeHighlights.map((item) => (
+            {data.homeHighlights.map((item) => (
               <div key={item.label} className="highlightItem">
                 <span className="signalLabel">{item.label}</span>
                 <strong>{item.value}</strong>
@@ -38,13 +41,13 @@ export default function HomePage() {
           </div>
 
           <div className="pulseChart" aria-label="Throughput trend">
-            {pulseSeries.map((value, index) => (
+            {data.pulseSeries.map((value, index) => (
               <span key={`${value}-${index}`} style={{ height: `${value}%` }} />
             ))}
           </div>
 
           <div className="actionChips">
-            {quickActions.map((action) => (
+            {data.quickActions.map((action) => (
               <span key={action} className="actionChip">
                 {action}
               </span>
@@ -54,7 +57,7 @@ export default function HomePage() {
       </section>
 
       <section className="grid">
-        {metrics.map((metric) => (
+        {data.metrics.map((metric) => (
           <KpiCard key={metric.label} label={metric.label} value={metric.value} delta={metric.delta} />
         ))}
       </section>
@@ -80,7 +83,7 @@ export default function HomePage() {
                 </tr>
               </thead>
               <tbody>
-                {blocks.map((block) => (
+                {data.blocks.map((block) => (
                   <tr key={block.number}>
                     <td>{block.number}</td>
                     <td>{block.validator}</td>
@@ -104,7 +107,7 @@ export default function HomePage() {
             </div>
 
             <div className="alertList">
-              {alerts.map((alert) => (
+              {data.alerts.map((alert) => (
                 <article key={alert.title} className={`alertItem ${alert.severity}`}>
                   <div>
                     <strong>{alert.title}</strong>
@@ -124,7 +127,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="queueList">
-              {adminQueue.map((item) => (
+              {data.adminQueue.map((item) => (
                 <article key={item.id} className="queueItem">
                   <div>
                     <strong>{item.action}</strong>
@@ -160,7 +163,7 @@ export default function HomePage() {
                 </tr>
               </thead>
               <tbody>
-                {validators.map((validator) => (
+                {data.validators.map((validator) => (
                   <tr key={validator.name}>
                     <td>{validator.name}</td>
                     <td>
@@ -183,22 +186,12 @@ export default function HomePage() {
             </div>
           </div>
           <div className="featureChecklist">
-            <div>
-              <strong>Explorer and network</strong>
-              <p>Track blocks, transactions, validators, and gas posture.</p>
-            </div>
-            <div>
-              <strong>Treasury and settlement</strong>
-              <p>Watch liquidity, approve mint/redeem flows, and monitor failures.</p>
-            </div>
-            <div>
-              <strong>Identity and compliance</strong>
-              <p>Review participant onboarding, freezes, sanctions checks, and approvals.</p>
-            </div>
-            <div>
-              <strong>Release and governance</strong>
-              <p>Coordinate validator changes, release windows, and audit-ready runbooks.</p>
-            </div>
+            {data.featureChecklist.map((item) => (
+              <div key={item.title}>
+                <strong>{item.title}</strong>
+                <p>{item.detail}</p>
+              </div>
+            ))}
           </div>
         </article>
       </section>

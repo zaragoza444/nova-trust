@@ -5,6 +5,6 @@
   "scripts": {
     "dev": "node ./src/app.js",
     "build": "tsc -p tsconfig.json",
-    "start": "node ./dist/app.js"
+    "start": "node ./src/app.js"
   }
 }

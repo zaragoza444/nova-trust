@@ -2,13 +2,20 @@ import type { ReactNode } from "react";
 import { chainTabs, shellSignals } from "../lib/mock-data";
 import { SideNav } from "./side-nav";
 
+interface ShellSignal {
+  label: string;
+  value: string;
+  tone: string;
+}
+
 interface PageShellProps {
   title: string;
   description: string;
   children: ReactNode;
+  signals?: ShellSignal[];
 }
 
-export function PageShell({ title, description, children }: PageShellProps) {
+export function PageShell({ title, description, children, signals = shellSignals }: PageShellProps) {
   return (
     <div className="appShell">
       <SideNav />
@@ -29,7 +36,7 @@ export function PageShell({ title, description, children }: PageShellProps) {
         </header>
 
         <section className="signalBar">
-          {shellSignals.map((signal) => (
+          {signals.map((signal) => (
             <article key={signal.label} className="signalCard">
               <span className="signalLabel">{signal.label}</span>
               <strong className={`signalValue ${signal.tone}`}>{signal.value}</strong>
