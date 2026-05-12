@@ -1,4 +1,4 @@
-import { createServer } from "node:http";
+import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { loadApiConfig } from "./config";
 import { handleAdminQueue } from "./routes/admin";
 import { handleDashboard } from "./routes/dashboard";
@@ -7,7 +7,7 @@ import { canAccess, type NovaRole } from "./services/rbac";
 
 const config = loadApiConfig();
 
-const server = createServer((request, response) => {
+const server = createServer((request: IncomingMessage, response: ServerResponse) => {
   response.setHeader("access-control-allow-origin", config.corsOrigin);
   response.setHeader("access-control-allow-methods", "GET,POST,OPTIONS");
   response.setHeader("access-control-allow-headers", "content-type,authorization,x-nova-role");
