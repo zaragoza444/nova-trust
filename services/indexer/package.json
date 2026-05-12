@@ -6,5 +6,8 @@
     "dev": "node ./src/index.js",
     "build": "tsc -p tsconfig.json",
     "start": "node ./dist/index.js"
+  },
+  "dependencies": {
+    "ethers": "^6.16.0"
   }
 }
