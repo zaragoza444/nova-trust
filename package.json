@@ -8,6 +8,10 @@
     "contracts"
   ],
   "scripts": {
+    "start": "npm run start --workspace @nova/dashboard --",
+    "start:dashboard": "npm run start --workspace @nova/dashboard --",
+    "start:api": "npm run start --workspace @nova/api --",
+    "start:indexer": "npm run start --workspace @nova/indexer --",
     "dev:dashboard": "npm run dev --workspace @nova/dashboard",
     "dev:api": "npm run dev --workspace @nova/api",
     "dev:indexer": "npm run dev --workspace @nova/indexer",
