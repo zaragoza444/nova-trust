@@ -1,0 +1,13 @@
+{
+  "name": "@nova/contracts",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "hardhat compile",
+    "test": "hardhat test"
+  },
+  "devDependencies": {
+    "hardhat": "^3.4.5"
+  }
+}
