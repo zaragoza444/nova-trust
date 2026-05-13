@@ -47,6 +47,33 @@ create table if not exists tokens (
   issued_supply numeric(40, 0) not null default 0
 );
 
+create table if not exists assets (
+  asset_id text primary key,
+  contract_address text not null unique,
+  symbol text not null,
+  name text not null,
+  asset_class text not null,
+  jurisdiction text not null,
+  issue_size numeric(40, 0) not null,
+  issuer_address text not null,
+  treasury_address text not null,
+  status text not null,
+  created_at timestamptz not null,
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists asset_issuance_requests (
+  id text primary key,
+  asset_id text not null,
+  name text not null,
+  owner text not null,
+  stage text not null,
+  status text not null,
+  target_raise text not null,
+  jurisdiction text not null,
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists compliance_events (
   id bigserial primary key,
   tx_hash text not null,

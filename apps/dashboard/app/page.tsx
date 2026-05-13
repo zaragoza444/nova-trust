@@ -1,9 +1,18 @@
 import { KpiCard } from "../components/kpi-card";
 import { PageShell } from "../components/page-shell";
-import { getDashboardData } from "../lib/dashboard-data";
+import { getDashboardData, type Insight } from "../lib/dashboard-data";
+
+function parseWarningNodeCount(insights: Insight[]) {
+  const raw = insights.find((item) => item.label === "Warning nodes")?.value ?? "0";
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
 
 export default async function HomePage() {
   const data = await getDashboardData();
+  const transactionsPerDay = data.metrics[1];
+  const warningValidators = parseWarningNodeCount(data.validatorInsights);
+  const finalityCaption = data.blockInsights.find((item) => item.label.toLowerCase().includes("finality"));
 
   return (
     <PageShell
@@ -34,10 +43,12 @@ export default async function HomePage() {
           <span className="eyebrow">Chain pulse</span>
           <div className="pulseHeader">
             <div>
-              <strong className="pulseValue">82 tx/min</strong>
-              <span className="metricDelta">Current throughput</span>
+              <strong className="pulseValue">{transactionsPerDay?.value ?? "—"}</strong>
+              <span className="metricDelta">{transactionsPerDay?.label ?? "Transactions"}</span>
             </div>
-            <span className="statusBadge success">Stable</span>
+            <span className={`statusBadge ${warningValidators > 0 ? "warning" : "success"}`}>
+              {warningValidators > 0 ? "Review" : "Stable"}
+            </span>
           </div>
 
           <div className="pulseChart" aria-label="Throughput trend">
@@ -69,7 +80,9 @@ export default async function HomePage() {
               <span className="eyebrow">Latest blocks</span>
               <h3>Recent finalized blocks</h3>
             </div>
-            <span className="metricDelta">Finality window 5.2s avg</span>
+            <span className="metricDelta">
+              {finalityCaption ? `${finalityCaption.label} ${finalityCaption.value}` : "Chain finality"}
+            </span>
           </div>
           <div className="tableWrap">
             <table>
@@ -150,7 +163,9 @@ export default async function HomePage() {
               <span className="eyebrow">Validator posture</span>
               <h3>Consortium node health</h3>
             </div>
-            <span className="metricDelta">1 warning, quorum intact</span>
+            <span className="metricDelta">
+              {`${warningValidators} warning node${warningValidators === 1 ? "" : "s"}, quorum intact`}
+            </span>
           </div>
           <div className="tableWrap">
             <table>

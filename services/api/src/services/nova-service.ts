@@ -1,4 +1,5 @@
-import { novaDashboardSnapshot, novaUiSeed } from "../data/mock";
+import { novaDashboardSnapshot, novaUiSeed } from "../mock";
+import { loadIndexedAssetsSnapshot } from "./indexed-assets";
 
 export class NovaService {
   getHealth() {
@@ -160,6 +161,75 @@ export class NovaService {
     };
   }
 
+  async getAssetsOverview() {
+    const indexedSnapshot = await loadIndexedAssetsSnapshot();
+    const assets = indexedSnapshot?.assets ?? novaDashboardSnapshot.assets;
+    const issuanceRequests = indexedSnapshot?.issuanceRequests ?? novaDashboardSnapshot.issuanceRequests;
+    const liveAssets = assets.filter((item) => item.status === "Live").length;
+    const issuanceInFlight = issuanceRequests.filter((item) => item.status !== "Scheduled").length;
+    const totalNotional = assets.reduce((total, item) => total + item.issueSize, 0);
+
+    return {
+      shellSignals: novaUiSeed.shellSignals,
+      assetMetrics: [
+        {
+          label: "Tokenized products",
+          value: `${assets.length}`,
+          delta: `${liveAssets} live`
+        },
+        {
+          label: "Issuance in flight",
+          value: `${issuanceInFlight}`,
+          delta: "maker-checker active"
+        },
+        {
+          label: "Program notional",
+          value: this.formatCurrency(totalNotional),
+          delta: "across all launched assets"
+        },
+        {
+          label: "Factory readiness",
+          value: "Ready",
+          delta: "NovaAssetFactory wired"
+        }
+      ],
+      assetInsights: [
+        {
+          label: "Primary issuance rail",
+          value: "NovaAssetFactory"
+        },
+        {
+          label: "Custody destination",
+          value: "Treasury vaults bound"
+        },
+        {
+          label: "Compliance posture",
+          value: "Pre-mint checks enforced"
+        }
+      ],
+      assets: assets.map((asset) => ({
+        ...asset,
+        issueSize: this.formatCurrency(asset.issueSize),
+        createdAt: this.formatDateTime(asset.createdAt)
+      })),
+      issuanceRequests,
+      issuanceControls: [
+        {
+          title: "Issuance policy",
+          detail: "Require maker-checker approval, approved metadata, and treasury destination before mint."
+        },
+        {
+          title: "Compliance gate",
+          detail: "Bind jurisdiction, sanctions screening, and participant controls before activation."
+        },
+        {
+          title: "Operational release",
+          detail: "Promote assets from pre-issuance to live only after contract verification and vault funding."
+        }
+      ]
+    };
+  }
+
   getAdminQueue() {
     return this.getDashboard().adminQueue;
   }
@@ -204,5 +274,20 @@ export class NovaService {
 
   private titleCase(value: string) {
     return value.charAt(0).toUpperCase() + value.slice(1);
+  }
+
+  private formatDateTime(timestamp: string) {
+    const date = new Date(timestamp);
+
+    if (Number.isNaN(date.getTime())) {
+      return timestamp;
+    }
+
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    }).format(date);
   }
 }
