@@ -1,4 +1,4 @@
-import { novaDashboardSnapshot, novaUiSeed } from "../data/mock";
+import { novaDashboardSnapshot, novaUiSeed } from "../mock";
 import { loadIndexedAssetsSnapshot } from "./indexed-assets";
 
 export class NovaService {
