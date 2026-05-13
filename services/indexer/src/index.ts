@@ -8,8 +8,8 @@ async function main() {
   const config = loadConfig();
   await ensureIndexerSchema(config);
   const snapshot = await buildIndexedSnapshot(config);
-  await persistIndexedSnapshot(config, snapshot);
   const snapshotPath = writeIndexedSnapshot(snapshot);
+  await persistIndexedSnapshot(config, snapshot);
 
   console.log("Nova indexer booting");
   console.log({
