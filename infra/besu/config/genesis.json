@@ -1,6 +1,6 @@
 {
   "config": {
-    "chainId": 73001,
+    "chainId": 138,
     "berlinBlock": 0,
     "londonBlock": 0,
     "qbft": {

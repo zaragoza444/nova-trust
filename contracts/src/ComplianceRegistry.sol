@@ -18,8 +18,10 @@ contract ComplianceRegistry is RoleManager {
 
     IIdentityRegistry public immutable identityRegistry;
     mapping(address => ComplianceStatus) private statuses;
+    mapping(address => bool) public approvedLiquidityVenues;
 
     event ComplianceStatusUpdated(address indexed account, bool isSanctioned, bool isFrozen, uint256 dailyTransferLimit);
+    event LiquidityVenueUpdated(address indexed venue, bool approved);
 
     constructor(address initialOwner, address identityRegistryAddress) RoleManager(initialOwner) {
         require(identityRegistryAddress != address(0), "ComplianceRegistry: zero identity registry");
@@ -50,11 +52,23 @@ contract ComplianceRegistry is RoleManager {
         return statuses[account];
     }
 
+    function setLiquidityVenue(address venue, bool approved) external onlyRole(COMPLIANCE_ADMIN_ROLE) {
+        require(venue != address(0), "ComplianceRegistry: zero venue");
+        approvedLiquidityVenues[venue] = approved;
+        emit LiquidityVenueUpdated(venue, approved);
+    }
+
     function isTransferAllowed(address from, address to, uint256 amount) external view returns (bool) {
         ComplianceStatus memory sender = statuses[from];
         ComplianceStatus memory receiver = statuses[to];
+        bool senderIsLiquidityVenue = approvedLiquidityVenues[from];
+        bool receiverIsLiquidityVenue = approvedLiquidityVenues[to];
 
-        if (!identityRegistry.isEligible(from) || !identityRegistry.isEligible(to)) {
+        if (!senderIsLiquidityVenue && !identityRegistry.isEligible(from)) {
+            return false;
+        }
+
+        if (!receiverIsLiquidityVenue && !identityRegistry.isEligible(to)) {
             return false;
         }
 

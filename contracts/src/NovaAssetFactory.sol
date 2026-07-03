@@ -10,8 +10,10 @@ contract NovaAssetToken {
     address public immutable issuer;
     uint256 public totalSupply;
     mapping(address => uint256) public balanceOf;
+    mapping(address => mapping(address => uint256)) public allowance;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
 
     constructor(
         string memory assetName,
@@ -20,12 +22,43 @@ contract NovaAssetToken {
         uint256 initialSupply,
         address treasury
     ) {
+        require(treasury != address(0), "NovaAssetToken: zero treasury");
         name = assetName;
         symbol = assetSymbol;
         issuer = issuerAddress;
         totalSupply = initialSupply;
         balanceOf[treasury] = initialSupply;
         emit Transfer(address(0), treasury, initialSupply);
+    }
+
+    function approve(address spender, uint256 value) external returns (bool) {
+        require(spender != address(0), "NovaAssetToken: zero spender");
+        allowance[msg.sender][spender] = value;
+        emit Approval(msg.sender, spender, value);
+        return true;
+    }
+
+    function transfer(address to, uint256 value) external returns (bool) {
+        _transfer(msg.sender, to, value);
+        return true;
+    }
+
+    function transferFrom(address from, address to, uint256 value) external returns (bool) {
+        uint256 currentAllowance = allowance[from][msg.sender];
+        require(currentAllowance >= value, "NovaAssetToken: allowance exceeded");
+
+        allowance[from][msg.sender] = currentAllowance - value;
+        _transfer(from, to, value);
+        return true;
+    }
+
+    function _transfer(address from, address to, uint256 value) internal {
+        require(to != address(0), "NovaAssetToken: zero recipient");
+        require(balanceOf[from] >= value, "NovaAssetToken: insufficient balance");
+
+        balanceOf[from] -= value;
+        balanceOf[to] += value;
+        emit Transfer(from, to, value);
     }
 }
 
