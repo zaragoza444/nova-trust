@@ -9,7 +9,7 @@
     "deploy": "node --experimental-strip-types ./scripts/deploy.ts"
   },
   "devDependencies": {
-    "hardhat": "^3.4.5"
+    "hardhat": "^3.9.1"
   },
   "dependencies": {
     "ethers": "^6.16.0"
