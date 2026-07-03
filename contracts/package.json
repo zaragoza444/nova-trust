@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "hardhat compile",
-    "test": "hardhat test",
+    "test": "hardhat test && node --test --experimental-strip-types ./test/NovaContractSuite.spec.ts",
     "deploy": "node --experimental-strip-types ./scripts/deploy.ts"
   },
   "devDependencies": {
