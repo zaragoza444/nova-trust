@@ -105,6 +105,7 @@ async function main() {
   const identity = await deployContract(wallet, "IdentityRegistry", [config.initialOwner]);
   const compliance = await deployContract(wallet, "ComplianceRegistry", [config.initialOwner, identity.record.address]);
   const settlement = await deployContract(wallet, "NovaSettlementToken", [config.initialOwner, compliance.record.address]);
+  const wrappedChain138 = await deployContract(wallet, "WrappedChain138Token", []);
   const assetFactory = await deployContract(wallet, "NovaAssetFactory", [config.initialOwner]);
   const treasury = await deployContract(wallet, "TreasuryController", [config.initialOwner, settlement.record.address]);
   const auditEvents = await deployContract(wallet, "AuditEvents", [config.initialOwner]);
@@ -134,6 +135,7 @@ async function main() {
       identityRegistry: identity.record,
       complianceRegistry: compliance.record,
       settlementToken: settlement.record,
+      wrappedChain138Token: wrappedChain138.record,
       assetFactory: assetFactory.record,
       treasuryController: treasury.record,
       auditEvents: auditEvents.record

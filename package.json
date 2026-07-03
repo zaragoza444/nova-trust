@@ -22,6 +22,12 @@
   },
   "devDependencies": {
     "@types/node": "^25.7.0",
+    "esbuild": "^0.28.1",
+    "postcss": "^8.5.16",
     "typescript": "^6.0.3"
+  },
+  "overrides": {
+    "esbuild": "$esbuild",
+    "postcss": "$postcss"
   }
 }
