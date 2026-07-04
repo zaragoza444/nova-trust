@@ -1,11 +1,14 @@
 import { novaDashboardSnapshot, novaUiSeed } from "../mock";
+import { bridgeChain, chainProfiles, primaryChain } from "./chain-registry";
 import { loadIndexedAssetsSnapshot } from "./indexed-assets";
 
 export class NovaService {
   getHealth() {
     return {
       status: "ok",
-      chain: "Nova Mainnet",
+      chain: primaryChain.name,
+      chainId: primaryChain.chainId,
+      chains: chainProfiles,
       timestamp: new Date().toISOString()
     };
   }
@@ -13,6 +16,7 @@ export class NovaService {
   getDashboard() {
     return {
       shellSignals: novaUiSeed.shellSignals,
+      chainProfiles,
       metrics: [
         {
           label: "Indexed blocks",
@@ -51,8 +55,8 @@ export class NovaService {
           value: `${novaDashboardSnapshot.adminQueue.filter((item) => item.status !== "Approved").length} awaiting action`
         },
         {
-          label: "Cross-chain readiness",
-          value: "Bridge paused for review"
+          label: `${bridgeChain.name} readiness`,
+          value: `Bridge lane ${primaryChain.chainId} -> ${bridgeChain.chainId} in review`
         }
       ],
       pulseSeries: novaUiSeed.pulseSeries,
