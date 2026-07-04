@@ -47,26 +47,23 @@ The regulated settlement token remains compliance-gated. To support settlement-t
 6. Wrap native NOVA into `WNOVA`.
 7. Add initial `M1FIAT/WNOVA` liquidity and approve the pool as a compliance liquidity venue.
 
-Required environment:
+Required environment goes in a terminal/session environment, not in CSS, TypeScript, Solidity, or committed source files. Start from the example file and source a private copy:
 
 ```bash
-export NOVA_RPC_URL="https://your-nova-one-rpc"
-export NOVA_DEPLOYER_PRIVATE_KEY="0x..."
-export NOVA_M1FIAT_SUPPLY="1000000"
-export NOVA_M1FIAT_LIQUIDITY="100000"
-export NOVA_WNOVA_LIQUIDITY="100"
+cp contracts/production.env.example /tmp/nova-production.env
+$EDITOR /tmp/nova-production.env
+source /tmp/nova-production.env
+npm run setup:production --workspace @nova/contracts
 ```
 
-Optional environment:
+At minimum, the private env file must define:
 
 ```bash
-export NOVA_EXPECTED_CHAIN_ID="22016"
-export NOVA_INITIAL_OWNER="0xOwner"
-export NOVA_COMPLIANCE_ADMIN="0xComplianceAdmin"
-export NOVA_TREASURY_OPERATOR="0xTreasuryOperator"
-export NOVA_ASSET_ISSUER="0xAssetIssuer"
-export NOVA_AUDITOR="0xAuditor"
-export NOVA_PRODUCTION_BOOTSTRAP_MANIFEST_PATH="./deployments/nova-one-liquidity.json"
+NOVA_RPC_URL
+NOVA_DEPLOYER_PRIVATE_KEY
+NOVA_M1FIAT_SUPPLY
+NOVA_M1FIAT_LIQUIDITY
+NOVA_WNOVA_LIQUIDITY
 ```
 
 The deployer wallet must hold enough native NOVA to pay gas and wrap the configured `NOVA_WNOVA_LIQUIDITY`. Do not commit private keys or production manifests containing sensitive endpoint details.
