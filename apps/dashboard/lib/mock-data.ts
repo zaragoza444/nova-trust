@@ -1,16 +1,11 @@
-export const chainTabs = [
-  "N1 Settlement",
-  "N2 Operations",
-  "N3 Asset",
-  "N4 Identity",
-  "N5 Consumer",
-  "N6 Bridge"
-];
+import { bridgeChain, chainProfiles, primaryChain } from "./chains";
+
+export const chainTabs = chainProfiles;
 
 export const shellSignals = [
   { label: "Index sync", value: "5s behind", tone: "positive" },
-  { label: "Settlement rail", value: "T+0 active", tone: "neutral" },
-  { label: "Operators", value: "12 live", tone: "neutral" },
+  { label: primaryChain.name, value: `Chain ${primaryChain.chainId} active`, tone: "positive" },
+  { label: bridgeChain.name, value: `Chain ${bridgeChain.chainId} bridge`, tone: "neutral" },
   { label: "Release", value: "v0.1.0", tone: "positive" }
 ];
 
@@ -25,7 +20,7 @@ export const homeHighlights = [
   { label: "Validator quorum", value: "4 / 4 healthy" },
   { label: "Treasury exposure", value: "$42.8M monitored" },
   { label: "Compliance queues", value: "3 awaiting action" },
-  { label: "Cross-chain readiness", value: "Bridge paused for review" }
+  { label: `${bridgeChain.name} readiness`, value: `${primaryChain.chainId} -> ${bridgeChain.chainId} in review` }
 ];
 
 export const pulseSeries = [42, 54, 49, 63, 57, 68, 66, 71, 75, 70, 78, 82];
@@ -74,8 +69,8 @@ export const adminQueue = [
 
 export const alerts = [
   {
-    title: "Bridge readiness review open",
-    detail: "Cross-chain lane remains paused until the compliance attestation packet is renewed.",
+    title: "NRW World bridge readiness review open",
+    detail: "Nova One to NRW World lane remains paused until the compliance attestation packet is renewed.",
     severity: "warning",
     time: "8 minutes ago"
   },

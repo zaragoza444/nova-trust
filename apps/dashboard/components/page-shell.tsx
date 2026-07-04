@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { chainTabs, shellSignals } from "../lib/mock-data";
+import { primaryChain, type ChainProfile } from "../lib/chains";
 import { SideNav } from "./side-nav";
 
 interface ShellSignal {
@@ -13,9 +14,10 @@ interface PageShellProps {
   description: string;
   children: ReactNode;
   signals?: ShellSignal[];
+  chains?: ChainProfile[];
 }
 
-export function PageShell({ title, description, children, signals = shellSignals }: PageShellProps) {
+export function PageShell({ title, description, children, signals = shellSignals, chains = chainTabs }: PageShellProps) {
   return (
     <div className="appShell">
       <SideNav />
@@ -23,7 +25,8 @@ export function PageShell({ title, description, children, signals = shellSignals
         <header className="topBar">
           <div className="heroIntro">
             <div className="heroStatusRow">
-              <div className="statusPill">Nova Mainnet</div>
+              <div className="statusPill">{primaryChain.name}</div>
+              <div className="secondaryPill">Chain {primaryChain.chainId}</div>
               <div className="secondaryPill">Permissioned EVM</div>
             </div>
             <h1>{title}</h1>
@@ -45,9 +48,13 @@ export function PageShell({ title, description, children, signals = shellSignals
         </section>
 
         <nav className="chainTabs">
-          {chainTabs.map((tab, index) => (
-            <button key={tab} className={index === 0 ? "chainTab active" : "chainTab"}>
-              {tab}
+          {chains.map((chain, index) => (
+            <button key={chain.slug} className={index === 0 ? "chainTab active" : "chainTab"}>
+              <strong>{chain.name}</strong>
+              <span>Chain {chain.chainId}</span>
+              <small>
+                {chain.nativeSymbol}/{chain.wrappedSymbol} · {chain.role}
+              </small>
             </button>
           ))}
         </nav>
