@@ -17,7 +17,7 @@ describe("Nova contract suite design", () => {
       "IdentityRegistry",
       "ComplianceRegistry",
       "NovaSettlementToken",
-      "WrappedChain138Token",
+      "WrappedNovaOneToken",
       "NovaAssetFactory",
       "TreasuryController",
       "AuditEvents"
@@ -35,10 +35,10 @@ describe("Nova contract suite design", () => {
     assert.match(source, /function transferFrom\(address from, address to, uint256 value\) external returns \(bool\)/);
   });
 
-  it("provides W138 for native Chain 138 liquidity pairs", () => {
-    const source = readContract("WrappedChain138Token.sol");
+  it("provides WNOVA for native Nova One liquidity pairs", () => {
+    const source = readContract("WrappedNovaOneToken.sol");
 
-    assert.match(source, /string public constant symbol = "W138";/);
+    assert.match(source, /string public constant symbol = "WNOVA";/);
     assert.match(source, /receive\(\) external payable/);
     assert.match(source, /function deposit\(\) public payable/);
     assert.match(source, /function withdraw\(uint256 value\) external/);
