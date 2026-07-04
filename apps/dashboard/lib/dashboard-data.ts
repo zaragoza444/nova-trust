@@ -15,7 +15,6 @@ import {
   validatorInsights,
   validators
 } from "./mock-data";
-import { chainProfiles, type ChainProfile } from "./chains";
 
 export interface Signal {
   label: string;
@@ -116,7 +115,6 @@ export interface FeatureChecklistItem {
 
 export interface DashboardPageData {
   shellSignals: Signal[];
-  chainProfiles: ChainProfile[];
   metrics: Metric[];
   homeHighlights: Highlight[];
   pulseSeries: number[];
@@ -289,7 +287,6 @@ async function fetchJson<T>(path: string, validate: (value: unknown) => value is
 function getFallbackDashboardData(): DashboardPageData {
   return {
     shellSignals,
-    chainProfiles,
     metrics,
     homeHighlights,
     pulseSeries,
@@ -330,7 +327,6 @@ function isDashboardPageData(value: unknown): value is DashboardPageData {
   const candidate = value as Partial<DashboardPageData>;
   return (
     Array.isArray(candidate.shellSignals) &&
-    Array.isArray(candidate.chainProfiles) &&
     Array.isArray(candidate.metrics) &&
     Array.isArray(candidate.blocks) &&
     Array.isArray(candidate.transactions) &&

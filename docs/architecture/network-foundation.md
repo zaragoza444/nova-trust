@@ -2,10 +2,8 @@
 
 ## Network Identity
 
-- Primary network name: `Nova One`
-- Primary chain ID: `22016`
-- Paired world network: `NRW World`
-- Paired world chain ID: `33001`
+- Network name: `Nova Mainnet`
+- Chain ID: `138`
 - Consensus: `QBFT`
 - Chain family: permissioned EVM
 - Primary use case: all-in-one digital finance platform spanning settlement, asset tokenization, wallet operations, treasury control, and regulated participant management
@@ -62,7 +60,7 @@ Validator membership should be restricted to approved institutional operators. E
 - zero or near-zero gas for approved internal workflows in controlled environments
 - production gas schedule should still meter usage for anomaly detection and abuse control
 - contract size, deployment authority, and RPC method exposure should be explicitly allowlisted
-- native-coin liquidity should use the deployed `WNOVA` wrapper so AMM routers can interact with an ERC-20 surface
+- native-coin liquidity should use the deployed `W138` wrapper so AMM routers can interact with an ERC-20 surface
 - regulated settlement liquidity venues must be approved in `ComplianceRegistry` before pools or routers can receive settlement-token transfers
 
 ## Data and Reporting Baseline

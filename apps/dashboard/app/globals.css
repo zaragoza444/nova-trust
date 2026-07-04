@@ -245,28 +245,15 @@ button {
 }
 
 .chainTabs {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
   gap: 10px;
+  flex-wrap: wrap;
   margin: 26px 0;
 }
 
 .chainTab {
   background: rgba(255, 255, 255, 0.04);
   color: var(--text);
-  display: grid;
-  gap: 4px;
-  text-align: left;
-  min-width: 0;
-}
-
-.chainTab span,
-.chainTab small {
-  color: var(--muted);
-}
-
-.chainTab small {
-  line-height: 1.4;
 }
 
 .chainTab.active {
@@ -537,7 +524,6 @@ button {
   .twoColumn,
   .topBar,
   .signalBar,
-  .chainTabs,
   .heroGrid,
   .dashboardSplit,
   .insightStrip {

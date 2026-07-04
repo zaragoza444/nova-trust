@@ -16,10 +16,9 @@ export default async function HomePage() {
 
   return (
     <PageShell
-      title="Nova One and NRW World dashboard"
-      description="High-level health for Nova One 22016 and NRW World 33001, including settlement throughput, validator posture, and operational readiness."
+      title="Nova chain dashboard"
+      description="High-level health for the Nova financial network, including settlement throughput, validator posture, and operational readiness."
       signals={data.shellSignals}
-      chains={data.chainProfiles}
     >
       <section className="heroGrid">
         <article className="card heroCard heroCardPrimary">

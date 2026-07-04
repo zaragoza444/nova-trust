@@ -48,7 +48,7 @@ function loadDeployConfig(): DeployConfig {
     assetIssuer: process.env.NOVA_ASSET_ISSUER ?? initialOwner,
     auditor: process.env.NOVA_AUDITOR ?? initialOwner,
     outputPath,
-    networkName: process.env.NOVA_NETWORK_NAME ?? "Nova One"
+    networkName: process.env.NOVA_NETWORK_NAME ?? "local"
   };
 }
 
@@ -105,7 +105,7 @@ async function main() {
   const identity = await deployContract(wallet, "IdentityRegistry", [config.initialOwner]);
   const compliance = await deployContract(wallet, "ComplianceRegistry", [config.initialOwner, identity.record.address]);
   const settlement = await deployContract(wallet, "NovaSettlementToken", [config.initialOwner, compliance.record.address]);
-  const wrappedNovaOne = await deployContract(wallet, "WrappedNovaOneToken", []);
+  const wrappedChain138 = await deployContract(wallet, "WrappedChain138Token", []);
   const assetFactory = await deployContract(wallet, "NovaAssetFactory", [config.initialOwner]);
   const treasury = await deployContract(wallet, "TreasuryController", [config.initialOwner, settlement.record.address]);
   const auditEvents = await deployContract(wallet, "AuditEvents", [config.initialOwner]);
@@ -135,7 +135,7 @@ async function main() {
       identityRegistry: identity.record,
       complianceRegistry: compliance.record,
       settlementToken: settlement.record,
-      wrappedNovaOneToken: wrappedNovaOne.record,
+      wrappedChain138Token: wrappedChain138.record,
       assetFactory: assetFactory.record,
       treasuryController: treasury.record,
       auditEvents: auditEvents.record
