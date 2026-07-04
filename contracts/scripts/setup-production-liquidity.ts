@@ -1,0 +1,273 @@
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { Contract, ContractFactory, formatUnits, id, JsonRpcProvider, parseUnits, Wallet, ZeroHash } from "ethers";
+
+interface BootstrapConfig {
+  rpcUrl: string;
+  privateKey: string;
+  expectedChainId: bigint;
+  initialOwner: string;
+  complianceAdmin: string;
+  treasuryOperator: string;
+  assetIssuer: string;
+  auditor: string;
+  networkName: string;
+  outputPath: string;
+  m1FiatSupply: bigint;
+  m1FiatLiquidity: bigint;
+  wnovaLiquidity: bigint;
+}
+
+interface DeploymentRecord {
+  address: string;
+  deploymentTxHash: string;
+}
+
+interface DeployedContract {
+  contract: any;
+  record: DeploymentRecord;
+}
+
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const contractsRoot = path.resolve(scriptDir, "..");
+const erc20Abi = [
+  "function approve(address spender,uint256 value) external returns (bool)",
+  "function allowance(address owner,address spender) external view returns (uint256)",
+  "function balanceOf(address account) external view returns (uint256)"
+];
+
+function requireEnv(name: string) {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`${name} is required for production liquidity setup`);
+  }
+  return value;
+}
+
+function parseTokenAmount(envName: string) {
+  return parseUnits(requireEnv(envName), 18);
+}
+
+function loadArtifact(contractName: string) {
+  const artifactPath = path.resolve(contractsRoot, "artifacts", "src", `${contractName}.sol`, `${contractName}.json`);
+  const artifact = JSON.parse(readFileSync(artifactPath, "utf8")) as {
+    abi: unknown[];
+    bytecode: string;
+  };
+
+  if (!artifact.bytecode || artifact.bytecode === "0x") {
+    throw new Error(`Artifact for ${contractName} is missing bytecode. Run npm run build --workspace @nova/contracts first.`);
+  }
+
+  return artifact;
+}
+
+async function loadConfig(walletAddress: string): Promise<BootstrapConfig> {
+  const initialOwner = process.env.NOVA_INITIAL_OWNER ?? walletAddress;
+  const outputPath =
+    process.env.NOVA_PRODUCTION_BOOTSTRAP_MANIFEST_PATH ??
+    path.resolve(contractsRoot, "deployments", "nova-one-liquidity.json");
+
+  return {
+    rpcUrl: requireEnv("NOVA_RPC_URL"),
+    privateKey: requireEnv("NOVA_DEPLOYER_PRIVATE_KEY"),
+    expectedChainId: BigInt(process.env.NOVA_EXPECTED_CHAIN_ID ?? "22016"),
+    initialOwner,
+    complianceAdmin: process.env.NOVA_COMPLIANCE_ADMIN ?? initialOwner,
+    treasuryOperator: process.env.NOVA_TREASURY_OPERATOR ?? initialOwner,
+    assetIssuer: process.env.NOVA_ASSET_ISSUER ?? initialOwner,
+    auditor: process.env.NOVA_AUDITOR ?? initialOwner,
+    networkName: process.env.NOVA_NETWORK_NAME ?? "Nova One",
+    outputPath,
+    m1FiatSupply: parseTokenAmount("NOVA_M1FIAT_SUPPLY"),
+    m1FiatLiquidity: parseTokenAmount("NOVA_M1FIAT_LIQUIDITY"),
+    wnovaLiquidity: parseTokenAmount("NOVA_WNOVA_LIQUIDITY")
+  };
+}
+
+async function deployContract(wallet: Wallet, contractName: string, args: unknown[]): Promise<DeployedContract> {
+  const artifact = loadArtifact(contractName);
+  const factory = new ContractFactory(artifact.abi, artifact.bytecode, wallet);
+  const contract = await factory.deploy(...args);
+  await contract.waitForDeployment();
+
+  const deploymentTx = contract.deploymentTransaction();
+  if (!deploymentTx) {
+    throw new Error(`No deployment transaction found for ${contractName}`);
+  }
+
+  return {
+    contract,
+    record: {
+      address: await contract.getAddress(),
+      deploymentTxHash: deploymentTx.hash
+    }
+  };
+}
+
+async function waitForTransaction(tx: { wait: () => Promise<unknown> }) {
+  await tx.wait();
+}
+
+async function grantRole(contract: any, role: string, account: string) {
+  const alreadyGranted = (await contract.hasRole(role, account)) as boolean;
+  if (alreadyGranted) {
+    return;
+  }
+
+  await waitForTransaction(await contract.grantRole(role, account));
+}
+
+async function approveIfNeeded(token: Contract, owner: string, spender: string, amount: bigint) {
+  const currentAllowance = (await token.allowance(owner, spender)) as bigint;
+  if (currentAllowance >= amount) {
+    return;
+  }
+
+  await waitForTransaction(await token.approve(spender, amount));
+}
+
+function requireSingleSignerBootstrap(config: BootstrapConfig, walletAddress: string) {
+  const roleAccounts = {
+    NOVA_INITIAL_OWNER: config.initialOwner,
+    NOVA_COMPLIANCE_ADMIN: config.complianceAdmin,
+    NOVA_ASSET_ISSUER: config.assetIssuer
+  };
+
+  for (const [envName, account] of Object.entries(roleAccounts)) {
+    if (account.toLowerCase() !== walletAddress.toLowerCase()) {
+      throw new Error(
+        `${envName} must be the deployer wallet for one-command bootstrap. ` +
+          "Use the default deployer value for setup:production, then transfer roles to multisigs after bootstrap."
+      );
+    }
+  }
+}
+
+async function main() {
+  const preflightProvider = new JsonRpcProvider(process.env.NOVA_RPC_URL ?? "http://127.0.0.1:8545");
+  const wallet = new Wallet(requireEnv("NOVA_DEPLOYER_PRIVATE_KEY"), preflightProvider);
+  const walletAddress = await wallet.getAddress();
+  const config = await loadConfig(walletAddress);
+  const network = await preflightProvider.getNetwork();
+  requireSingleSignerBootstrap(config, walletAddress);
+
+  if (network.chainId !== config.expectedChainId) {
+    throw new Error(
+      `Connected to chain ${network.chainId.toString()}, expected ${config.expectedChainId.toString()} for ${config.networkName}`
+    );
+  }
+
+  const identity = await deployContract(wallet, "IdentityRegistry", [config.initialOwner]);
+  const compliance = await deployContract(wallet, "ComplianceRegistry", [config.initialOwner, identity.record.address]);
+  const settlement = await deployContract(wallet, "NovaSettlementToken", [config.initialOwner, compliance.record.address]);
+  const wrappedNovaOne = await deployContract(wallet, "WrappedNovaOneToken", []);
+  const assetFactory = await deployContract(wallet, "NovaAssetFactory", [config.initialOwner]);
+  const treasury = await deployContract(wallet, "TreasuryController", [config.initialOwner, settlement.record.address]);
+  const auditEvents = await deployContract(wallet, "AuditEvents", [config.initialOwner]);
+
+  await grantRole(identity.contract, await identity.contract.COMPLIANCE_ADMIN_ROLE(), config.complianceAdmin);
+  await grantRole(compliance.contract, await compliance.contract.COMPLIANCE_ADMIN_ROLE(), config.complianceAdmin);
+  await grantRole(settlement.contract, await settlement.contract.TREASURY_OPERATOR_ROLE(), config.treasuryOperator);
+  await grantRole(assetFactory.contract, await assetFactory.contract.ASSET_ISSUER_ROLE(), config.assetIssuer);
+  await grantRole(treasury.contract, await treasury.contract.TREASURY_OPERATOR_ROLE(), config.treasuryOperator);
+  await grantRole(auditEvents.contract, await auditEvents.contract.AUDITOR_ROLE(), config.auditor);
+
+  await waitForTransaction(
+    await identity.contract.registerParticipant(walletAddress, "treasury", "GLOBAL", id("NOVA_DEPLOYER_KYC"), ZeroHash)
+  );
+  await waitForTransaction(await compliance.contract.setStatus(walletAddress, false, false, 0, "GLOBAL"));
+
+  const m1FiatAddress = (await assetFactory.contract.issueAsset.staticCall(
+    "M1FIAT-2026-001",
+    "Stablecoin",
+    "GLOBAL",
+    "M1 Fiat Token",
+    "M1FIAT",
+    config.m1FiatSupply,
+    walletAddress
+  )) as string;
+
+  await waitForTransaction(
+    await assetFactory.contract.issueAsset(
+      "M1FIAT-2026-001",
+      "Stablecoin",
+      "GLOBAL",
+      "M1 Fiat Token",
+      "M1FIAT",
+      config.m1FiatSupply,
+      walletAddress
+    )
+  );
+
+  const liquidityPool = await deployContract(wallet, "NovaLiquidityPool", [
+    m1FiatAddress,
+    wrappedNovaOne.record.address,
+    "M1FIAT / WNOVA Liquidity Pool",
+    "NLP-M1FIAT-WNOVA"
+  ]);
+
+  await waitForTransaction(await wrappedNovaOne.contract.deposit({ value: config.wnovaLiquidity }));
+
+  const m1Fiat = new Contract(m1FiatAddress, erc20Abi, wallet);
+  const wnova = new Contract(wrappedNovaOne.record.address, erc20Abi, wallet);
+  await approveIfNeeded(m1Fiat, walletAddress, liquidityPool.record.address, config.m1FiatLiquidity);
+  await approveIfNeeded(wnova, walletAddress, liquidityPool.record.address, config.wnovaLiquidity);
+  await waitForTransaction(await liquidityPool.contract.addLiquidity(config.m1FiatLiquidity, config.wnovaLiquidity, walletAddress));
+  await waitForTransaction(await compliance.contract.setLiquidityVenue(liquidityPool.record.address, true));
+
+  const manifest = {
+    network: {
+      name: config.networkName,
+      chainId: network.chainId.toString(),
+      rpcUrl: config.rpcUrl
+    },
+    deployer: walletAddress,
+    owner: config.initialOwner,
+    roles: {
+      complianceAdmin: config.complianceAdmin,
+      treasuryOperator: config.treasuryOperator,
+      assetIssuer: config.assetIssuer,
+      auditor: config.auditor
+    },
+    contracts: {
+      identityRegistry: identity.record,
+      complianceRegistry: compliance.record,
+      settlementToken: settlement.record,
+      wrappedNovaOneToken: wrappedNovaOne.record,
+      assetFactory: assetFactory.record,
+      treasuryController: treasury.record,
+      auditEvents: auditEvents.record
+    },
+    liquidity: {
+      assetToken: {
+        symbol: "M1FIAT",
+        address: m1FiatAddress,
+        supply: formatUnits(config.m1FiatSupply, 18)
+      },
+      wrappedNativeToken: {
+        symbol: "WNOVA",
+        address: wrappedNovaOne.record.address
+      },
+      pool: liquidityPool.record,
+      initialAmounts: {
+        m1Fiat: formatUnits(config.m1FiatLiquidity, 18),
+        wnova: formatUnits(config.wnovaLiquidity, 18)
+      },
+      complianceVenueApproved: true
+    },
+    deployedAt: new Date().toISOString()
+  };
+
+  mkdirSync(path.dirname(config.outputPath), { recursive: true });
+  writeFileSync(config.outputPath, JSON.stringify(manifest, null, 2));
+
+  console.log("Nova production liquidity bootstrap complete");
+  console.log(JSON.stringify(manifest, null, 2));
+}
+
+main().catch((error) => {
+  console.error("Nova production liquidity bootstrap failed", error);
+  process.exit(1);
+});
