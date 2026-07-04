@@ -181,8 +181,8 @@ export const novaDashboardSnapshot = {
 export const novaUiSeed = {
   shellSignals: [
     { label: "Index sync", value: "5s behind", tone: "positive" },
-    { label: "Settlement rail", value: "T+0 active", tone: "neutral" },
-    { label: "Operators", value: "12 live", tone: "neutral" },
+    { label: "Nova One", value: "Chain 22016 active", tone: "positive" },
+    { label: "NRW World", value: "Chain 33001 bridge", tone: "neutral" },
     { label: "Release", value: "v0.1.0", tone: "positive" }
   ],
   metricDeltas: {
@@ -200,8 +200,8 @@ export const novaUiSeed = {
   ],
   alerts: [
     {
-      title: "Bridge readiness review open",
-      detail: "Cross-chain lane remains paused until the compliance attestation packet is renewed.",
+      title: "NRW World bridge readiness review open",
+      detail: "Nova One to NRW World lane remains paused until the compliance attestation packet is renewed.",
       severity: "warning",
       time: "8 minutes ago"
     },
@@ -232,11 +232,11 @@ export const novaUiSeed = {
     {
       title: "Network governance",
       summary: "Coordinate validators, releases, and operational runbooks.",
-      items: ["Validator rotations", "Release gates", "Bridge status", "Incident response"]
+      items: ["Validator rotations", "Release gates", "NRW World bridge status", "Incident response"]
     }
   ],
   featureChecklist: [
-    { title: "Explorer and network", detail: "Track blocks, transactions, validators, and gas posture." },
+    { title: "Explorer and network", detail: "Track Nova One 22016 and NRW World 33001 posture, blocks, validators, and gas." },
     { title: "Treasury and settlement", detail: "Watch liquidity, approve mint/redeem flows, and monitor failures." },
     { title: "Identity and compliance", detail: "Review participant onboarding, freezes, sanctions checks, and approvals." },
     { title: "Release and governance", detail: "Coordinate validator changes, release windows, and audit-ready runbooks." }
