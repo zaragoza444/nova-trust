@@ -1,0 +1,32 @@
+name: VPS deploy setup
+description: Checkout, Python, and validate VPS SSH secrets for deploy workflows
+
+runs:
+  using: composite
+  steps:
+    - name: Validate VPS SSH secrets
+      shell: bash
+      env:
+        VPS_SSH_PASSWORD: ${{ inputs.vps_ssh_password }}
+        VPS_SSH_PRIVATE_KEY: ${{ inputs.vps_ssh_private_key }}
+      run: |
+        if [ -z "$VPS_SSH_PASSWORD" ] && [ -z "$VPS_SSH_PRIVATE_KEY" ]; then
+          echo "::error::Configure repository secrets VPS_SSH_PRIVATE_KEY or VPS_SSH_PASSWORD before running VPS deploy workflows."
+          echo "Optional: VPS_SSH_HOST (default 51.75.64.28), VPS_SSH_USER (default ubuntu)"
+          exit 1
+        fi
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+inputs:
+  vps_ssh_password:
+    description: VPS SSH password secret
+    required: false
+    default: ""
+  vps_ssh_private_key:
+    description: VPS SSH private key secret
+    required: false
+    default: ""
