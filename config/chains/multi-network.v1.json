@@ -94,7 +94,8 @@
   "integrations": {
     "custody": "config/integrations/custody.v1.json",
     "zBankOnline": "config/integrations/z-bank-online.v1.json",
-    "tradableTokens": "config/tokens/public-network-tokens.v1.json"
+    "tradableTokens": "config/tokens/public-network-tokens.v1.json",
+    "internationalWiring": "config/integrations/international-wiring.v1.json"
   },
   "source": {
     "registryPath": "config/chains/multi-network.v1.json",

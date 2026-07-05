@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "scope": "international",
+  "regions": [
+    {
+      "id": "global-public",
+      "label": "Global public networks",
+      "networks": ["TRON", "Ethereum", "BNB Smart Chain"]
+    },
+    {
+      "id": "permissioned-settlement",
+      "label": "Permissioned settlement",
+      "networks": ["Z Blockchain", "Nova One", "Chain 138"]
+    }
+  ],
+  "publicNetworks": [
+    {
+      "name": "TRON",
+      "chainId": 728126428,
+      "networkType": "tron",
+      "networkId": "mainnet",
+      "role": "basement-foundation",
+      "rpcUrl": "https://api.trongrid.io",
+      "regions": ["global"]
+    },
+    {
+      "name": "Ethereum",
+      "chainId": 1,
+      "networkType": "evm",
+      "role": "public-evm-settlement",
+      "rpcUrl": "https://ethereum.publicnode.com",
+      "regions": ["global", "eu", "us"]
+    },
+    {
+      "name": "BNB Smart Chain",
+      "chainId": 56,
+      "networkType": "evm",
+      "role": "public-evm-liquidity",
+      "rpcUrl": "https://bsc-dataseed.binance.org",
+      "regions": ["global", "apac"]
+    }
+  ],
+  "internationalBridgeLanes": [
+    {
+      "from": 728126428,
+      "to": 1,
+      "fromName": "TRON",
+      "toName": "Ethereum",
+      "status": "active"
+    },
+    {
+      "from": 728126428,
+      "to": 56,
+      "fromName": "TRON",
+      "toName": "BNB Smart Chain",
+      "status": "active"
+    },
+    {
+      "from": 1,
+      "to": 56,
+      "fromName": "Ethereum",
+      "toName": "BNB Smart Chain",
+      "status": "active"
+    },
+    {
+      "from": 728126428,
+      "to": 44002,
+      "fromName": "TRON",
+      "toName": "Z Blockchain",
+      "status": "active"
+    }
+  ],
+  "cloneTokens": {
+    "settlementChainId": 44002,
+    "symbols": ["USDT", "USDC", "ETH", "BTC", "BNB", "XRCUSDC", "CUSDT", "AUSDT", "ICX", "CHAT"]
+  },
+  "publicEndpoints": {
+    "dashboardPath": "/",
+    "apiPathPrefix": "/api",
+    "healthPath": "/health",
+    "goLivePath": "/api/go-live/status",
+    "multiNetworkHealthPath": "/api/networks/health",
+    "internationalPath": "/api/networks/international"
+  },
+  "productionDefaults": {
+    "vpsHost": "51.75.64.28",
+    "dashboardPort": 3000,
+    "apiPort": 4000,
+    "zBlockChainRpcPort": 8546,
+    "nginxConfigPath": "deploy/nginx/nova-trust.conf"
+  },
+  "source": {
+    "registryPath": "config/integrations/international-wiring.v1.json",
+    "notes": "International wiring for TRON basement, Ethereum, BNB Smart Chain, and Z Blockchain settlement with public dashboard/API exposure."
+  }
+}

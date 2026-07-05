@@ -375,4 +375,27 @@ describe("Nova contract suite design", () => {
     assert.match(source, /setup:oracle:z-block-chain/);
     assert.match(source, /api\/go-live\/status/);
   });
+
+  it("registers international wiring for TRON, Ethereum, BNB, and Z Blockchain", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "international-wiring.v1.json"), "utf8")
+    ) as {
+      publicNetworks: Array<{ name: string }>;
+      internationalBridgeLanes: Array<{ status: string }>;
+    };
+
+    assert.deepEqual(
+      registry.publicNetworks.map((network) => network.name),
+      ["TRON", "Ethereum", "BNB Smart Chain"]
+    );
+    assert.ok(registry.internationalBridgeLanes.every((lane) => lane.status === "active"));
+  });
+
+  it("documents international VPS wiring script", () => {
+    const source = readFileSync(path.resolve(repoRoot, "scripts", "wire-international-vps.sh"), "utf8");
+
+    assert.match(source, /wire-multi-network-vps\.sh/);
+    assert.match(source, /api\/networks\/international/);
+    assert.match(source, /deploy\/nginx\/nova-trust\.conf/);
+  });
 });

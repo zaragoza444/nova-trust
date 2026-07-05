@@ -116,6 +116,7 @@ export async function getGoLiveStatus() {
       zChainChart: "/api/z-chain/chart",
       multiNetwork: "/api/networks/multi",
       multiNetworkHealth: "/api/networks/health",
+      internationalWiring: "/api/networks/international",
       dashboard: process.env.NOVA_DASHBOARD_URL ?? "http://127.0.0.1:3000"
     }
   };

@@ -25,7 +25,8 @@ coverage/
 .env
 .env.local
 .env.*.local
-deploy/.env.production
+.deploy/.env.production
+deploy/.env.international
 custody.env
 **/custody.env
 artifacts/
