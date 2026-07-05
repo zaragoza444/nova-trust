@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "Z Blockchain",
+    "chainId": 44002,
+    "slug": "z-block-chain",
+    "role": "Z Online Bank liquidity and world chain",
+    "nativeSymbol": "Z",
+    "wrappedSymbol": "WZ",
+    "status": "Production",
+    "consensus": "QBFT",
+    "environment": "prod"
+  },
+  "pairedNetworks": [
+    {
+      "name": "TRON",
+      "chainId": 728126428,
+      "relationship": "basement-foundation"
+    },
+    {
+      "name": "Ethereum",
+      "chainId": 1,
+      "relationship": "public-evm-settlement"
+    },
+    {
+      "name": "BNB Smart Chain",
+      "chainId": 56,
+      "relationship": "public-evm-liquidity"
+    },
+    {
+      "name": "Nova One",
+      "chainId": 22016,
+      "relationship": "primary-settlement"
+    },
+    {
+      "name": "NRW World",
+      "chainId": 33001,
+      "relationship": "world-bridge"
+    },
+    {
+      "name": "Chain 138",
+      "chainId": 138,
+      "relationship": "omnl-settlement"
+    }
+  ],
+  "bridgeLanes": [
+    {
+      "from": 728126428,
+      "to": 44002,
+      "status": "active",
+      "purpose": "TRON basement foundation to Z Online Bank liquidity"
+    },
+    {
+      "from": 22016,
+      "to": 44002,
+      "status": "active",
+      "purpose": "Nova One settlement to Z Online Bank liquidity"
+    },
+    {
+      "from": 33001,
+      "to": 44002,
+      "status": "active",
+      "purpose": "NRW World world liquidity to Z Blockchain"
+    },
+    {
+      "from": 138,
+      "to": 44002,
+      "status": "active",
+      "purpose": "Chain 138 bank rail to Z Online Bank"
+    }
+  ],
+  "topology": {
+    "validators": 4,
+    "rpcNodes": 2,
+    "bootnodes": 1,
+    "blockPeriodSeconds": 5
+  },
+  "tradableTokens": [
+    "M1FIAT",
+    "ACX",
+    "SHIVA",
+    "WZ",
+    "USDT",
+    "ETH",
+    "BTC",
+    "BNB",
+    "USDC",
+    "XRCUSDC",
+    "CUSDT",
+    "ICX",
+    "AUSDT",
+    "CHAT"
+  ],
+  "liquidityPools": [
+    "M1FIAT/WZ",
+    "ACX/WZ",
+    "SHIVA/WZ",
+    "USDT/WZ",
+    "ETH/WZ",
+    "BTC/WZ",
+    "BNB/WZ",
+    "USDC/WZ",
+    "XRCUSDC/WZ",
+    "CUSDT/WZ",
+    "ICX/WZ",
+    "AUSDT/WZ",
+    "CHAT/WZ"
+  ],
+  "capabilities": {
+    "transferable": true,
+    "tradable": true,
+    "swappable": true,
+    "zBankLoadable": true,
+    "crossBankUsable": true,
+    "platformTradingUsable": true
+  },
+  "integrations": {
+    "zBankOnline": "config/integrations/z-bank-online.v1.json",
+    "tradableTokens": "config/tokens/z-block-chain-tradable-tokens.v1.json",
+    "tradingPlatforms": "config/compliance/trading-platforms.v1.json",
+    "multiNetwork": "config/chains/multi-network.v1.json",
+    "priceOracle": "config/oracles/z-block-chain-prices.v1.json"
+  },
+  "source": {
+    "registryPath": "config/chains/z-block-chain.v1.json",
+    "notes": "Full production chart for Z Blockchain with Z Online Bank liquidity support."
+  }
+}

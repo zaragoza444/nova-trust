@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "provider": {
+    "id": "z-bank-online",
+    "name": "Z Bank Online",
+    "channel": "M1",
+    "status": "active"
+  },
+  "basementNetwork": {
+    "name": "TRON",
+    "chainId": 728126428,
+    "networkType": "tron",
+    "networkId": "mainnet"
+  },
+  "publicNetworks": [
+    {
+      "chainId": 728126428,
+      "name": "TRON",
+      "networkType": "tron",
+      "networkId": "mainnet"
+    },
+    {
+      "chainId": 1,
+      "name": "Ethereum",
+      "networkType": "evm"
+    },
+    {
+      "chainId": 56,
+      "name": "BNB Smart Chain",
+      "networkType": "evm"
+    }
+  ],
+  "supportedChains": [
+    {
+      "chainId": 728126428,
+      "name": "TRON",
+      "networkType": "tron",
+      "networkId": "mainnet"
+    },
+    {
+      "chainId": 1,
+      "name": "Ethereum",
+      "networkType": "evm"
+    },
+    {
+      "chainId": 56,
+      "name": "BNB Smart Chain",
+      "networkType": "evm"
+    },
+    {
+      "chainId": 138,
+      "name": "Chain 138",
+      "networkType": "evm"
+    },
+    {
+      "chainId": 22016,
+      "name": "Nova One",
+      "networkType": "evm"
+    },
+    {
+      "chainId": 44002,
+      "name": "Z Blockchain",
+      "networkType": "evm"
+    }
+  ],
+  "primaryLiquidityChain": {
+    "chainId": 44002,
+    "name": "Z Blockchain",
+    "wrappedNativeSymbol": "WZ"
+  },
+  "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "USDT", "USDC", "XRCUSDC", "CUSDT", "AUSDT"],
+  "loadMethods": [
+    {
+      "id": "zbank-m1-online-transfer",
+      "label": "Z Bank Online M1 Transfer",
+      "description": "Load M1FIAT, ACX, or SHIVA from Z Bank online into a compliant Z Blockchain wallet.",
+      "minAmount": "1",
+      "settlementToken": "M1FIAT",
+      "requiresKyc": true
+    }
+  ],
+  "capabilities": {
+    "transferable": true,
+    "tradable": true,
+    "swappable": true,
+    "crossBankUsable": true,
+    "platformTradingUsable": true,
+    "multiNetworkSettlement": true
+  },
+  "source": {
+    "registryPath": "config/integrations/z-bank-online.v1.json",
+    "notes": "Z Bank online fund loading rail with TRON basement, Ethereum, BNB, and permissioned settlement chains."
+  }
+}

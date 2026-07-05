@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "basementNetwork": {
+    "name": "TRON",
+    "chainId": 728126428,
+    "slug": "tron",
+    "networkType": "tron",
+    "networkId": "mainnet",
+    "nativeSymbol": "TRX",
+    "role": "Basement foundation network"
+  },
+  "publicNetworks": [
+    {
+      "name": "TRON",
+      "chainId": 728126428,
+      "slug": "tron",
+      "networkType": "tron",
+      "networkId": "mainnet",
+      "nativeSymbol": "TRX",
+      "wrappedSymbol": "WTRX",
+      "status": "Foundation",
+      "chartPath": "config/chains/tron.v1.json"
+    },
+    {
+      "name": "Ethereum",
+      "chainId": 1,
+      "slug": "ethereum",
+      "networkType": "evm",
+      "nativeSymbol": "ETH",
+      "wrappedSymbol": "WETH",
+      "status": "Active",
+      "chartPath": "config/chains/ethereum.v1.json"
+    },
+    {
+      "name": "BNB Smart Chain",
+      "chainId": 56,
+      "slug": "bnb-smart-chain",
+      "networkType": "evm",
+      "nativeSymbol": "BNB",
+      "wrappedSymbol": "WBNB",
+      "status": "Active",
+      "chartPath": "config/chains/bnb-smart-chain.v1.json"
+    }
+  ],
+  "bridgeLanes": [
+    {
+      "from": 728126428,
+      "to": 1,
+      "fromName": "TRON",
+      "toName": "Ethereum",
+      "status": "active",
+      "purpose": "Basement foundation to Ethereum public settlement"
+    },
+    {
+      "from": 728126428,
+      "to": 56,
+      "fromName": "TRON",
+      "toName": "BNB Smart Chain",
+      "status": "active",
+      "purpose": "Basement foundation to BNB Smart Chain liquidity"
+    },
+    {
+      "from": 1,
+      "to": 56,
+      "fromName": "Ethereum",
+      "toName": "BNB Smart Chain",
+      "status": "active",
+      "purpose": "Ethereum to BNB Smart Chain routing"
+    }
+  ],
+  "permissionedBridges": [
+    {
+      "from": 728126428,
+      "to": 44002,
+      "fromName": "TRON",
+      "toName": "Z Blockchain",
+      "status": "active",
+      "purpose": "TRON basement to Z Online Bank liquidity"
+    },
+    {
+      "from": 728126428,
+      "to": 22016,
+      "fromName": "TRON",
+      "toName": "Nova One",
+      "status": "active",
+      "purpose": "TRON basement to Nova One settlement"
+    }
+  ],
+  "capabilities": {
+    "multiNetworkCustody": true,
+    "crossChainSettlement": true,
+    "publicNetworkTrading": true
+  },
+  "integrations": {
+    "custody": "config/integrations/custody.v1.json",
+    "zBankOnline": "config/integrations/z-bank-online.v1.json",
+    "tradableTokens": "config/tokens/public-network-tokens.v1.json"
+  },
+  "source": {
+    "registryPath": "config/chains/multi-network.v1.json",
+    "notes": "Multi-network registry with TRON as basement foundation plus Ethereum and BNB Smart Chain."
+  }
+}

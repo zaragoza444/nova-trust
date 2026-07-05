@@ -4,14 +4,20 @@ import { handleAdminOverview, handleAdminQueue } from "./routes/admin";
 import { handleAssetsOverview } from "./routes/assets";
 import { handleDashboard } from "./routes/dashboard";
 import { handleHealth } from "./routes/health";
+import { handleZBlockChainChart } from "./routes/z-chain";
+import { handleMultiNetworkChart, handleMultiNetworkHealth } from "./routes/networks";
+import { handleTradingTokensOverview } from "./routes/trading";
+import { handleZBankIntegrationOverview, handleZBankLoadFunds } from "./routes/zbank";
+import { handleCustodyHealth, handleCustodyOverview, handleCoboCallback, handleCoboWebhook } from "./routes/custody";
+import { handleOraclePricesGet, handleOraclePricesPut } from "./routes/oracle";
 import { canAccess, type NovaRole } from "./services/rbac";
 
 const config = loadApiConfig();
 
 const server = createServer((request: IncomingMessage, response: ServerResponse) => {
   response.setHeader("access-control-allow-origin", config.corsOrigin);
-  response.setHeader("access-control-allow-methods", "GET,POST,OPTIONS");
-  response.setHeader("access-control-allow-headers", "content-type,authorization,x-nova-role");
+  response.setHeader("access-control-allow-methods", "GET,POST,PUT,OPTIONS");
+  response.setHeader("access-control-allow-headers", "content-type,authorization,x-nova-role,biz_timestamp,biz_resp_signature");
 
   if (request.method === "OPTIONS") {
     response.writeHead(204);
@@ -63,6 +69,116 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     void handleAssetsOverview(request, response);
+    return;
+  }
+
+  if (request.url === "/api/trading/tokens") {
+    if (!requestRole || !canAccess("/api/trading/tokens", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleTradingTokensOverview(request, response);
+    return;
+  }
+
+  if (request.url === "/api/zbank/integration") {
+    if (!requestRole || !canAccess("/api/zbank/integration", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleZBankIntegrationOverview(request, response);
+    return;
+  }
+
+  if (request.url === "/api/zbank/load-funds" && request.method === "POST") {
+    if (!requestRole || !canAccess("/api/zbank/load-funds", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleZBankLoadFunds(request, response);
+    return;
+  }
+
+  if (request.url === "/api/z-chain/chart") {
+    if (!requestRole || !canAccess("/api/z-chain/chart", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleZBlockChainChart(request, response);
+    return;
+  }
+
+  if (request.url === "/api/networks/multi") {
+    if (!requestRole || !canAccess("/api/networks/multi", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleMultiNetworkChart(request, response);
+    return;
+  }
+
+  if (request.url === "/api/networks/health") {
+    if (!requestRole || !canAccess("/api/networks/health", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleMultiNetworkHealth(request, response);
+    return;
+  }
+
+  if (request.url === "/api/custody/integration") {
+    if (!requestRole || !canAccess("/api/custody/integration", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleCustodyOverview(request, response);
+    return;
+  }
+
+  if (request.url === "/api/custody/health") {
+    if (!requestRole || !canAccess("/api/custody/health", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleCustodyHealth(request, response);
+    return;
+  }
+
+  if (request.url === "/api/custody/cobo/webhook" && request.method === "POST") {
+    void handleCoboWebhook(request, response);
+    return;
+  }
+
+  if (request.url === "/api/custody/cobo/callback" && request.method === "POST") {
+    void handleCoboCallback(request, response);
+    return;
+  }
+
+  if (request.url === "/api/oracle/prices" && request.method === "GET") {
+    if (!requestRole || !canAccess("/api/oracle/prices", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleOraclePricesGet(request, response);
+    return;
+  }
+
+  if (request.url === "/api/oracle/prices" && request.method === "PUT") {
+    if (!requestRole || !canAccess("/api/oracle/prices", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleOraclePricesPut(request, response);
     return;
   }
 

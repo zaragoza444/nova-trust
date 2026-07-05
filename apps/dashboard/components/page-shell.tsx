@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { chainTabs, shellSignals } from "../lib/mock-data";
-import { primaryChain, type ChainProfile } from "../lib/chains";
+import { primaryChain, type ChainProfile, formatChainIdentifier } from "../lib/chains";
 import { SideNav } from "./side-nav";
 
 interface ShellSignal {
@@ -51,7 +51,7 @@ export function PageShell({ title, description, children, signals = shellSignals
           {chains.map((chain, index) => (
             <button key={chain.slug} className={index === 0 ? "chainTab active" : "chainTab"}>
               <strong>{chain.name}</strong>
-              <span>Chain {chain.chainId}</span>
+              <span>{formatChainIdentifier(chain)}</span>
               <small>
                 {chain.nativeSymbol}/{chain.wrappedSymbol} · {chain.role}
               </small>

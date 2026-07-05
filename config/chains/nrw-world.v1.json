@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "NRW World",
+    "chainId": 33001,
+    "slug": "nrw-world",
+    "role": "World liquidity and bridge chain",
+    "nativeSymbol": "NRW",
+    "wrappedSymbol": "WNRW",
+    "status": "Production",
+    "consensus": "QBFT",
+    "environment": "prod"
+  },
+  "pairedNetworks": [
+    {
+      "name": "Nova One",
+      "chainId": 22016,
+      "relationship": "primary-settlement"
+    },
+    {
+      "name": "Z Blockchain",
+      "chainId": 44002,
+      "relationship": "z-bank-liquidity"
+    },
+    {
+      "name": "Chain 138",
+      "chainId": 138,
+      "relationship": "omnl-settlement"
+    }
+  ],
+  "bridgeLanes": [
+    {
+      "from": 22016,
+      "to": 33001,
+      "status": "active",
+      "purpose": "Nova One settlement to NRW World liquidity"
+    },
+    {
+      "from": 33001,
+      "to": 44002,
+      "status": "active",
+      "purpose": "NRW World world liquidity to Z Blockchain"
+    }
+  ],
+  "tradableTokens": ["M1FIAT", "ACX", "SHIVA", "WNRW"],
+  "liquidityPools": ["M1FIAT/WNRW", "ACX/WNRW", "SHIVA/WNRW"],
+  "capabilities": {
+    "transferable": true,
+    "tradable": true,
+    "swappable": true,
+    "zBankLoadable": false,
+    "crossBankUsable": true,
+    "platformTradingUsable": true
+  },
+  "integrations": {
+    "tradableTokens": "config/tokens/nrw-world-tradable-tokens.v1.json",
+    "tradingPlatforms": "config/compliance/trading-platforms.v1.json"
+  },
+  "source": {
+    "registryPath": "config/chains/nrw-world.v1.json",
+    "notes": "Full production chart for NRW World liquidity, aligned with Z Blockchain bootstrap model."
+  }
+}

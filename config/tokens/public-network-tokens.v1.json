@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "networks": [
+    {
+      "name": "TRON",
+      "chainId": 728126428,
+      "networkType": "tron",
+      "networkId": "mainnet"
+    },
+    {
+      "name": "Ethereum",
+      "chainId": 1,
+      "networkType": "evm"
+    },
+    {
+      "name": "BNB Smart Chain",
+      "chainId": 56,
+      "networkType": "evm"
+    }
+  ],
+  "tokens": [
+    {
+      "symbol": "TRX",
+      "name": "TRON",
+      "assetClass": "Native",
+      "networks": ["TRON"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      }
+    },
+    {
+      "symbol": "ETH",
+      "name": "Ether",
+      "assetClass": "Native",
+      "networks": ["Ethereum"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      }
+    },
+    {
+      "symbol": "BNB",
+      "name": "BNB",
+      "assetClass": "Native",
+      "networks": ["BNB Smart Chain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      }
+    },
+    {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "assetClass": "Native",
+      "networks": ["TRON", "Ethereum", "BNB Smart Chain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      }
+    },
+    {
+      "symbol": "USDT",
+      "name": "Tether USD",
+      "assetClass": "Stablecoin",
+      "networks": ["TRON", "Ethereum", "BNB Smart Chain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      }
+    },
+    {
+      "symbol": "USDC",
+      "name": "USD Coin",
+      "assetClass": "Stablecoin",
+      "networks": ["TRON", "Ethereum", "BNB Smart Chain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      }
+    }
+  ],
+  "source": {
+    "registryPath": "config/tokens/public-network-tokens.v1.json",
+    "notes": "Cross-network stablecoin and native asset catalog for TRON, Ethereum, and BNB Smart Chain."
+  }
+}

@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { Contract, ContractFactory, formatUnits, id, JsonRpcProvider, parseUnits, Wallet, ZeroHash } from "ethers";
+import { Contract, ContractFactory, formatUnits, id, JsonRpcProvider, NonceManager, parseUnits, Wallet, ZeroHash } from "ethers";
 
 interface BootstrapConfig {
   rpcUrl: string;
@@ -16,7 +16,13 @@ interface BootstrapConfig {
   outputPath: string;
   m1FiatSupply: bigint;
   m1FiatLiquidity: bigint;
+  acxSupply: bigint;
+  acxLiquidity: bigint;
+  shivaSupply: bigint;
+  shivaLiquidity: bigint;
   wnovaLiquidity: bigint;
+  wnovaAcxLiquidity: bigint;
+  wnovaShivaLiquidity: bigint;
 }
 
 interface DeploymentRecord {
@@ -27,6 +33,25 @@ interface DeploymentRecord {
 interface DeployedContract {
   contract: any;
   record: DeploymentRecord;
+}
+
+interface IssuedAssetRecord {
+  assetId: string;
+  symbol: string;
+  name: string;
+  assetClass: string;
+  jurisdiction: string;
+  address: string;
+  supply: string;
+}
+
+interface LiquidityPoolRecord {
+  symbol: string;
+  name: string;
+  token0: string;
+  token1: string;
+  pool: DeploymentRecord;
+  initialAmounts: Record<string, string>;
 }
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
@@ -82,20 +107,27 @@ async function loadConfig(walletAddress: string): Promise<BootstrapConfig> {
     outputPath,
     m1FiatSupply: parseTokenAmount("NOVA_M1FIAT_SUPPLY"),
     m1FiatLiquidity: parseTokenAmount("NOVA_M1FIAT_LIQUIDITY"),
-    wnovaLiquidity: parseTokenAmount("NOVA_WNOVA_LIQUIDITY")
+    acxSupply: parseTokenAmount("NOVA_ACX_SUPPLY"),
+    acxLiquidity: parseTokenAmount("NOVA_ACX_LIQUIDITY"),
+    shivaSupply: parseTokenAmount("NOVA_SHIVA_SUPPLY"),
+    shivaLiquidity: parseTokenAmount("NOVA_SHIVA_LIQUIDITY"),
+    wnovaLiquidity: parseTokenAmount("NOVA_WNOVA_LIQUIDITY"),
+    wnovaAcxLiquidity: parseTokenAmount("NOVA_WNOVA_ACX_LIQUIDITY"),
+    wnovaShivaLiquidity: parseTokenAmount("NOVA_WNOVA_SHIVA_LIQUIDITY")
   };
 }
 
-async function deployContract(wallet: Wallet, contractName: string, args: unknown[]): Promise<DeployedContract> {
+async function deployContract(signer: NonceManager, contractName: string, args: unknown[]): Promise<DeployedContract> {
   const artifact = loadArtifact(contractName);
-  const factory = new ContractFactory(artifact.abi, artifact.bytecode, wallet);
+  const factory = new ContractFactory(artifact.abi, artifact.bytecode, signer);
   const contract = await factory.deploy(...args);
-  await contract.waitForDeployment();
-
   const deploymentTx = contract.deploymentTransaction();
   if (!deploymentTx) {
     throw new Error(`No deployment transaction found for ${contractName}`);
   }
+
+  await deploymentTx.wait();
+  await contract.waitForDeployment();
 
   return {
     contract,
@@ -145,9 +177,85 @@ function requireSingleSignerBootstrap(config: BootstrapConfig, walletAddress: st
   }
 }
 
+async function issueAsset(
+  assetFactory: DeployedContract,
+  assetId: string,
+  assetClass: string,
+  jurisdiction: string,
+  assetName: string,
+  assetSymbol: string,
+  issueSize: bigint,
+  treasury: string
+): Promise<string> {
+  const assetAddress = (await assetFactory.contract.issueAsset.staticCall(
+    assetId,
+    assetClass,
+    jurisdiction,
+    assetName,
+    assetSymbol,
+    issueSize,
+    treasury
+  )) as string;
+
+  await waitForTransaction(
+    await assetFactory.contract.issueAsset(
+      assetId,
+      assetClass,
+      jurisdiction,
+      assetName,
+      assetSymbol,
+      issueSize,
+      treasury
+    )
+  );
+
+  return assetAddress;
+}
+
+async function bootstrapLiquidityPool(
+  signer: NonceManager,
+  walletAddress: string,
+  compliance: DeployedContract,
+  token0Address: string,
+  token1Address: string,
+  poolName: string,
+  poolSymbol: string,
+  amount0: bigint,
+  amount1: bigint,
+  token0Symbol: string,
+  token1Symbol: string
+): Promise<LiquidityPoolRecord> {
+  const liquidityPool = await deployContract(signer, "NovaLiquidityPool", [
+    token0Address,
+    token1Address,
+    poolName,
+    poolSymbol
+  ]);
+
+  const token0 = new Contract(token0Address, erc20Abi, signer);
+  const token1 = new Contract(token1Address, erc20Abi, signer);
+  await approveIfNeeded(token0, walletAddress, liquidityPool.record.address, amount0);
+  await approveIfNeeded(token1, walletAddress, liquidityPool.record.address, amount1);
+  await waitForTransaction(await liquidityPool.contract.addLiquidity(amount0, amount1, walletAddress));
+  await waitForTransaction(await compliance.contract.setLiquidityVenue(liquidityPool.record.address, true));
+
+  return {
+    symbol: poolSymbol,
+    name: poolName,
+    token0: token0Address,
+    token1: token1Address,
+    pool: liquidityPool.record,
+    initialAmounts: {
+      [token0Symbol]: formatUnits(amount0, 18),
+      [token1Symbol]: formatUnits(amount1, 18)
+    }
+  };
+}
+
 async function main() {
   const preflightProvider = new JsonRpcProvider(process.env.NOVA_RPC_URL ?? "http://127.0.0.1:8545");
   const wallet = new Wallet(requireEnv("NOVA_DEPLOYER_PRIVATE_KEY"), preflightProvider);
+  const signer = new NonceManager(wallet);
   const walletAddress = await wallet.getAddress();
   const config = await loadConfig(walletAddress);
   const network = await preflightProvider.getNetwork();
@@ -159,13 +267,13 @@ async function main() {
     );
   }
 
-  const identity = await deployContract(wallet, "IdentityRegistry", [config.initialOwner]);
-  const compliance = await deployContract(wallet, "ComplianceRegistry", [config.initialOwner, identity.record.address]);
-  const settlement = await deployContract(wallet, "NovaSettlementToken", [config.initialOwner, compliance.record.address]);
-  const wrappedNovaOne = await deployContract(wallet, "WrappedNovaOneToken", []);
-  const assetFactory = await deployContract(wallet, "NovaAssetFactory", [config.initialOwner]);
-  const treasury = await deployContract(wallet, "TreasuryController", [config.initialOwner, settlement.record.address]);
-  const auditEvents = await deployContract(wallet, "AuditEvents", [config.initialOwner]);
+  const identity = await deployContract(signer, "IdentityRegistry", [config.initialOwner]);
+  const compliance = await deployContract(signer, "ComplianceRegistry", [config.initialOwner, identity.record.address]);
+  const settlement = await deployContract(signer, "NovaSettlementToken", [config.initialOwner, compliance.record.address]);
+  const wrappedNovaOne = await deployContract(signer, "WrappedNovaOneToken", []);
+  const assetFactory = await deployContract(signer, "NovaAssetFactory", [config.initialOwner]);
+  const treasury = await deployContract(signer, "TreasuryController", [config.initialOwner, settlement.record.address]);
+  const auditEvents = await deployContract(signer, "AuditEvents", [config.initialOwner]);
 
   await grantRole(identity.contract, await identity.contract.COMPLIANCE_ADMIN_ROLE(), config.complianceAdmin);
   await grantRole(compliance.contract, await compliance.contract.COMPLIANCE_ADMIN_ROLE(), config.complianceAdmin);
@@ -179,7 +287,8 @@ async function main() {
   );
   await waitForTransaction(await compliance.contract.setStatus(walletAddress, false, false, 0, "GLOBAL"));
 
-  const m1FiatAddress = (await assetFactory.contract.issueAsset.staticCall(
+  const m1FiatAddress = await issueAsset(
+    assetFactory,
     "M1FIAT-2026-001",
     "Stablecoin",
     "GLOBAL",
@@ -187,41 +296,117 @@ async function main() {
     "M1FIAT",
     config.m1FiatSupply,
     walletAddress
-  )) as string;
-
-  await waitForTransaction(
-    await assetFactory.contract.issueAsset(
-      "M1FIAT-2026-001",
-      "Stablecoin",
-      "GLOBAL",
-      "M1 Fiat Token",
-      "M1FIAT",
-      config.m1FiatSupply,
-      walletAddress
-    )
   );
 
-  const liquidityPool = await deployContract(wallet, "NovaLiquidityPool", [
+  const acxAddress = await issueAsset(
+    assetFactory,
+    "ACX-2026-001",
+    "Exchange",
+    "GLOBAL",
+    "ACX Token",
+    "ACX",
+    config.acxSupply,
+    walletAddress
+  );
+
+  const shivaAddress = await issueAsset(
+    assetFactory,
+    "SHIVA-2026-001",
+    "Utility",
+    "GLOBAL",
+    "Shiva Token",
+    "SHIVA",
+    config.shivaSupply,
+    walletAddress
+  );
+
+  const totalWnovaWrap =
+    config.wnovaLiquidity + config.wnovaAcxLiquidity + config.wnovaShivaLiquidity;
+  await waitForTransaction(await wrappedNovaOne.contract.deposit({ value: totalWnovaWrap }));
+
+  const m1FiatPool = await bootstrapLiquidityPool(
+    signer,
+    walletAddress,
+    compliance,
     m1FiatAddress,
     wrappedNovaOne.record.address,
     "M1FIAT / WNOVA Liquidity Pool",
-    "NLP-M1FIAT-WNOVA"
-  ]);
+    "NLP-M1FIAT-WNOVA",
+    config.m1FiatLiquidity,
+    config.wnovaLiquidity,
+    "M1FIAT",
+    "WNOVA"
+  );
 
-  await waitForTransaction(await wrappedNovaOne.contract.deposit({ value: config.wnovaLiquidity }));
+  const acxPool = await bootstrapLiquidityPool(
+    signer,
+    walletAddress,
+    compliance,
+    acxAddress,
+    wrappedNovaOne.record.address,
+    "ACX / WNOVA Liquidity Pool",
+    "NLP-ACX-WNOVA",
+    config.acxLiquidity,
+    config.wnovaAcxLiquidity,
+    "ACX",
+    "WNOVA"
+  );
 
-  const m1Fiat = new Contract(m1FiatAddress, erc20Abi, wallet);
-  const wnova = new Contract(wrappedNovaOne.record.address, erc20Abi, wallet);
-  await approveIfNeeded(m1Fiat, walletAddress, liquidityPool.record.address, config.m1FiatLiquidity);
-  await approveIfNeeded(wnova, walletAddress, liquidityPool.record.address, config.wnovaLiquidity);
-  await waitForTransaction(await liquidityPool.contract.addLiquidity(config.m1FiatLiquidity, config.wnovaLiquidity, walletAddress));
-  await waitForTransaction(await compliance.contract.setLiquidityVenue(liquidityPool.record.address, true));
+  const shivaPool = await bootstrapLiquidityPool(
+    signer,
+    walletAddress,
+    compliance,
+    shivaAddress,
+    wrappedNovaOne.record.address,
+    "SHIVA / WNOVA Liquidity Pool",
+    "NLP-SHIVA-WNOVA",
+    config.shivaLiquidity,
+    config.wnovaShivaLiquidity,
+    "SHIVA",
+    "WNOVA"
+  );
+
+  const issuedAssets: IssuedAssetRecord[] = [
+    {
+      assetId: "M1FIAT-2026-001",
+      symbol: "M1FIAT",
+      name: "M1 Fiat Token",
+      assetClass: "Stablecoin",
+      jurisdiction: "GLOBAL",
+      address: m1FiatAddress,
+      supply: formatUnits(config.m1FiatSupply, 18)
+    },
+    {
+      assetId: "ACX-2026-001",
+      symbol: "ACX",
+      name: "ACX Token",
+      assetClass: "Exchange",
+      jurisdiction: "GLOBAL",
+      address: acxAddress,
+      supply: formatUnits(config.acxSupply, 18)
+    },
+    {
+      assetId: "SHIVA-2026-001",
+      symbol: "SHIVA",
+      name: "Shiva Token",
+      assetClass: "Utility",
+      jurisdiction: "GLOBAL",
+      address: shivaAddress,
+      supply: formatUnits(config.shivaSupply, 18)
+    }
+  ];
 
   const manifest = {
     network: {
       name: config.networkName,
       chainId: network.chainId.toString(),
-      rpcUrl: config.rpcUrl
+      rpcUrl: config.rpcUrl,
+      chain138Settlement: {
+        chainId: 138,
+        tradableTokenRegistry: "config/tokens/chain138-tradable-tokens.v1.json",
+        zBankIntegration: "config/integrations/z-bank-online.v1.json",
+        tradingPlatforms: "config/compliance/trading-platforms.v1.json"
+      }
     },
     deployer: walletAddress,
     owner: config.initialOwner,
@@ -240,21 +425,21 @@ async function main() {
       treasuryController: treasury.record,
       auditEvents: auditEvents.record
     },
+    tradableTokens: issuedAssets.map((asset) => ({
+      ...asset,
+      capabilities: {
+        transferable: true,
+        tradable: true,
+        swappable: true,
+        zBankLoadable: true
+      }
+    })),
     liquidity: {
-      assetToken: {
-        symbol: "M1FIAT",
-        address: m1FiatAddress,
-        supply: formatUnits(config.m1FiatSupply, 18)
-      },
       wrappedNativeToken: {
         symbol: "WNOVA",
         address: wrappedNovaOne.record.address
       },
-      pool: liquidityPool.record,
-      initialAmounts: {
-        m1Fiat: formatUnits(config.m1FiatLiquidity, 18),
-        wnova: formatUnits(config.wnovaLiquidity, 18)
-      },
+      pools: [m1FiatPool, acxPool, shivaPool],
       complianceVenueApproved: true
     },
     deployedAt: new Date().toISOString()

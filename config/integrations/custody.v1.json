@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "basementNetwork": {
+    "name": "TRON",
+    "chainId": 728126428,
+    "networkType": "tron",
+    "networkId": "mainnet",
+    "nativeSymbol": "TRX"
+  },
+  "settlementChain": {
+    "chainId": 44002,
+    "name": "Z Blockchain",
+    "wrappedNativeSymbol": "WZ"
+  },
+  "publicNetworks": [
+    {
+      "chainId": 728126428,
+      "name": "TRON",
+      "networkType": "tron",
+      "networkId": "mainnet",
+      "nativeSymbol": "TRX",
+      "coboChainId": "TRON"
+    },
+    {
+      "chainId": 1,
+      "name": "Ethereum",
+      "networkType": "evm",
+      "nativeSymbol": "ETH",
+      "coboChainId": "ETH"
+    },
+    {
+      "chainId": 56,
+      "name": "BNB Smart Chain",
+      "networkType": "evm",
+      "nativeSymbol": "BNB",
+      "coboChainId": "BSC_BNB"
+    }
+  ],
+  "providers": [
+    {
+      "id": "dfns",
+      "name": "Dfns",
+      "role": "primary-custody",
+      "access": "ManagedFullAdminAccess",
+      "capabilities": [
+        "wallet-management",
+        "transaction-signing",
+        "policy-enforcement",
+        "treasury-deposits"
+      ],
+      "supportedNetworks": ["TRON", "ETH", "BSC", "EVM"],
+      "zBankUseCases": [
+        "Treasury wallet provisioning for Z Blockchain fund loads",
+        "Signed settlement transfers to chain 44002",
+        "Multi-network operational wallets on TRON, Ethereum, and BNB"
+      ]
+    },
+    {
+      "id": "cobo",
+      "name": "Cobo WaaS 2.0",
+      "role": "secondary-custody",
+      "access": "Viewer, Operator, Spender — All Wallets",
+      "capabilities": [
+        "wallet-management",
+        "multi-chain-balances",
+        "withdrawals"
+      ],
+      "supportedNetworks": ["TRON", "ETH", "BSC_BNB"],
+      "zBankUseCases": [
+        "Operational wallet balances for Z Bank online loads",
+        "Withdrawal rail once callback URL is registered",
+        "Cross-network TRON, Ethereum, and BNB Smart Chain treasury routing"
+      ],
+      "notes": "Dev portal key expires 2026-08-01. Register callback URL before production withdrawals."
+    }
+  ],
+  "flows": {
+    "zBankFundLoad": {
+      "settlementChainId": 44002,
+      "custodyPath": "dfns-treasury -> z-block-chain-settlement",
+      "supportedTokens": ["M1FIAT", "ACX", "SHIVA"]
+    },
+    "zBankWithdrawal": {
+      "status": "callback-ready",
+      "custodyPath": "cobo-wallet -> bank-rail",
+      "webhookEndpoint": "/api/custody/cobo/webhook",
+      "callbackEndpoint": "/api/custody/cobo/callback"
+    },
+    "multiNetworkTreasury": {
+      "basementNetworkId": 728126428,
+      "supportedPublicNetworks": [728126428, 1, 56],
+      "custodyPath": "cobo-multi-chain -> tron-basement -> eth/bnb routing"
+    }
+  },
+  "source": {
+    "registryPath": "config/integrations/custody.v1.json",
+    "notes": "Custody bindings for TRON basement, Ethereum, BNB Smart Chain, Z Blockchain, and Z Bank Online."
+  }
+}

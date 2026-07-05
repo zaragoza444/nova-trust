@@ -105,6 +105,45 @@ export const novaDashboardSnapshot = {
   ],
   assets: [
     {
+      assetId: "M1FIAT-2026-001",
+      name: "M1 Fiat Token",
+      symbol: "M1FIAT",
+      assetClass: "Stablecoin",
+      jurisdiction: "GLOBAL",
+      contractAddress: "0x0000000000000000000000000000000000000001",
+      issueSize: 1000000,
+      issuer: "Treasury Ops",
+      treasury: "Z Bank Online M1 Rail",
+      status: "Live",
+      createdAt: "2026-07-05T10:00:00.000Z"
+    },
+    {
+      assetId: "ACX-2026-001",
+      name: "ACX Token",
+      symbol: "ACX",
+      assetClass: "Exchange",
+      jurisdiction: "GLOBAL",
+      contractAddress: "0x0000000000000000000000000000000000000002",
+      issueSize: 500000,
+      issuer: "Capital Markets Desk",
+      treasury: "Chain 138 Liquidity Vault",
+      status: "Live",
+      createdAt: "2026-07-05T10:05:00.000Z"
+    },
+    {
+      assetId: "SHIVA-2026-001",
+      name: "Shiva Token",
+      symbol: "SHIVA",
+      assetClass: "Utility",
+      jurisdiction: "GLOBAL",
+      contractAddress: "0x0000000000000000000000000000000000000003",
+      issueSize: 500000,
+      issuer: "Trading Platform Ops",
+      treasury: "Chain 138 Liquidity Vault",
+      status: "Live",
+      createdAt: "2026-07-05T10:10:00.000Z"
+    },
+    {
       assetId: "NST-2026-001",
       name: "Nova Settlement Token",
       symbol: "NST",

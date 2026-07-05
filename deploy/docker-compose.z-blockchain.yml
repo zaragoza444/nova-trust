@@ -1,0 +1,32 @@
+# Z Blockchain production node (chain 44002) — mirrors NRW World ganache layout on the VPS.
+# Usage:
+#   docker compose -f deploy/docker-compose.z-blockchain.yml up -d
+#   bash scripts/deploy-z-blockchain-vps.sh
+
+services:
+  z-blockchain:
+    image: node:20-alpine
+    restart: unless-stopped
+    container_name: nova-z-blockchain-1
+    command: >-
+      npx --yes ganache
+      --chain.chainId 44002
+      --server.port 8546
+      --host 0.0.0.0
+      --miner.blockTime 2
+      --wallet.totalAccounts 10
+      --wallet.mnemonic "test test test test test test test test test test test junk"
+    ports:
+      - "127.0.0.1:8546:8546"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8546/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_chainId',params:[]})}).then(r=>r.json()).then(j=>process.exit(j.result==='0xabe2'?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 30s

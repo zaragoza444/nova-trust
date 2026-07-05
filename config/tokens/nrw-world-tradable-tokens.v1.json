@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "NRW World",
+    "chainId": 33001,
+    "nativeSymbol": "NRW",
+    "wrappedSymbol": "WNRW"
+  },
+  "tokens": [
+    {
+      "assetId": "M1FIAT-NRW-001",
+      "symbol": "M1FIAT",
+      "name": "M1 Fiat Token",
+      "assetClass": "Stablecoin",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WNRW", "ACX", "SHIVA"],
+      "notes": "Primary M1 rail on NRW World."
+    },
+    {
+      "assetId": "ACX-NRW-001",
+      "symbol": "ACX",
+      "name": "ACX Token",
+      "assetClass": "Exchange",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WNRW", "M1FIAT"],
+      "notes": "ACX exchange token on NRW World."
+    },
+    {
+      "assetId": "SHIVA-NRW-001",
+      "symbol": "SHIVA",
+      "name": "Shiva Token",
+      "assetClass": "Utility",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WNRW", "M1FIAT"],
+      "notes": "SHIVA utility token on NRW World."
+    }
+  ],
+  "source": {
+    "registryPath": "config/tokens/nrw-world-tradable-tokens.v1.json",
+    "notes": "Tradable token catalog for NRW World liquidity pools."
+  }
+}

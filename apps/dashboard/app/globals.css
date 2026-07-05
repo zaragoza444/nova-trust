@@ -246,7 +246,7 @@ button {
 
 .chainTabs {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 10px;
   margin: 26px 0;
 }
@@ -529,6 +529,74 @@ button {
 .insightStrip {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-bottom: 20px;
+}
+
+.capabilityBadges,
+.loadResultMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.loadFormPanel {
+  display: grid;
+  gap: 16px;
+}
+
+.loadForm {
+  display: grid;
+  gap: 14px;
+}
+
+.formField {
+  display: grid;
+  gap: 8px;
+}
+
+.formField span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.formField input,
+.formField select,
+.formField textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+}
+
+.loadSubmit {
+  justify-self: start;
+  margin-top: 4px;
+}
+
+.loadResult {
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.loadResult strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.loadResult p,
+.loadResultMeta span {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.loadResult.accepted {
+  background: rgba(50, 196, 131, 0.12);
+}
+
+.loadResult.rejected {
+  background: rgba(255, 99, 132, 0.12);
 }
 
 @media (max-width: 1024px) {

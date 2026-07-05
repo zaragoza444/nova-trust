@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "Z Blockchain",
+    "chainId": 44002,
+    "nativeSymbol": "Z",
+    "wrappedSymbol": "WZ"
+  },
+  "defaultSupply": "1000000",
+  "defaultLiquidity": "100000",
+  "defaultWrappedLiquidity": "100",
+  "tokens": [
+    {
+      "assetId": "USDT-ZBC-CLONE-001",
+      "symbol": "USDT",
+      "name": "Tether USD Clone",
+      "assetClass": "Stablecoin",
+      "cloneOf": "USDT",
+      "networks": ["TRON", "Ethereum", "BNB Smart Chain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "USDC", "AUSDT"]
+    },
+    {
+      "assetId": "ETH-ZBC-CLONE-001",
+      "symbol": "ETH",
+      "name": "Ethereum Clone",
+      "assetClass": "Synthetic Native",
+      "cloneOf": "ETH",
+      "networks": ["Ethereum"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WZ", "USDT", "USDC", "BTC"]
+    },
+    {
+      "assetId": "BTC-ZBC-CLONE-001",
+      "symbol": "BTC",
+      "name": "Bitcoin Clone",
+      "assetClass": "Synthetic Native",
+      "cloneOf": "BTC",
+      "networks": ["TRON", "Ethereum", "BNB Smart Chain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WZ", "USDT", "ETH"]
+    },
+    {
+      "assetId": "BNB-ZBC-CLONE-001",
+      "symbol": "BNB",
+      "name": "BNB Clone",
+      "assetClass": "Synthetic Native",
+      "cloneOf": "BNB",
+      "networks": ["BNB Smart Chain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WZ", "USDT", "ICX"]
+    },
+    {
+      "assetId": "USDC-ZBC-CLONE-001",
+      "symbol": "USDC",
+      "name": "USD Coin Clone",
+      "assetClass": "Stablecoin",
+      "cloneOf": "USDC",
+      "networks": ["TRON", "Ethereum", "BNB Smart Chain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "USDT", "XRCUSDC"]
+    },
+    {
+      "assetId": "XRCUSDC-ZBC-CLONE-001",
+      "symbol": "XRCUSDC",
+      "name": "XRC USD Coin Clone",
+      "assetClass": "Stablecoin",
+      "cloneOf": "USDC",
+      "networks": ["TRON", "Ethereum"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "USDC", "CUSDT"]
+    },
+    {
+      "assetId": "CUSDT-ZBC-CLONE-001",
+      "symbol": "CUSDT",
+      "name": "C USD T Clone",
+      "assetClass": "Stablecoin",
+      "cloneOf": "USDT",
+      "networks": ["TRON", "BNB Smart Chain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "USDT", "AUSDT"]
+    },
+    {
+      "assetId": "ICX-ZBC-CLONE-001",
+      "symbol": "ICX",
+      "name": "ICON Clone",
+      "assetClass": "Exchange",
+      "cloneOf": "ICX",
+      "networks": ["Ethereum"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WZ", "BNB", "CHAT"]
+    },
+    {
+      "assetId": "AUSDT-ZBC-CLONE-001",
+      "symbol": "AUSDT",
+      "name": "A USD T Clone",
+      "assetClass": "Stablecoin",
+      "cloneOf": "USDT",
+      "networks": ["TRON", "Ethereum", "BNB Smart Chain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "USDT", "CUSDT"]
+    },
+    {
+      "assetId": "CHAT-ZBC-CLONE-001",
+      "symbol": "CHAT",
+      "name": "Chat Coin",
+      "assetClass": "Utility",
+      "cloneOf": "CHAT",
+      "networks": ["Z Blockchain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WZ", "ICX", "SHIVA"]
+    }
+  ],
+  "source": {
+    "registryPath": "config/tokens/clone-tokens.v1.json",
+    "notes": "Clone token catalog for Z Blockchain synthetic USDT, ETH, BTC, BNB, USDC, XRCUSDC, CUSDT, ICX, AUSDT, and CHAT."
+  }
+}
