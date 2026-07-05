@@ -92,6 +92,14 @@ echo "==> Phase 4: Hub portal nginx (5824 — direct /z-chain access)"
 pct_exec "$HUB_VMID" bash -lc "cd '${REPO_DIR}' && Z_LXC_VMID=5824 Z_LXC_PRIMARY_PATH=/z-chain bash scripts/z-lxc-portal-wire.sh" || true
 
 echo ""
+echo "==> Phase 5: Inspect pct config + HTTP reachability"
+if [ -f "$ROOT/scripts/inspect-z-proxmox-lxc.sh" ]; then
+  bash "$ROOT/scripts/inspect-z-proxmox-lxc.sh" || true
+else
+  bash "$ROOT/scripts/verify-z-proxmox-lxc.sh" || true
+fi
+
+echo ""
 echo "==> Deployment summary"
 python3 - "$REGISTRY" <<'PY'
 import json, sys
@@ -103,4 +111,5 @@ for item in sorted(registry["containers"], key=lambda x: x["vmid"]):
 print("\n  Hub API     http://192.168.11.126:4100/health")
 print("  Dashboard   http://192.168.11.127:3100/zchart")
 print("  Go-live     http://192.168.11.126:4100/api/go-live/status")
+print("\n  Re-check:    bash scripts/inspect-z-proxmox-lxc.sh")
 PY
