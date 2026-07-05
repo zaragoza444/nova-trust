@@ -10,6 +10,14 @@ MANIFEST="${ZBC_BOOTSTRAP_MANIFEST_PATH:-$ROOT/contracts/deployments/z-blockchai
 MANIFEST_DOCKER="/work/contracts/deployments/z-blockchain-production-liquidity.json"
 USE_DOCKER="${GO_LIVE_USE_DOCKER:-auto}"
 
+tmux_cmd() {
+  if [ -f /exec-daemon/tmux.portal.conf ]; then
+    tmux -f /exec-daemon/tmux.portal.conf "$@"
+  else
+    tmux "$@"
+  fi
+}
+
 echo "==> Nova Trust GO LIVE"
 
 if [ ! -f "$ENV_FILE" ]; then
@@ -106,7 +114,7 @@ start_services_local() {
   npm run build --workspace @nova/dashboard
 
   for session in nova-api-live nova-dashboard-live nova-api-dev nova-api-preview nova-dashboard-preview; do
-    tmux -f /exec-daemon/tmux.portal.conf has-session -t "=$session" 2>/dev/null && tmux -f /exec-daemon/tmux.portal.conf kill-session -t "$session" || true
+    tmux_cmd has-session -t "=$session" 2>/dev/null && tmux_cmd kill-session -t "$session" || true
   done
 
   if command -v fuser >/dev/null 2>&1; then
@@ -124,11 +132,11 @@ start_services_local() {
   SESSION_API="nova-api-live"
   SESSION_DASH="nova-dashboard-live"
 
-  tmux -f /exec-daemon/tmux.portal.conf new-session -d -s "$SESSION_API" -c "$ROOT" -- "${SHELL:-bash}" -l
-  tmux -f /exec-daemon/tmux.portal.conf send-keys -t "$SESSION_API:0.0" "set -a && source \"$ENV_FILE\" && set +a && export NODE_ENV=production && node services/api/dist/app.js" C-m
+  tmux_cmd new-session -d -s "$SESSION_API" -c "$ROOT" -- "${SHELL:-bash}" -l
+  tmux_cmd send-keys -t "$SESSION_API:0.0" "set -a && source \"$ENV_FILE\" && set +a && export NODE_ENV=production && node services/api/dist/app.js" C-m
 
-  tmux -f /exec-daemon/tmux.portal.conf new-session -d -s "$SESSION_DASH" -c "$ROOT" -- "${SHELL:-bash}" -l
-  tmux -f /exec-daemon/tmux.portal.conf send-keys -t "$SESSION_DASH:0.0" "set -a && source \"$ENV_FILE\" && set +a && npm run start --workspace @nova/dashboard -- -p 3000 -H 0.0.0.0" C-m
+  tmux_cmd new-session -d -s "$SESSION_DASH" -c "$ROOT" -- "${SHELL:-bash}" -l
+  tmux_cmd send-keys -t "$SESSION_DASH:0.0" "set -a && source \"$ENV_FILE\" && set +a && npm run start --workspace @nova/dashboard -- -p 3000 -H 0.0.0.0" C-m
 
   for _ in $(seq 1 30); do
     if curl -sf "http://127.0.0.1:4000/health" >/dev/null && curl -sf "http://127.0.0.1:3000" >/dev/null; then

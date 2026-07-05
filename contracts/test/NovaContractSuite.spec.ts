@@ -526,4 +526,20 @@ describe("Nova contract suite design", () => {
     assert.match(zAppSource, /\/api\/zswap\/swap/);
     assert.match(zBotScript, /@z\/bot/);
   });
+
+  it("uses shared VPS SSH helpers with empty-secret-safe defaults", () => {
+    const sshLib = readFileSync(path.resolve(repoRoot, "scripts", "vps_ssh_lib.py"), "utf8");
+    const remoteGoLive = readFileSync(path.resolve(repoRoot, "scripts", "remote-go-live-vps.py"), "utf8");
+
+    assert.match(sshLib, /DEFAULT_VPS_HOST = "51.75.64.28"/);
+    assert.match(sshLib, /require_vps_auth/);
+    assert.match(sshLib, /value.strip\(\) == ""/);
+    assert.match(remoteGoLive, /from vps_ssh_lib import connect_vps, run_remote/);
+  });
+
+  it("falls back to plain tmux on VPS for Nova go-live", () => {
+    const goLive = readFileSync(path.resolve(repoRoot, "scripts", "go-live.sh"), "utf8");
+    assert.match(goLive, /tmux_cmd\(\)/);
+    assert.match(goLive, /else\s+tmux "\$@"/);
+  });
 });

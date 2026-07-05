@@ -6,7 +6,7 @@ on:
       branch:
         description: Git branch to deploy
         required: false
-        default: cursor/z-bot-international-trading-4f28
+        default: main
       wire_public:
         description: Wire nginx + public URLs (recommended)
         required: false
@@ -17,12 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Prepare VPS deploy
+        uses: ./.github/actions/vps-deploy-setup
         with:
-          python-version: "3.12"
+          vps_ssh_password: ${{ secrets.VPS_SSH_PASSWORD }}
+          vps_ssh_private_key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
 
       - name: Deploy Z Ecosystem over SSH
         env:
