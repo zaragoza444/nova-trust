@@ -83,11 +83,13 @@
     "internationalPath": "/api/networks/international"
   },
   "productionDefaults": {
-    "vpsHost": "51.75.64.28",
+    "platform": "proxmox-lxc",
+    "primaryHost": "192.168.11.127",
+    "hubHost": "192.168.11.126",
     "dashboardPort": 3100,
     "apiPort": 4100,
     "zBlockChainRpcPort": 8546,
-    "nginxConfigPath": "deploy/nginx/z-stack.conf"
+    "nginxConfigPath": "deploy/nginx/z-lxc-dashboard.conf.template"
   },
   "source": {
     "registryPath": "config/integrations/z-international-wiring.v1.json",

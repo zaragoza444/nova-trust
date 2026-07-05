@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import shlex
 import sys
 from pathlib import Path
 
@@ -74,6 +75,42 @@ def connect_node(node: dict):
 def vmids_for_node(node_id: str) -> list[int]:
     registry = load_lxc_registry()
     return sorted(item["vmid"] for item in registry["containers"] if item.get("host") == node_id)
+
+
+DEFAULT_LXC_REPO = "/opt/nova-trust"
+HUB_VMID = 5824
+HUB_NODE_ID = "r630-04"
+DASHBOARD_VMID = 5825
+DASHBOARD_NODE_ID = "r630-03"
+
+
+def node_by_id(node_id: str) -> dict:
+    for node in load_nodes_registry()["nodes"]:
+        if node["id"] == node_id:
+            return node
+    raise SystemExit(f"Unknown Proxmox node: {node_id}")
+
+
+def lxc_repo_dir() -> str:
+    return env("Z_LXC_REPO_DIR", env("VPS_REPO_DIR", DEFAULT_LXC_REPO)) or DEFAULT_LXC_REPO
+
+
+def run_in_lxc(node_id: str, vmid: int, inner_script: str) -> tuple[int, str, str]:
+    node = node_by_id(node_id)
+    client, _, _ = connect_node(node)
+    try:
+        command = f"pct exec {vmid} -- bash -lc {shlex.quote(inner_script)}"
+        return run_remote(client, command)
+    finally:
+        client.close()
+
+
+def run_in_hub(inner_script: str) -> tuple[int, str, str]:
+    return run_in_lxc(HUB_NODE_ID, HUB_VMID, inner_script)
+
+
+def run_in_dashboard(inner_script: str) -> tuple[int, str, str]:
+    return run_in_lxc(DASHBOARD_NODE_ID, DASHBOARD_VMID, inner_script)
 
 
 def iter_nodes():

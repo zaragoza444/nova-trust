@@ -1,4 +1,4 @@
-name: Put oracle prices on VPS
+name: Put oracle prices on Proxmox hub LXC 5824
 
 on:
   workflow_dispatch:
@@ -15,17 +15,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Prepare VPS deploy
+      - name: Prepare Proxmox SSH
         uses: ./.github/actions/vps-deploy-setup
         with:
-          vps_ssh_password: ${{ secrets.VPS_SSH_PASSWORD }}
-          vps_ssh_private_key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          vps_ssh_password: ${{ secrets.PROXMOX_SSH_PASSWORD || secrets.VPS_SSH_PASSWORD }}
+          vps_ssh_private_key: ${{ secrets.PROXMOX_SSH_PRIVATE_KEY || secrets.VPS_SSH_PRIVATE_KEY }}
 
-      - name: Publish oracle prices over SSH
+      - name: Publish oracle prices on hub LXC 5824
         env:
-          VPS_SSH_HOST: ${{ secrets.VPS_SSH_HOST }}
-          VPS_SSH_USER: ${{ secrets.VPS_SSH_USER }}
-          VPS_SSH_PASSWORD: ${{ secrets.VPS_SSH_PASSWORD }}
-          VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          PROXMOX_R630_04_HOST: ${{ secrets.PROXMOX_R630_04_HOST || secrets.PROXMOX_SSH_HOST || secrets.VPS_SSH_HOST }}
+          PROXMOX_R630_03_HOST: ${{ secrets.PROXMOX_R630_03_HOST || secrets.PROXMOX_SSH_HOST || secrets.VPS_SSH_HOST }}
+          PROXMOX_SSH_HOST: ${{ secrets.PROXMOX_SSH_HOST || secrets.VPS_SSH_HOST }}
+          PROXMOX_SSH_USER: ${{ secrets.PROXMOX_SSH_USER || secrets.VPS_SSH_USER || 'root' }}
+          PROXMOX_SSH_PASSWORD: ${{ secrets.PROXMOX_SSH_PASSWORD || secrets.VPS_SSH_PASSWORD }}
+          PROXMOX_SSH_PRIVATE_KEY: ${{ secrets.PROXMOX_SSH_PRIVATE_KEY || secrets.VPS_SSH_PRIVATE_KEY }}
           VPS_DEPLOY_BRANCH: ${{ inputs.branch }}
         run: python scripts/remote-put-oracle-prices-vps.py

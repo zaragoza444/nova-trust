@@ -528,14 +528,19 @@ describe("Nova contract suite design", () => {
     assert.match(zBotScript, /@z\/bot/);
   });
 
-  it("uses shared VPS SSH helpers with empty-secret-safe defaults", () => {
+  it("uses shared SSH helpers with Proxmox production defaults", () => {
     const sshLib = readFileSync(path.resolve(repoRoot, "scripts", "vps_ssh_lib.py"), "utf8");
     const remoteGoLive = readFileSync(path.resolve(repoRoot, "scripts", "remote-go-live-vps.py"), "utf8");
+    const proxmoxLib = readFileSync(path.resolve(repoRoot, "scripts", "proxmox_ssh_lib.py"), "utf8");
 
-    assert.match(sshLib, /DEFAULT_VPS_HOST = "51.75.64.28"/);
+    assert.match(sshLib, /DEFAULT_PRODUCTION_DASHBOARD_HOST = "192.168.11.127"/);
+    assert.match(sshLib, /PROXMOX_R630_04_HOST/);
+    assert.match(sshLib, /resolve_ssh_host/);
     assert.match(sshLib, /require_vps_auth/);
     assert.match(sshLib, /value.strip\(\) == ""/);
-    assert.match(remoteGoLive, /from vps_ssh_lib import connect_vps, run_remote/);
+    assert.match(remoteGoLive, /run_in_dashboard/);
+    assert.match(proxmoxLib, /run_in_hub/);
+    assert.match(proxmoxLib, /HUB_VMID = 5824/);
   });
 
   it("registers Proxmox LXC placement for Z Ecosystem VMIDs 5820–5828", () => {
@@ -551,6 +556,8 @@ describe("Nova contract suite design", () => {
     assert.equal(registry.containers.length, 9);
     assert.equal(registry.routing.hubApi, "http://192.168.11.126:4100");
     assert.equal(registry.routing.dashboard, "http://192.168.11.127:3100");
+    assert.equal(registry.productionDefaults?.primaryDashboardHost, "192.168.11.127");
+    assert.equal(registry.productionDefaults?.primaryApiHost, "192.168.11.126");
     const hub = registry.containers.find((item) => item.vmid === 5824);
     assert.equal(hub?.role, "hub");
     assert.equal(hub?.zProduct, "z-chain");

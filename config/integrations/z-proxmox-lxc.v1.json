@@ -129,6 +129,31 @@
     "hubRpc": "http://192.168.11.126:8546",
     "dashboard": "http://192.168.11.127:3100"
   },
+  "productionDefaults": {
+    "platform": "proxmox-lxc",
+    "networkCidr": "192.168.11.0/24",
+    "primaryDashboardHost": "192.168.11.127",
+    "primaryApiHost": "192.168.11.126",
+    "scheme": "http",
+    "repoPath": "/opt/nova-trust",
+    "proxmoxNodes": {
+      "r630-04": { "vmids": [5820, 5821, 5822, 5823, 5824] },
+      "r630-03": { "vmids": [5825, 5826, 5827, 5828] }
+    },
+    "endpoints": {
+      "zChart": "http://192.168.11.127/zchart",
+      "zTrade": "http://192.168.11.121/ztrade",
+      "zWallet": "http://192.168.11.122/wallet",
+      "zBank": "http://192.168.11.123/zbank",
+      "zBot": "http://192.168.11.124/zbot",
+      "zChain": "http://192.168.11.126/z-chain",
+      "zSwapDbis": "http://192.168.11.188/zswap",
+      "zTradeDbis": "http://192.168.11.186/ztrade",
+      "zWalletDbis": "http://192.168.11.187/wallet",
+      "apiHealth": "http://192.168.11.126:4100/health",
+      "goLive": "http://192.168.11.126:4100/api/go-live/status"
+    }
+  },
   "source": {
     "registryPath": "config/integrations/z-proxmox-lxc.v1.json",
     "notes": "Proxmox LXC placement for Z Ecosystem VMIDs 5820–5828. Hub on 5824, dashboard on 5825, product portals on remaining LXCs."

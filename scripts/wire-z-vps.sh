@@ -21,7 +21,7 @@ if [ ! -f "$Z_ENV" ]; then
   echo "Created ${Z_ENV}"
 fi
 
-PUBLIC_HOST="${Z_PUBLIC_HOST:-51.75.64.28}"
+PUBLIC_HOST="${Z_PUBLIC_HOST:-192.168.11.127}"
 PUBLIC_SCHEME="${Z_PUBLIC_SCHEME:-http}"
 
 echo "==> Verifying international public network RPC connectivity"

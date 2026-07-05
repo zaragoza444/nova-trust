@@ -16,8 +16,26 @@ except ImportError:
     import paramiko
 
 
-DEFAULT_VPS_HOST = "51.75.64.28"
-DEFAULT_VPS_USER = "ubuntu"
+DEFAULT_PRODUCTION_DASHBOARD_HOST = "192.168.11.127"
+DEFAULT_PRODUCTION_HUB_HOST = "192.168.11.126"
+DEFAULT_VPS_USER = "root"
+
+
+def resolve_ssh_host() -> str:
+    """Resolve Proxmox management SSH host (legacy VPS 51.75.64.28 retired)."""
+    for name in (
+        "PROXMOX_SSH_HOST",
+        "VPS_SSH_HOST",
+        "PROXMOX_R630_04_HOST",
+        "PROXMOX_R630_03_HOST",
+    ):
+        value = env(name)
+        if value:
+            return value
+    raise SystemExit(
+        "Missing Proxmox SSH host. Set PROXMOX_R630_04_HOST and PROXMOX_R630_03_HOST "
+        "(or PROXMOX_SSH_HOST / VPS_SSH_HOST as fallback)."
+    )
 
 
 def env(name: str, default: str | None = None) -> str | None:
@@ -65,8 +83,12 @@ def load_private_key(key_data: str) -> paramiko.PKey:
 def connect_vps() -> paramiko.SSHClient:
     require_vps_auth()
 
-    host = env("VPS_SSH_HOST", DEFAULT_VPS_HOST) or DEFAULT_VPS_HOST
-    user = env("VPS_SSH_USER", DEFAULT_VPS_USER) or DEFAULT_VPS_USER
+    host = resolve_ssh_host()
+    user = (
+        env("PROXMOX_SSH_USER")
+        or env("VPS_SSH_USER")
+        or DEFAULT_VPS_USER
+    )
     password = env("VPS_SSH_PASSWORD")
     key_data = env("VPS_SSH_PRIVATE_KEY")
     key_path = env("VPS_SSH_KEY_PATH")

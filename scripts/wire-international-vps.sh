@@ -70,7 +70,7 @@ npm run build --workspace @nova/api
 curl -sf -H "x-nova-role: AUDITOR" "http://127.0.0.1:4000/api/networks/international" | tee /tmp/nova-international-wiring.json
 echo ""
 
-PUBLIC_HOST="${NOVA_PUBLIC_HOST:-51.75.64.28}"
+PUBLIC_HOST="${NOVA_PUBLIC_HOST:-192.168.11.127}"
 PUBLIC_SCHEME="${NOVA_PUBLIC_SCHEME:-http}"
 if [ "${NOVA_INTERNATIONAL_NGINX:-true}" = "true" ]; then
   DASHBOARD_URL="${PUBLIC_SCHEME}://${PUBLIC_HOST}"
