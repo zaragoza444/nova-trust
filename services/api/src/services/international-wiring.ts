@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { getMultiNetworkConfigStatus, loadMultiNetworkConfig } from "../config/multi-network-config";
+import { novaOneProfile } from "./chain-registry";
 import { MultiNetworkService } from "./multi-network-service";
 
 const repoRoot = path.resolve(__dirname, "../../../..");
@@ -63,10 +64,10 @@ export async function getInternationalWiringOverview() {
       };
     }),
     permissionedSettlement: {
-      chainId: 44002,
-      name: "Z Blockchain",
-      rpcUrl: config.zBlockChainRpcUrl,
-      healthy: health.permissionedRpc?.ok ?? false
+      chainId: novaOneProfile.chainId,
+      name: novaOneProfile.name,
+      rpcUrl: null,
+      healthy: health.bridgesOperational
     },
     internationalBridgeLanes: registry.internationalBridgeLanes,
     cloneTokens: registry.cloneTokens,

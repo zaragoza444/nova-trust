@@ -9,7 +9,6 @@ export interface PublicNetworkRpcConfig {
 
 export interface MultiNetworkConfig {
   basementChainId: number;
-  zBlockChainRpcUrl: string;
   tron: PublicNetworkRpcConfig;
   ethereum: PublicNetworkRpcConfig;
   bnbSmartChain: PublicNetworkRpcConfig;
@@ -24,11 +23,9 @@ export function loadMultiNetworkConfig(): MultiNetworkConfig {
   const tronRpcUrl = trimOrEmpty(process.env.TRON_RPC_URL) || "https://api.trongrid.io";
   const ethRpcUrl = trimOrEmpty(process.env.ETH_RPC_URL) || "https://ethereum.publicnode.com";
   const bscRpcUrl = trimOrEmpty(process.env.BSC_RPC_URL) || "https://bsc-dataseed.binance.org";
-  const zBlockChainRpcUrl = trimOrEmpty(process.env.ZBC_RPC_URL) || "http://127.0.0.1:8546";
 
   return {
     basementChainId: Number(process.env.MULTI_NETWORK_BASEMENT_CHAIN_ID ?? 728126428),
-    zBlockChainRpcUrl,
     tronApiKeyConfigured: Boolean(trimOrEmpty(process.env.TRON_API_KEY)),
     tron: {
       name: "TRON",
@@ -58,7 +55,6 @@ export function loadMultiNetworkConfig(): MultiNetworkConfig {
 export function getMultiNetworkConfigStatus(config: MultiNetworkConfig = loadMultiNetworkConfig()) {
   return {
     basementChainId: config.basementChainId,
-    zBlockChainRpcUrl: config.zBlockChainRpcUrl,
     tron: {
       rpcUrl: config.tron.rpcUrl,
       networkId: config.tron.networkId,

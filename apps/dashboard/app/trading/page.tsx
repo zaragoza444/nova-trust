@@ -24,8 +24,8 @@ export default async function TradingPage() {
           <span className="eyebrow">Tradable token rail</span>
           <h2>Swap, trade, and transfer M1, ACX, and SHIVA on Chain 138.</h2>
           <p>
-            Each token is ERC-20 compatible and paired with WNOVA in a compliance-approved liquidity pool. After Z Bank
-            online fund loading, tokens can move across partner banks, OMNL Exchange, and approved DEX venues.
+            Each token is ERC-20 compatible and paired with WNOVA in a compliance-approved liquidity pool. After partner
+            bank settlement, tokens can move across OMNL Exchange and approved DEX venues on Chain 138.
           </p>
           <div className="highlightGrid">
             {data.tradingInsights.map((item) => (

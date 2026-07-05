@@ -91,7 +91,7 @@ describe("Nova contract suite design", () => {
       assert.equal(token?.capabilities.transferable, true);
       assert.equal(token?.capabilities.tradable, true);
       assert.equal(token?.capabilities.swappable, true);
-      assert.equal(token?.capabilities.zBankLoadable, true);
+      assert.equal(token?.capabilities.bankLoadable, true);
     }
   });
 
@@ -382,12 +382,13 @@ describe("Nova contract suite design", () => {
     const source = readFileSync(path.resolve(repoRoot, "scripts", "go-live.sh"), "utf8");
 
     assert.match(source, /Nova Trust GO LIVE/);
-    assert.match(source, /setup:clone-btc-1m:z-block-chain/);
-    assert.match(source, /setup:oracle:z-block-chain/);
+    assert.match(source, /test:multi-network --workspace @nova\/api/);
     assert.match(source, /api\/go-live\/status/);
+    assert.doesNotMatch(source, /setup:clone-btc-1m:z-block-chain/);
+    assert.doesNotMatch(source, /z-blockchain/);
   });
 
-  it("registers international wiring for TRON, Ethereum, BNB, and Z Blockchain", () => {
+  it("registers international wiring for TRON, Ethereum, BNB, and Nova One", () => {
     const registry = JSON.parse(
       readFileSync(path.resolve(repoRoot, "config", "integrations", "international-wiring.v1.json"), "utf8")
     ) as {

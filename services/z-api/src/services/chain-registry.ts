@@ -99,19 +99,13 @@ export const nrwWorldProfile: ChainProfile = {
 
 export const multiNetworkProfiles: ChainProfile[] = [tronProfile, ethereumProfile, bnbSmartChainProfile];
 
-export const permissionedChainProfiles: ChainProfile[] = [
-  chain138Profile,
-  novaOneProfile,
-  nrwWorldProfile,
-  zBlockChainProfile
-];
+export const permissionedChainProfiles: ChainProfile[] = [zBlockChainProfile];
 
 export const chainProfiles: ChainProfile[] = [...multiNetworkProfiles, ...permissionedChainProfiles];
 
 export const basementNetwork = tronProfile;
-export const primaryChain = novaOneProfile;
-export const settlementChain = chain138Profile;
-export const bridgeChain = nrwWorldProfile;
+export const primaryChain = zBlockChainProfile;
+export const settlementChain = zBlockChainProfile;
 export const zBankChain = zBlockChainProfile;
 
 export function formatChainIdentifier(chain: ChainProfile): string {

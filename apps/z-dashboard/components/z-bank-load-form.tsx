@@ -18,7 +18,7 @@ interface LoadResult {
 }
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_Z_API_URL ?? process.env.Z_API_URL ?? "http://127.0.0.1:4100";
-const loadRole = process.env.NEXT_PUBLIC_NOVA_LOAD_ROLE ?? "TREASURY_OPERATOR";
+const loadRole = process.env.NEXT_PUBLIC_Z_LOAD_ROLE ?? "TREASURY_OPERATOR";
 
 export function ZBankLoadForm({ supportedTokens, minAmounts }: ZBankLoadFormProps) {
   const [walletAddress, setWalletAddress] = useState("");

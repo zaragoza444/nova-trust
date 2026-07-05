@@ -32,7 +32,7 @@ export async function handleCustodyHealth(_request: IncomingMessage, response: S
   try {
     const report = await custodyService.runHealthCheck();
     response.setHeader("content-type", "application/json");
-    response.writeHead(report.readyForZBank ? 200 : 503);
+    response.writeHead(report.readyForProduction ? 200 : 503);
     response.end(JSON.stringify(report, null, 2));
   } catch (error) {
     response.writeHead(500, { "content-type": "application/json" });
