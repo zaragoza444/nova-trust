@@ -4,6 +4,8 @@ import { handleAdminOverview, handleAdminQueue } from "./routes/admin";
 import { handleAssetsOverview } from "./routes/assets";
 import { handleDashboard } from "./routes/dashboard";
 import { handleHealth } from "./routes/health";
+import { handleTradingTokensOverview } from "./routes/trading";
+import { handleZBankIntegrationOverview, handleZBankLoadFunds } from "./routes/zbank";
 import { canAccess, type NovaRole } from "./services/rbac";
 
 const config = loadApiConfig();
@@ -63,6 +65,36 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     void handleAssetsOverview(request, response);
+    return;
+  }
+
+  if (request.url === "/api/trading/tokens") {
+    if (!requestRole || !canAccess("/api/trading/tokens", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleTradingTokensOverview(request, response);
+    return;
+  }
+
+  if (request.url === "/api/zbank/integration") {
+    if (!requestRole || !canAccess("/api/zbank/integration", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleZBankIntegrationOverview(request, response);
+    return;
+  }
+
+  if (request.url === "/api/zbank/load-funds" && request.method === "POST") {
+    if (!requestRole || !canAccess("/api/zbank/load-funds", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleZBankLoadFunds(request, response);
     return;
   }
 

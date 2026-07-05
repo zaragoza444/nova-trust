@@ -69,8 +69,54 @@ describe("Nova contract suite design", () => {
 
     assert.match(source, /NOVA_M1FIAT_SUPPLY/);
     assert.match(source, /NOVA_M1FIAT_LIQUIDITY/);
+    assert.match(source, /NOVA_ACX_SUPPLY/);
+    assert.match(source, /NOVA_SHIVA_SUPPLY/);
     assert.match(source, /NOVA_WNOVA_LIQUIDITY/);
     assert.match(source, /setLiquidityVenue\(liquidityPool\.record\.address, true\)/);
+  });
+
+  it("registers Chain 138 tradable tokens ACX, SHIVA, and M1FIAT", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "tokens", "chain138-tradable-tokens.v1.json"), "utf8")
+    ) as {
+      chain: { chainId: number };
+      tokens: Array<{ symbol: string; capabilities: Record<string, boolean> }>;
+    };
+
+    assert.equal(registry.chain.chainId, 138);
+    for (const symbol of ["M1FIAT", "ACX", "SHIVA"]) {
+      const token = registry.tokens.find((item) => item.symbol === symbol);
+      assert.ok(token, `missing ${symbol}`);
+      assert.equal(token?.capabilities.transferable, true);
+      assert.equal(token?.capabilities.tradable, true);
+      assert.equal(token?.capabilities.swappable, true);
+      assert.equal(token?.capabilities.zBankLoadable, true);
+    }
+  });
+
+  it("documents Z Bank online fund loading for M1, ACX, and SHIVA", () => {
+    const integration = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-bank-online.v1.json"), "utf8")
+    ) as {
+      provider: { name: string };
+      supportedTokens: string[];
+    };
+
+    assert.equal(integration.provider.name, "Z Bank Online");
+    assert.deepEqual(integration.supportedTokens, ["M1FIAT", "ACX", "SHIVA"]);
+  });
+
+  it("approves banks and trading platforms for Chain 138 tokens", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "compliance", "trading-platforms.v1.json"), "utf8")
+    ) as {
+      approvedTokens: string[];
+      platforms: Array<{ supportedTokens: string[] }>;
+    };
+
+    assert.deepEqual(registry.approvedTokens, ["M1FIAT", "ACX", "SHIVA", "WNOVA"]);
+    assert.ok(registry.platforms.length >= 3);
+    assert.ok(registry.platforms.every((platform) => platform.supportedTokens.length > 0));
   });
 
   it("registers the canonical Chain 138 Safe contracts and deployed safes", () => {

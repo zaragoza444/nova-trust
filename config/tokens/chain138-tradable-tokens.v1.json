@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "Chain 138",
+    "chainId": 138,
+    "settlementChain": {
+      "name": "Nova One",
+      "chainId": 22016
+    }
+  },
+  "tokens": [
+    {
+      "assetId": "M1FIAT-2026-001",
+      "symbol": "M1FIAT",
+      "name": "M1 Fiat Token",
+      "assetClass": "Stablecoin",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WNOVA", "ACX", "SHIVA"],
+      "notes": "Primary M1 fiat rail for bank settlement, swaps, and Z Bank online fund loading."
+    },
+    {
+      "assetId": "ACX-2026-001",
+      "symbol": "ACX",
+      "name": "ACX Token",
+      "assetClass": "Exchange",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WNOVA", "M1FIAT"],
+      "notes": "ACX exchange token for cross-bank and platform trading on Chain 138."
+    },
+    {
+      "assetId": "SHIVA-2026-001",
+      "symbol": "SHIVA",
+      "name": "Shiva Token",
+      "assetClass": "Utility",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WNOVA", "M1FIAT"],
+      "notes": "SHIVA utility token for trading platforms and liquidity venues."
+    }
+  ],
+  "source": {
+    "registryPath": "config/tokens/chain138-tradable-tokens.v1.json",
+    "notes": "Canonical tradable token catalog for Chain 138 / Nova One settlement."
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "Chain 138",
+    "chainId": 138
+  },
+  "approvedTokens": ["M1FIAT", "ACX", "SHIVA", "WNOVA"],
+  "platforms": [
+    {
+      "id": "z-bank-online",
+      "name": "Z Bank Online",
+      "type": "bank",
+      "supportedTokens": ["M1FIAT", "ACX", "SHIVA"],
+      "capabilities": ["load", "transfer", "trade"]
+    },
+    {
+      "id": "nova-liquidity-pool",
+      "name": "Nova Liquidity Pool",
+      "type": "dex",
+      "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "WNOVA"],
+      "capabilities": ["swap", "add-liquidity", "remove-liquidity"]
+    },
+    {
+      "id": "omnl-exchange",
+      "name": "OMNL Exchange",
+      "type": "exchange",
+      "supportedTokens": ["M1FIAT", "ACX", "SHIVA"],
+      "capabilities": ["trade", "transfer", "settle"]
+    },
+    {
+      "id": "partner-banks",
+      "name": "Partner Banks Network",
+      "type": "bank-network",
+      "supportedTokens": ["M1FIAT", "ACX", "SHIVA"],
+      "capabilities": ["transfer", "trade", "settle"]
+    }
+  ],
+  "source": {
+    "registryPath": "config/compliance/trading-platforms.v1.json",
+    "notes": "Approved banks and trading platforms for Chain 138 token usage."
+  }
+}

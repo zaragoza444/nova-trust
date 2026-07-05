@@ -31,6 +31,21 @@ export const accessPolicies: AccessPolicy[] = [
     route: "/api/assets",
     roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
     approvalRequired: true
+  },
+  {
+    route: "/api/trading/tokens",
+    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
+    approvalRequired: false
+  },
+  {
+    route: "/api/zbank/integration",
+    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
+    approvalRequired: false
+  },
+  {
+    route: "/api/zbank/load-funds",
+    roles: ["SUPER_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER"],
+    approvalRequired: true
   }
 ];
 

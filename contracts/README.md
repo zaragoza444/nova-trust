@@ -31,7 +31,9 @@ Production deployments should replace direct EOAs with multisigs, service identi
 
 Nova One is the primary settlement chain with chain ID `22016`. NRW World is the world liquidity and bridge chain with chain ID `33001`.
 
-Issued asset tokens from `NovaAssetFactory` implement the ERC-20 transfer and approval methods required by Uniswap-style routers. An asset such as `M1FIAT` can be paired directly with `WNOVA` on Nova One after the treasury approves the router and supplies both sides of the pool.
+Issued asset tokens from `NovaAssetFactory` implement the ERC-20 transfer and approval methods required by Uniswap-style routers. Assets such as `M1FIAT`, `ACX`, and `SHIVA` can be paired directly with `WNOVA` on Nova One after the treasury approves the router and supplies both sides of the pool.
+
+Chain 138 settlement uses the tradable token registry at `config/tokens/chain138-tradable-tokens.v1.json`. Z Bank online fund loading is configured at `config/integrations/z-bank-online.v1.json`. Approved banks and trading platforms are listed in `config/compliance/trading-platforms.v1.json`.
 
 The regulated settlement token remains compliance-gated. To support settlement-token liquidity without allowing arbitrary contract transfers, a compliance admin should call `setLiquidityVenue(poolOrRouter, true)` for approved DEX venues. Transfers involving that venue still reject sanctioned, frozen, or ineligible user accounts.
 
@@ -43,9 +45,9 @@ The regulated settlement token remains compliance-gated. To support settlement-t
 2. Deploy the identity, compliance, settlement, WNOVA, asset factory, treasury, audit, and liquidity pool contracts.
 3. Grant operational roles to configured accounts.
 4. Register the deployer as an eligible treasury participant.
-5. Issue `M1FIAT` as a transferable asset token.
+5. Issue `M1FIAT`, `ACX`, and `SHIVA` as transferable asset tokens.
 6. Wrap native NOVA into `WNOVA`.
-7. Add initial `M1FIAT/WNOVA` liquidity and approve the pool as a compliance liquidity venue.
+7. Add initial `M1FIAT/WNOVA`, `ACX/WNOVA`, and `SHIVA/WNOVA` liquidity and approve each pool as a compliance liquidity venue.
 
 Required environment goes in a terminal/session environment, not in CSS, TypeScript, Solidity, or committed source files. Start from the example file and source a private copy:
 
@@ -64,6 +66,12 @@ NOVA_DEPLOYER_PRIVATE_KEY
 NOVA_M1FIAT_SUPPLY
 NOVA_M1FIAT_LIQUIDITY
 NOVA_WNOVA_LIQUIDITY
+NOVA_ACX_SUPPLY
+NOVA_ACX_LIQUIDITY
+NOVA_WNOVA_ACX_LIQUIDITY
+NOVA_SHIVA_SUPPLY
+NOVA_SHIVA_LIQUIDITY
+NOVA_WNOVA_SHIVA_LIQUIDITY
 ```
 
 The deployer wallet must hold enough native NOVA to pay gas and wrap the configured `NOVA_WNOVA_LIQUIDITY`. Do not commit private keys or production manifests containing sensitive endpoint details.

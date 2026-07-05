@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "provider": {
+    "id": "z-bank-online",
+    "name": "Z Bank Online",
+    "channel": "M1",
+    "status": "active"
+  },
+  "supportedChains": [
+    {
+      "chainId": 138,
+      "name": "Chain 138"
+    },
+    {
+      "chainId": 22016,
+      "name": "Nova One"
+    }
+  ],
+  "supportedTokens": ["M1FIAT", "ACX", "SHIVA"],
+  "loadMethods": [
+    {
+      "id": "zbank-m1-online-transfer",
+      "label": "Z Bank Online M1 Transfer",
+      "description": "Load M1FIAT, ACX, or SHIVA from Z Bank online into a compliant Chain 138 wallet.",
+      "minAmount": "1",
+      "settlementToken": "M1FIAT",
+      "requiresKyc": true
+    }
+  ],
+  "capabilities": {
+    "transferable": true,
+    "tradable": true,
+    "swappable": true,
+    "crossBankUsable": true,
+    "platformTradingUsable": true
+  },
+  "source": {
+    "registryPath": "config/integrations/z-bank-online.v1.json",
+    "notes": "Z Bank online fund loading rail for M1, ACX, and SHIVA on Chain 138."
+  }
+}
