@@ -18,7 +18,7 @@
     "test:contracts": "npm run test --workspace @nova/contracts",
     "test:custody": "npm run test:custody --workspace @nova/api",
     "test:multi-network": "npm run test:multi-network --workspace @nova/api",
-    "release:check": "npm run build",
+    "release:check": "npm run build && npm run test:contracts && npm run test:multi-network",
     "lint": "npm run lint --workspaces --if-present",
     "build": "npm run build --workspaces --if-present"
   },

@@ -398,4 +398,36 @@ describe("Nova contract suite design", () => {
     assert.match(source, /api\/networks\/international/);
     assert.match(source, /deploy\/nginx\/nova-trust\.conf/);
   });
+
+  it("uses grep instead of rg in multi-network VPS wiring script", () => {
+    const source = readFileSync(path.resolve(repoRoot, "scripts", "wire-multi-network-vps.sh"), "utf8");
+
+    assert.match(source, /grep -q '\^export ZBC_RPC_URL='/);
+    assert.doesNotMatch(source, /\brg\b/);
+  });
+
+  it("uses docker manifest path in Z Blockchain deploy script", () => {
+    const source = readFileSync(path.resolve(repoRoot, "scripts", "deploy-z-blockchain-vps.sh"), "utf8");
+
+    assert.match(source, /MANIFEST_DOCKER="\/work\/contracts\/deployments\/z-blockchain-production-liquidity\.json"/);
+    assert.match(source, /ZBC_BOOTSTRAP_MANIFEST_PATH="\$MANIFEST_DOCKER"/);
+  });
+
+  it("binds API to configurable host and resolves CORS wildcard correctly", () => {
+    const configSource = readFileSync(path.resolve(repoRoot, "services", "api", "src", "config.ts"), "utf8");
+    const appSource = readFileSync(path.resolve(repoRoot, "services", "api", "src", "app.ts"), "utf8");
+    const productionEnv = readFileSync(path.resolve(repoRoot, "deploy", "production.env.example"), "utf8");
+
+    assert.match(configSource, /NOVA_API_HOST/);
+    assert.match(configSource, /return "\*";/);
+    assert.match(appSource, /server\.listen\(config\.port, config\.host/);
+    assert.match(productionEnv, /NOVA_API_HOST="0\.0\.0\.0"/);
+  });
+
+  it("runs contract and multi-network checks in release:check", () => {
+    const packageJson = readFileSync(path.resolve(repoRoot, "package.json"), "utf8");
+
+    assert.match(packageJson, /test:contracts/);
+    assert.match(packageJson, /test:multi-network/);
+  });
 });

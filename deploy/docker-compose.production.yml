@@ -40,6 +40,7 @@ services:
       - .env.production
     environment:
       PORT: "4000"
+      NOVA_API_HOST: "0.0.0.0"
       NOVA_CORS_ORIGIN: "http://127.0.0.1:3000"
       ZBC_RPC_URL: "http://z-blockchain:8546"
     command: >-

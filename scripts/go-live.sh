@@ -7,6 +7,7 @@ ENV_EXAMPLE="$ROOT/deploy/production.env.example"
 RPC_URL="${ZBC_RPC_URL:-http://127.0.0.1:8546}"
 DEPLOYER_KEY="${ZBC_DEPLOYER_PRIVATE_KEY:-0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80}"
 MANIFEST="${ZBC_BOOTSTRAP_MANIFEST_PATH:-$ROOT/contracts/deployments/z-blockchain-production-liquidity.json}"
+MANIFEST_DOCKER="/work/contracts/deployments/z-blockchain-production-liquidity.json"
 USE_DOCKER="${GO_LIVE_USE_DOCKER:-auto}"
 
 echo "==> Nova Trust GO LIVE"
@@ -75,13 +76,15 @@ bootstrap_on_chain() {
     if command -v docker >/dev/null 2>&1; then
       docker run --rm --network host \
         -v "$ROOT:/work" -w /work \
-        -e ZBC_RPC_URL -e ZBC_DEPLOYER_PRIVATE_KEY -e ZBC_EXPECTED_CHAIN_ID -e ZBC_BOOTSTRAP_MANIFEST_PATH \
+        -e ZBC_RPC_URL -e ZBC_DEPLOYER_PRIVATE_KEY -e ZBC_EXPECTED_CHAIN_ID \
+        -e ZBC_BOOTSTRAP_MANIFEST_PATH="$MANIFEST_DOCKER" \
         -e ZBC_CLONE_CATALOG_PATH="config/tokens/clone-tokens-btc-1m.v1.json" \
         node:22-bookworm bash -lc "npm run build --workspace @nova/contracts && npm run setup:clone-btc-1m:z-block-chain --workspace @nova/contracts"
 
       docker run --rm --network host \
         -v "$ROOT:/work" -w /work \
-        -e ZBC_RPC_URL -e ZBC_DEPLOYER_PRIVATE_KEY -e ZBC_EXPECTED_CHAIN_ID -e ZBC_BOOTSTRAP_MANIFEST_PATH \
+        -e ZBC_RPC_URL -e ZBC_DEPLOYER_PRIVATE_KEY -e ZBC_EXPECTED_CHAIN_ID \
+        -e ZBC_BOOTSTRAP_MANIFEST_PATH="$MANIFEST_DOCKER" \
         -e ZBC_ORACLE_REGISTRY_PATH="config/oracles/z-block-chain-prices.v1.json" \
         node:22-bookworm bash -lc "npm run build --workspace @nova/contracts && npm run setup:oracle:z-block-chain --workspace @nova/contracts"
     else

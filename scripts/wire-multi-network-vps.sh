@@ -14,7 +14,7 @@ mkdir -p "$(dirname "$ENV_FILE")"
 cp "$EXAMPLE" "$ENV_FILE"
 
 # Ensure Z Blockchain local RPC matches running Ganache on the VPS
-if ! rg -q '^export ZBC_RPC_URL=' "$ENV_FILE"; then
+if ! grep -q '^export ZBC_RPC_URL=' "$ENV_FILE"; then
   echo 'export ZBC_RPC_URL="http://127.0.0.1:8546"' >> "$ENV_FILE"
 fi
 

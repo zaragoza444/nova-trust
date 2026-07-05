@@ -207,6 +207,6 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
   response.end(JSON.stringify({ error: "Route not found" }));
 });
 
-server.listen(config.port, () => {
-  console.log(`Nova API listening on port ${config.port}`);
+server.listen(config.port, config.host, () => {
+  console.log(`Nova API listening on ${config.host}:${config.port}`);
 });
