@@ -23,6 +23,7 @@ interface DeploymentManifest {
     complianceVenueApproved?: boolean;
   };
   cloneTokens?: Array<Record<string, unknown>>;
+  cloneTokens100B?: Array<Record<string, unknown>>;
   deployedAt?: string;
 }
 
@@ -161,6 +162,13 @@ async function main() {
   );
 
   const existingSymbols = new Set(manifest.tradableTokens.map((token) => token.symbol));
+  const existingAssetIds = new Set<string>();
+  for (const entry of [...(manifest.cloneTokens ?? []), ...(manifest.cloneTokens100B ?? [])]) {
+    if (typeof entry.assetId === "string") {
+      existingAssetIds.add(entry.assetId);
+    }
+  }
+
   const cloneResults: Array<Record<string, unknown>> = [];
   const newPools: Array<Record<string, unknown>> = [];
   const pendingTokens: Array<{
@@ -170,7 +178,12 @@ async function main() {
   let totalWzWrap = 0n;
 
   for (const token of catalog.tokens) {
-    if (existingSymbols.has(token.symbol) && !process.env.ZBC_CLONE_FORCE_REMINT) {
+    if (existingAssetIds.has(token.assetId)) {
+      console.log(`Skipping ${token.symbol} (${token.assetId}) — already minted`);
+      continue;
+    }
+
+    if (existingSymbols.has(token.symbol) && !process.env.ZBC_CLONE_FORCE_REMINT && !token.assetId.includes("-100B-")) {
       console.log(`Skipping ${token.symbol} — already present in manifest`);
       continue;
     }
@@ -211,11 +224,17 @@ async function main() {
       "WZ"
     );
 
-    manifest.tradableTokens.push({
+    const tokenEntry = {
       symbol: token.symbol,
       address: tokenAddress,
       capabilities: token.capabilities
-    });
+    };
+    const existingIndex = manifest.tradableTokens.findIndex((entry) => entry.symbol === token.symbol);
+    if (existingIndex >= 0) {
+      manifest.tradableTokens[existingIndex] = tokenEntry;
+    } else {
+      manifest.tradableTokens.push(tokenEntry);
+    }
     newPools.push(pool);
     cloneResults.push({
       assetId: token.assetId,
@@ -234,7 +253,9 @@ async function main() {
   }
 
   manifest.liquidity.pools.push(...newPools);
-  manifest.cloneTokens = [...(manifest.cloneTokens ?? []), ...cloneResults];
+  const tierKey = catalog.defaultSupply === "100000000000" ? "cloneTokens100B" : "cloneTokens";
+  const existingTier = (manifest[tierKey] ?? []) as Array<Record<string, unknown>>;
+  manifest[tierKey] = [...existingTier, ...cloneResults];
   manifest.deployedAt = new Date().toISOString();
 
   mkdirSync(path.dirname(manifestPath), { recursive: true });

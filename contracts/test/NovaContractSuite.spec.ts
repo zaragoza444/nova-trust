@@ -289,4 +289,17 @@ describe("Nova contract suite design", () => {
     assert.match(source, /NLP-\$\{token\.symbol\}-WZ/);
     assert.match(source, /setLiquidityVenue/);
   });
+
+  it("registers 100 billion supply clone token catalog", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "tokens", "clone-tokens-100b.v1.json"), "utf8")
+    ) as {
+      defaultSupply: string;
+      tokens: Array<{ assetId: string; symbol: string }>;
+    };
+
+    assert.equal(registry.defaultSupply, "100000000000");
+    assert.equal(registry.tokens.length, 9);
+    assert.ok(registry.tokens.every((token) => token.assetId.includes("-100B-001")));
+  });
 });

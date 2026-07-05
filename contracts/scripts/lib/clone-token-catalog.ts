@@ -37,7 +37,8 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "../../..");
 
 export function loadCloneTokenCatalog(): CloneTokenCatalog {
-  const filePath = path.resolve(repoRoot, "config/tokens/clone-tokens.v1.json");
+  const relativePath = process.env.ZBC_CLONE_CATALOG_PATH ?? "config/tokens/clone-tokens.v1.json";
+  const filePath = path.resolve(repoRoot, relativePath);
   return JSON.parse(readFileSync(filePath, "utf8")) as CloneTokenCatalog;
 }
 
