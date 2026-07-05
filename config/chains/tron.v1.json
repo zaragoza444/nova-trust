@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "TRON",
+    "chainId": 728126428,
+    "slug": "tron",
+    "role": "Basement foundation network",
+    "nativeSymbol": "TRX",
+    "wrappedSymbol": "WTRX",
+    "status": "Foundation",
+    "networkType": "tron",
+    "networkId": "mainnet",
+    "consensus": "DPoS",
+    "environment": "prod"
+  },
+  "pairedNetworks": [
+    {
+      "name": "Ethereum",
+      "chainId": 1,
+      "relationship": "public-evm-settlement"
+    },
+    {
+      "name": "BNB Smart Chain",
+      "chainId": 56,
+      "relationship": "public-evm-liquidity"
+    },
+    {
+      "name": "Z Blockchain",
+      "chainId": 44002,
+      "relationship": "z-bank-liquidity-bridge"
+    },
+    {
+      "name": "Nova One",
+      "chainId": 22016,
+      "relationship": "permissioned-settlement-bridge"
+    }
+  ],
+  "bridgeLanes": [
+    {
+      "from": 728126428,
+      "to": 1,
+      "status": "active",
+      "purpose": "TRON basement to Ethereum public settlement"
+    },
+    {
+      "from": 728126428,
+      "to": 56,
+      "status": "active",
+      "purpose": "TRON basement to BNB Smart Chain liquidity"
+    },
+    {
+      "from": 728126428,
+      "to": 44002,
+      "status": "planned",
+      "purpose": "TRON foundation to Z Online Bank liquidity"
+    }
+  ],
+  "tradableTokens": ["TRX", "USDT", "USDC"],
+  "capabilities": {
+    "transferable": true,
+    "tradable": true,
+    "swappable": true,
+    "zBankLoadable": false,
+    "crossBankUsable": true,
+    "platformTradingUsable": true,
+    "custodySupported": true
+  },
+  "integrations": {
+    "multiNetwork": "config/chains/multi-network.v1.json",
+    "tradableTokens": "config/tokens/public-network-tokens.v1.json",
+    "custody": "config/integrations/custody.v1.json"
+  },
+  "source": {
+    "registryPath": "config/chains/tron.v1.json",
+    "notes": "TRON basement foundation network anchoring Ethereum and BNB Smart Chain public rails."
+  }
+}

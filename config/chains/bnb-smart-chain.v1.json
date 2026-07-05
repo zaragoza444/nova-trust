@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "BNB Smart Chain",
+    "chainId": 56,
+    "slug": "bnb-smart-chain",
+    "role": "Public EVM liquidity network",
+    "nativeSymbol": "BNB",
+    "wrappedSymbol": "WBNB",
+    "status": "Active",
+    "networkType": "evm",
+    "consensus": "PoSA",
+    "environment": "prod"
+  },
+  "pairedNetworks": [
+    {
+      "name": "TRON",
+      "chainId": 728126428,
+      "relationship": "basement-foundation"
+    },
+    {
+      "name": "Ethereum",
+      "chainId": 1,
+      "relationship": "public-evm-settlement"
+    }
+  ],
+  "bridgeLanes": [
+    {
+      "from": 728126428,
+      "to": 56,
+      "status": "active",
+      "purpose": "TRON basement to BNB Smart Chain liquidity"
+    },
+    {
+      "from": 1,
+      "to": 56,
+      "status": "active",
+      "purpose": "Ethereum to BNB Smart Chain routing"
+    }
+  ],
+  "tradableTokens": ["BNB", "USDT", "USDC", "WBNB"],
+  "capabilities": {
+    "transferable": true,
+    "tradable": true,
+    "swappable": true,
+    "zBankLoadable": false,
+    "crossBankUsable": true,
+    "platformTradingUsable": true,
+    "custodySupported": true
+  },
+  "integrations": {
+    "multiNetwork": "config/chains/multi-network.v1.json",
+    "tradableTokens": "config/tokens/public-network-tokens.v1.json",
+    "custody": "config/integrations/custody.v1.json"
+  },
+  "source": {
+    "registryPath": "config/chains/bnb-smart-chain.v1.json",
+    "notes": "BNB Smart Chain public liquidity layer paired with TRON basement and Ethereum."
+  }
+}

@@ -179,4 +179,53 @@ describe("Nova contract suite design", () => {
     assert.ok(registry.deployedSafes.some((safe) => safe.name === "OMNL Admin Safe"));
     assert.ok(registry.deployedSafes.some((safe) => safe.name === "OMNL Vault Recovery Safe"));
   });
+
+  it("registers TRON as the basement foundation network with Ethereum and BNB", () => {
+    const chart = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "chains", "multi-network.v1.json"), "utf8")
+    ) as {
+      basementNetwork: { name: string; chainId: number; networkType: string };
+      publicNetworks: Array<{ name: string; chainId: number }>;
+      bridgeLanes: Array<{ from: number; to: number; status: string }>;
+    };
+
+    assert.equal(chart.basementNetwork.name, "TRON");
+    assert.equal(chart.basementNetwork.networkType, "tron");
+    assert.equal(chart.basementNetwork.chainId, 728126428);
+    assert.deepEqual(
+      chart.publicNetworks.map((network) => network.name),
+      ["TRON", "Ethereum", "BNB Smart Chain"]
+    );
+    assert.ok(chart.bridgeLanes.some((lane) => lane.from === 728126428 && lane.to === 1 && lane.status === "active"));
+    assert.ok(chart.bridgeLanes.some((lane) => lane.from === 728126428 && lane.to === 56 && lane.status === "active"));
+  });
+
+  it("documents custody support for TRON, Ethereum, and BNB Smart Chain", () => {
+    const integration = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "custody.v1.json"), "utf8")
+    ) as {
+      basementNetwork: { name: string };
+      publicNetworks: Array<{ name: string; chainId: number }>;
+      flows: { multiNetworkTreasury: { supportedPublicNetworks: number[] } };
+    };
+
+    assert.equal(integration.basementNetwork.name, "TRON");
+    assert.deepEqual(
+      integration.publicNetworks.map((network) => network.chainId),
+      [728126428, 1, 56]
+    );
+    assert.deepEqual(integration.flows.multiNetworkTreasury.supportedPublicNetworks, [728126428, 1, 56]);
+  });
+
+  it("registers cross-network stablecoins on TRON, Ethereum, and BNB", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "tokens", "public-network-tokens.v1.json"), "utf8")
+    ) as {
+      tokens: Array<{ symbol: string; networks: string[] }>;
+    };
+
+    const usdt = registry.tokens.find((token) => token.symbol === "USDT");
+    assert.ok(usdt);
+    assert.deepEqual(usdt?.networks, ["TRON", "Ethereum", "BNB Smart Chain"]);
+  });
 });

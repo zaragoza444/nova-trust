@@ -2,6 +2,9 @@
 
 ## Network Identity
 
+- Basement foundation network: `TRON` (mainnet)
+- Basement network identifier: `728126428` (cross-chain registry ID)
+- Public EVM networks: `Ethereum` (chain ID `1`), `BNB Smart Chain` (chain ID `56`)
 - Primary network name: `Nova One`
 - Primary chain ID: `22016`
 - Paired world network: `NRW World`
@@ -9,7 +12,7 @@
 - Z Online Bank world network: `Z Blockchain`
 - Z Online Bank world chain ID: `44002`
 - Consensus: `QBFT`
-- Chain family: permissioned EVM
+- Chain family: permissioned EVM for Nova settlement; public EVM and TRON for multi-network custody
 - Primary use case: all-in-one digital finance platform spanning settlement, asset tokenization, wallet operations, treasury control, and regulated participant management
 - Environments: `local`, `uat`, `prod`
 

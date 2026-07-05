@@ -13,6 +13,21 @@
   },
   "pairedNetworks": [
     {
+      "name": "TRON",
+      "chainId": 728126428,
+      "relationship": "basement-foundation"
+    },
+    {
+      "name": "Ethereum",
+      "chainId": 1,
+      "relationship": "public-evm-settlement"
+    },
+    {
+      "name": "BNB Smart Chain",
+      "chainId": 56,
+      "relationship": "public-evm-liquidity"
+    },
+    {
       "name": "Nova One",
       "chainId": 22016,
       "relationship": "primary-settlement"
@@ -29,6 +44,12 @@
     }
   ],
   "bridgeLanes": [
+    {
+      "from": 728126428,
+      "to": 44002,
+      "status": "planned",
+      "purpose": "TRON basement foundation to Z Online Bank liquidity"
+    },
     {
       "from": 22016,
       "to": 44002,
@@ -71,7 +92,8 @@
   "integrations": {
     "zBankOnline": "config/integrations/z-bank-online.v1.json",
     "tradableTokens": "config/tokens/z-block-chain-tradable-tokens.v1.json",
-    "tradingPlatforms": "config/compliance/trading-platforms.v1.json"
+    "tradingPlatforms": "config/compliance/trading-platforms.v1.json",
+    "multiNetwork": "config/chains/multi-network.v1.json"
   },
   "source": {
     "registryPath": "config/chains/z-block-chain.v1.json",

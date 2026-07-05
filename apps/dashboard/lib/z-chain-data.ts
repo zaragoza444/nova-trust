@@ -53,11 +53,15 @@ function getFallback(): ZBlockChainOverview {
       }
     },
     bridgeLanes: [
+      { from: 728126428, to: 44002, status: "planned", purpose: "TRON basement foundation to Z Online Bank liquidity" },
       { from: 22016, to: 44002, status: "active", purpose: "Nova One settlement to Z Online Bank liquidity" },
       { from: 33001, to: 44002, status: "active", purpose: "NRW World world liquidity to Z Blockchain" },
       { from: 138, to: 44002, status: "active", purpose: "Chain 138 bank rail to Z Online Bank" }
     ],
     pairedNetworks: [
+      { name: "TRON", chainId: 728126428, relationship: "basement-foundation" },
+      { name: "Ethereum", chainId: 1, relationship: "public-evm-settlement" },
+      { name: "BNB Smart Chain", chainId: 56, relationship: "public-evm-liquidity" },
       { name: "Nova One", chainId: 22016, relationship: "primary-settlement" },
       { name: "NRW World", chainId: 33001, relationship: "world-bridge" },
       { name: "Chain 138", chainId: 138, relationship: "omnl-settlement" }

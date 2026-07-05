@@ -6,18 +6,61 @@
     "channel": "M1",
     "status": "active"
   },
+  "basementNetwork": {
+    "name": "TRON",
+    "chainId": 728126428,
+    "networkType": "tron",
+    "networkId": "mainnet"
+  },
+  "publicNetworks": [
+    {
+      "chainId": 728126428,
+      "name": "TRON",
+      "networkType": "tron",
+      "networkId": "mainnet"
+    },
+    {
+      "chainId": 1,
+      "name": "Ethereum",
+      "networkType": "evm"
+    },
+    {
+      "chainId": 56,
+      "name": "BNB Smart Chain",
+      "networkType": "evm"
+    }
+  ],
   "supportedChains": [
     {
+      "chainId": 728126428,
+      "name": "TRON",
+      "networkType": "tron",
+      "networkId": "mainnet"
+    },
+    {
+      "chainId": 1,
+      "name": "Ethereum",
+      "networkType": "evm"
+    },
+    {
+      "chainId": 56,
+      "name": "BNB Smart Chain",
+      "networkType": "evm"
+    },
+    {
       "chainId": 138,
-      "name": "Chain 138"
+      "name": "Chain 138",
+      "networkType": "evm"
     },
     {
       "chainId": 22016,
-      "name": "Nova One"
+      "name": "Nova One",
+      "networkType": "evm"
     },
     {
       "chainId": 44002,
-      "name": "Z Blockchain"
+      "name": "Z Blockchain",
+      "networkType": "evm"
     }
   ],
   "primaryLiquidityChain": {
@@ -41,10 +84,11 @@
     "tradable": true,
     "swappable": true,
     "crossBankUsable": true,
-    "platformTradingUsable": true
+    "platformTradingUsable": true,
+    "multiNetworkSettlement": true
   },
   "source": {
     "registryPath": "config/integrations/z-bank-online.v1.json",
-    "notes": "Z Bank online fund loading rail for Z Blockchain and partner settlement chains."
+    "notes": "Z Bank online fund loading rail with TRON basement, Ethereum, BNB, and permissioned settlement chains."
   }
 }

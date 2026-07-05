@@ -1,10 +1,41 @@
 {
   "schemaVersion": 1,
+  "basementNetwork": {
+    "name": "TRON",
+    "chainId": 728126428,
+    "networkType": "tron",
+    "networkId": "mainnet",
+    "nativeSymbol": "TRX"
+  },
   "settlementChain": {
     "chainId": 44002,
     "name": "Z Blockchain",
     "wrappedNativeSymbol": "WZ"
   },
+  "publicNetworks": [
+    {
+      "chainId": 728126428,
+      "name": "TRON",
+      "networkType": "tron",
+      "networkId": "mainnet",
+      "nativeSymbol": "TRX",
+      "coboChainId": "TRON"
+    },
+    {
+      "chainId": 1,
+      "name": "Ethereum",
+      "networkType": "evm",
+      "nativeSymbol": "ETH",
+      "coboChainId": "ETH"
+    },
+    {
+      "chainId": 56,
+      "name": "BNB Smart Chain",
+      "networkType": "evm",
+      "nativeSymbol": "BNB",
+      "coboChainId": "BSC_BNB"
+    }
+  ],
   "providers": [
     {
       "id": "dfns",
@@ -17,9 +48,11 @@
         "policy-enforcement",
         "treasury-deposits"
       ],
+      "supportedNetworks": ["TRON", "ETH", "BSC", "EVM"],
       "zBankUseCases": [
         "Treasury wallet provisioning for Z Blockchain fund loads",
-        "Signed settlement transfers to chain 44002"
+        "Signed settlement transfers to chain 44002",
+        "Multi-network operational wallets on TRON, Ethereum, and BNB"
       ]
     },
     {
@@ -32,9 +65,11 @@
         "multi-chain-balances",
         "withdrawals"
       ],
+      "supportedNetworks": ["TRON", "ETH", "BSC_BNB"],
       "zBankUseCases": [
         "Operational wallet balances for Z Bank online loads",
-        "Withdrawal rail once callback URL is registered"
+        "Withdrawal rail once callback URL is registered",
+        "Cross-network TRON, Ethereum, and BNB Smart Chain treasury routing"
       ],
       "notes": "Dev portal key expires 2026-08-01. Register callback URL before production withdrawals."
     }
@@ -50,10 +85,15 @@
       "custodyPath": "cobo-wallet -> bank-rail",
       "webhookEndpoint": "/api/custody/cobo/webhook",
       "callbackEndpoint": "/api/custody/cobo/callback"
+    },
+    "multiNetworkTreasury": {
+      "basementNetworkId": 728126428,
+      "supportedPublicNetworks": [728126428, 1, 56],
+      "custodyPath": "cobo-multi-chain -> tron-basement -> eth/bnb routing"
     }
   },
   "source": {
     "registryPath": "config/integrations/custody.v1.json",
-    "notes": "Custody bindings for Z Blockchain and Z Bank Online. Secrets are loaded from environment variables only."
+    "notes": "Custody bindings for TRON basement, Ethereum, BNB Smart Chain, Z Blockchain, and Z Bank Online."
   }
 }

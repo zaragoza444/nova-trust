@@ -1,3 +1,5 @@
+export type NetworkType = "evm" | "tron";
+
 export interface ChainProfile {
   name: string;
   chainId: number;
@@ -6,8 +8,47 @@ export interface ChainProfile {
   nativeSymbol: string;
   wrappedSymbol: string;
   status: string;
+  networkType: NetworkType;
+  networkId?: string;
   tradableTokens?: string[];
 }
+
+export const tronProfile: ChainProfile = {
+  name: "TRON",
+  chainId: 728126428,
+  slug: "tron",
+  role: "Basement foundation network",
+  nativeSymbol: "TRX",
+  wrappedSymbol: "WTRX",
+  status: "Foundation",
+  networkType: "tron",
+  networkId: "mainnet",
+  tradableTokens: ["USDT", "USDC", "TRX"]
+};
+
+export const ethereumProfile: ChainProfile = {
+  name: "Ethereum",
+  chainId: 1,
+  slug: "ethereum",
+  role: "Public EVM settlement network",
+  nativeSymbol: "ETH",
+  wrappedSymbol: "WETH",
+  status: "Active",
+  networkType: "evm",
+  tradableTokens: ["USDT", "USDC", "ETH"]
+};
+
+export const bnbSmartChainProfile: ChainProfile = {
+  name: "BNB Smart Chain",
+  chainId: 56,
+  slug: "bnb-smart-chain",
+  role: "Public EVM liquidity network",
+  nativeSymbol: "BNB",
+  wrappedSymbol: "WBNB",
+  status: "Active",
+  networkType: "evm",
+  tradableTokens: ["USDT", "USDC", "BNB"]
+};
 
 export const chain138Profile: ChainProfile = {
   name: "Chain 138",
@@ -17,6 +58,7 @@ export const chain138Profile: ChainProfile = {
   nativeSymbol: "ETH",
   wrappedSymbol: "WNOVA",
   status: "Settlement",
+  networkType: "evm",
   tradableTokens: ["M1FIAT", "ACX", "SHIVA"]
 };
 
@@ -28,6 +70,7 @@ export const novaOneProfile: ChainProfile = {
   nativeSymbol: "NOVA",
   wrappedSymbol: "WNOVA",
   status: "Primary",
+  networkType: "evm",
   tradableTokens: ["M1FIAT", "ACX", "SHIVA"]
 };
 
@@ -39,6 +82,7 @@ export const zBlockChainProfile: ChainProfile = {
   nativeSymbol: "Z",
   wrappedSymbol: "WZ",
   status: "Production",
+  networkType: "evm",
   tradableTokens: ["M1FIAT", "ACX", "SHIVA"]
 };
 
@@ -49,12 +93,31 @@ export const nrwWorldProfile: ChainProfile = {
   role: "World liquidity and bridge chain",
   nativeSymbol: "NRW",
   wrappedSymbol: "WNRW",
-  status: "Bridge"
+  status: "Bridge",
+  networkType: "evm"
 };
 
-export const chainProfiles: ChainProfile[] = [chain138Profile, novaOneProfile, nrwWorldProfile, zBlockChainProfile];
+export const multiNetworkProfiles: ChainProfile[] = [tronProfile, ethereumProfile, bnbSmartChainProfile];
 
+export const permissionedChainProfiles: ChainProfile[] = [
+  chain138Profile,
+  novaOneProfile,
+  nrwWorldProfile,
+  zBlockChainProfile
+];
+
+export const chainProfiles: ChainProfile[] = [...multiNetworkProfiles, ...permissionedChainProfiles];
+
+export const basementNetwork = tronProfile;
 export const primaryChain = novaOneProfile;
 export const settlementChain = chain138Profile;
 export const bridgeChain = nrwWorldProfile;
 export const zBankChain = zBlockChainProfile;
+
+export function formatChainIdentifier(chain: ChainProfile): string {
+  if (chain.networkType === "tron") {
+    return `TRON ${chain.networkId ?? "mainnet"}`;
+  }
+
+  return `Chain ${chain.chainId}`;
+}

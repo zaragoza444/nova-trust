@@ -42,3 +42,39 @@ export function getZBlockChainOverview() {
     }
   };
 }
+
+export function loadMultiNetworkChart() {
+  return readJson("config/chains/multi-network.v1.json");
+}
+
+export function loadPublicNetworkTokens() {
+  return readJson("config/tokens/public-network-tokens.v1.json");
+}
+
+export function getMultiNetworkOverview() {
+  const chart = loadMultiNetworkChart() as {
+    basementNetwork: Record<string, unknown>;
+    publicNetworks: Array<Record<string, unknown>>;
+    bridgeLanes: Array<Record<string, unknown>>;
+    permissionedBridges: Array<Record<string, unknown>>;
+    capabilities: Record<string, boolean>;
+    integrations: Record<string, string>;
+  };
+  const tokenRegistry = loadPublicNetworkTokens() as {
+    networks: Array<Record<string, unknown>>;
+    tokens: Array<Record<string, unknown>>;
+  };
+
+  return {
+    chart,
+    tokens: tokenRegistry.tokens,
+    networks: tokenRegistry.networks,
+    summary: {
+      basementNetwork: chart.basementNetwork,
+      publicNetworkCount: chart.publicNetworks.length,
+      bridgeLaneCount: chart.bridgeLanes.length,
+      permissionedBridgeCount: chart.permissionedBridges.length,
+      capabilities: chart.capabilities
+    }
+  };
+}

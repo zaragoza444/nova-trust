@@ -5,6 +5,7 @@ import { handleAssetsOverview } from "./routes/assets";
 import { handleDashboard } from "./routes/dashboard";
 import { handleHealth } from "./routes/health";
 import { handleZBlockChainChart } from "./routes/z-chain";
+import { handleMultiNetworkChart } from "./routes/networks";
 import { handleTradingTokensOverview } from "./routes/trading";
 import { handleZBankIntegrationOverview, handleZBankLoadFunds } from "./routes/zbank";
 import { handleCustodyHealth, handleCustodyOverview, handleCoboCallback, handleCoboWebhook } from "./routes/custody";
@@ -107,6 +108,16 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     handleZBlockChainChart(request, response);
+    return;
+  }
+
+  if (request.url === "/api/networks/multi") {
+    if (!requestRole || !canAccess("/api/networks/multi", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleMultiNetworkChart(request, response);
     return;
   }
 
