@@ -29,6 +29,7 @@ deploy/.env.production
 deploy/.env.z-wallet
 deploy/.env.z-production
 deploy/.env.international
+deploy/proxmox/github-secrets.env
 custody.env
 **/custody.env
 artifacts/

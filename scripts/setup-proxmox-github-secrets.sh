@@ -25,8 +25,13 @@ done
 
 require_var() {
   local name="$1"
-  if [ -z "${!name:-}" ] || [[ "${!name}" == *"???"* ]]; then
-    echo "ERROR: Set ${name} in deploy/proxmox/github-secrets.env (management IP, not LXC IP)"
+  local value="${!name:-}"
+  if [ -z "$value" ]; then
+    echo "ERROR: Set ${name} in deploy/proxmox/github-secrets.env"
+    exit 1
+  fi
+  if [[ "$value" == *"???"* ]]; then
+    echo "ERROR: Replace placeholder in ${name} (run discover-proxmox-management-ips.sh --write)"
     exit 1
   fi
 }

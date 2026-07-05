@@ -579,6 +579,18 @@ describe("Nova contract suite design", () => {
     );
   });
 
+  it("documents Proxmox management IP discovery and secrets bootstrap", () => {
+    const discover = readFileSync(path.resolve(repoRoot, "scripts", "discover-proxmox-management-ips.sh"), "utf8");
+    const bootstrap = readFileSync(path.resolve(repoRoot, "scripts", "bootstrap-proxmox-z-deploy.sh"), "utf8");
+
+    assert.match(discover, /5824/);
+    assert.match(discover, /5825/);
+    assert.match(discover, /r630-04/);
+    assert.match(bootstrap, /discover-proxmox-management-ips\.sh/);
+    assert.match(bootstrap, /setup-proxmox-github-secrets\.sh/);
+    assert.match(bootstrap, /--apply/);
+  });
+
   it("falls back to plain tmux on VPS for Nova go-live", () => {
     const goLive = readFileSync(path.resolve(repoRoot, "scripts", "go-live.sh"), "utf8");
     assert.match(goLive, /tmux_cmd\(\)/);
