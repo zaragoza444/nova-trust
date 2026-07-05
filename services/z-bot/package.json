@@ -1,0 +1,11 @@
+{
+  "name": "@z/bot",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node ./dist/runner.js",
+    "dev": "npm run build && node ./dist/runner.js"
+  },
+  "dependencies": {}
+}

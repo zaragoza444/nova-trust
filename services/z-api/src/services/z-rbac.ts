@@ -96,6 +96,46 @@ export const accessPolicies: AccessPolicy[] = [
     route: "/api/zchart/markets",
     roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
     approvalRequired: false
+  },
+  {
+    route: "/api/zbot/overview",
+    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
+    approvalRequired: false
+  },
+  {
+    route: "/api/zbot/status",
+    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
+    approvalRequired: false
+  },
+  {
+    route: "/api/zbot/signals",
+    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "AUDITOR"],
+    approvalRequired: false
+  },
+  {
+    route: "/api/zbot/run",
+    roles: ["SUPER_ADMIN", "TREASURY_OPERATOR"],
+    approvalRequired: true
+  },
+  {
+    route: "/api/zbot/start",
+    roles: ["SUPER_ADMIN", "TREASURY_OPERATOR"],
+    approvalRequired: true
+  },
+  {
+    route: "/api/zbot/stop",
+    roles: ["SUPER_ADMIN", "TREASURY_OPERATOR"],
+    approvalRequired: true
+  },
+  {
+    route: "/api/zswap/quote",
+    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
+    approvalRequired: false
+  },
+  {
+    route: "/api/zswap/swap",
+    roles: ["SUPER_ADMIN", "TREASURY_OPERATOR"],
+    approvalRequired: true
   }
 ];
 

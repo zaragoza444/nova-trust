@@ -11,6 +11,16 @@ import { handleZWalletBalances, handleZWalletOverview, handleZWalletTransfer } f
 import { handleCustodyHealth, handleCustodyOverview, handleCoboCallback, handleCoboWebhook } from "./routes/custody";
 import { handleOraclePricesGet, handleOraclePricesPut } from "./routes/oracle";
 import { handleZEcosystemOverview, handleZChartMarkets, handleZSwapPools, handleZTradeMarkets } from "./routes/z-ecosystem";
+import {
+  handleZBotOverview,
+  handleZBotRun,
+  handleZBotSignals,
+  handleZBotStart,
+  handleZBotStatus,
+  handleZBotStop,
+  handleZSwapExecute,
+  handleZSwapQuote
+} from "./routes/z-bot";
 import { canAccess, type ZRole } from "./services/z-rbac";
 
 const config = loadZApiConfig();
@@ -82,6 +92,86 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     handleZChartMarkets(request, response);
+    return;
+  }
+
+  if (request.url === "/api/zbot/overview") {
+    if (!requestRole || !canAccess("/api/zbot/overview", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleZBotOverview(request, response);
+    return;
+  }
+
+  if (request.url === "/api/zbot/status") {
+    if (!requestRole || !canAccess("/api/zbot/status", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleZBotStatus(request, response);
+    return;
+  }
+
+  if (request.url === "/api/zbot/signals") {
+    if (!requestRole || !canAccess("/api/zbot/signals", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleZBotSignals(request, response);
+    return;
+  }
+
+  if (request.url === "/api/zbot/run" && request.method === "POST") {
+    if (!requestRole || !canAccess("/api/zbot/run", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleZBotRun(request, response);
+    return;
+  }
+
+  if (request.url === "/api/zbot/start" && request.method === "POST") {
+    if (!requestRole || !canAccess("/api/zbot/start", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleZBotStart(request, response);
+    return;
+  }
+
+  if (request.url === "/api/zbot/stop" && request.method === "POST") {
+    if (!requestRole || !canAccess("/api/zbot/stop", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleZBotStop(request, response);
+    return;
+  }
+
+  if (request.url === "/api/zswap/quote" && request.method === "POST") {
+    if (!requestRole || !canAccess("/api/zswap/quote", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleZSwapQuote(request, response);
+    return;
+  }
+
+  if (request.url === "/api/zswap/swap" && request.method === "POST") {
+    if (!requestRole || !canAccess("/api/zswap/swap", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleZSwapExecute(request, response);
     return;
   }
 

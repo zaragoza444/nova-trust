@@ -68,3 +68,21 @@ services:
       - "3100:3100"
     depends_on:
       - z-api
+
+  z-bot:
+    image: node:22-bookworm
+    restart: unless-stopped
+    container_name: z-bot-1
+    working_dir: /work
+    env_file:
+      - .env.z-production
+    environment:
+      Z_API_URL: "http://z-api:4100"
+      Z_BOT_INTERVAL_SECONDS: "60"
+      Z_BOT_AUTO_START: "true"
+    command: >-
+      bash -lc "npm install && npm run build --workspace @z/bot && node services/z-bot/dist/runner.js"
+    volumes:
+      - ..:/work
+    depends_on:
+      - z-api

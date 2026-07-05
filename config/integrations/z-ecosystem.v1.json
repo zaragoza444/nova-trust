@@ -64,6 +64,14 @@
       "path": "/zchart",
       "apiPath": "/api/zchart/markets",
       "description": "Live oracle-priced markets dashboard for all Z Chain tradable assets."
+    },
+    {
+      "id": "z-bot",
+      "name": "Z Bot",
+      "binanceAnalog": "Binance Trading Bots",
+      "path": "/zbot",
+      "apiPath": "/api/zbot/overview",
+      "description": "Automated international trading across TRON, Ethereum, BNB, and Z Chain settlement."
     }
   ],
   "productionWallet": {
@@ -77,7 +85,8 @@
     "tradingPlatforms": "config/compliance/z-trading-platforms.v1.json",
     "priceOracle": "config/oracles/z-block-chain-prices.v1.json",
     "chainChart": "config/chains/z-block-chain.v1.json",
-    "internationalWiring": "config/integrations/z-international-wiring.v1.json"
+    "internationalWiring": "config/integrations/z-international-wiring.v1.json",
+    "zBot": "config/integrations/z-bot-international-trading.v1.json"
   },
   "source": {
     "registryPath": "config/integrations/z-ecosystem.v1.json",

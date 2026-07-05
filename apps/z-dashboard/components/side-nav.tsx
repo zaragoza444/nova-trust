@@ -8,6 +8,7 @@ const routeMap: Record<string, string> = {
   "Z Chart": "/zchart",
   "Z Trade": "/ztrade",
   "Z Swap": "/zswap",
+  "Z Bot": "/zbot",
   "Z Wallet": "/wallet",
   "Z Bank": "/zbank",
   "Z Chain": "/z-chain",
@@ -23,7 +24,7 @@ export function SideNav() {
         <div className="brandMark">Z</div>
         <div>
           <div className="brandTitle">Z Ecosystem</div>
-          <div className="brandSubtitle">Chain · Wallet · Bank · Swap · Trade · Chart</div>
+          <div className="brandSubtitle">Chain · Wallet · Bank · Swap · Trade · Chart · Bot</div>
         </div>
       </div>
 

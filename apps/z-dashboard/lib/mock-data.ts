@@ -1,7 +1,7 @@
 export const featureGroups = [
   {
     title: "Markets",
-    items: ["Z Chart", "Z Trade", "Z Swap"]
+    items: ["Z Chart", "Z Trade", "Z Swap", "Z Bot"]
   },
   {
     title: "Finance",

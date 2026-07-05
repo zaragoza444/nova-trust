@@ -491,7 +491,7 @@ describe("Nova contract suite design", () => {
     assert.equal(registry.brand.style, "binance-production");
     assert.deepEqual(
       registry.products.map((product) => product.id),
-      ["z-chain", "z-wallet", "z-bank", "z-swap", "z-trade", "z-chart"]
+      ["z-chain", "z-wallet", "z-bank", "z-swap", "z-trade", "z-chart", "z-bot"]
     );
     assert.doesNotMatch(zChainChart, /Nova One/);
     assert.doesNotMatch(multiNetwork, /Z Blockchain/);
@@ -506,5 +506,24 @@ describe("Nova contract suite design", () => {
     assert.match(zGoLive, /\/zchart/);
     assert.match(packageJson, /dev:z-dashboard/);
     assert.match(packageJson, /start:z-api/);
+  });
+
+  it("registers Z Bot international trading automation", () => {
+    const botRegistry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-bot-international-trading.v1.json"), "utf8")
+    ) as {
+      product: { id: string };
+      internationalNetworks: string[];
+      strategies: Array<{ id: string }>;
+    };
+    const zAppSource = readFileSync(path.resolve(repoRoot, "services", "z-api", "src", "app.ts"), "utf8");
+    const zBotScript = readFileSync(path.resolve(repoRoot, "scripts", "z-bot-run.sh"), "utf8");
+
+    assert.equal(botRegistry.product.id, "z-bot");
+    assert.deepEqual(botRegistry.internationalNetworks, ["TRON", "Ethereum", "BNB Smart Chain"]);
+    assert.ok(botRegistry.strategies.some((strategy) => strategy.id === "oracle-pool-arb"));
+    assert.match(zAppSource, /\/api\/zbot\/overview/);
+    assert.match(zAppSource, /\/api\/zswap\/swap/);
+    assert.match(zBotScript, /@z\/bot/);
   });
 });

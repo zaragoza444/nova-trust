@@ -5,6 +5,7 @@ import { getMultiNetworkConfigStatus, loadMultiNetworkConfig } from "../config/m
 import { zBlockChainProfile } from "./chain-registry";
 import { MultiNetworkService } from "./multi-network-service";
 import { getOraclePriceOverview } from "./price-oracle";
+import { getZBotHealthSummary } from "./z-bot-service";
 
 const repoRoot = path.resolve(__dirname, "../../../..");
 
@@ -74,10 +75,11 @@ export async function getGoLiveStatus() {
   const manifest = loadManifestSnapshot();
   const rpcUrl = process.env.ZBC_RPC_URL ?? config.zBlockChainRpcUrl;
   const multiNetwork = new MultiNetworkService();
-  const [zBlockChain, networkHealth, oracle] = await Promise.all([
+  const [zBlockChain, networkHealth, oracle, zBot] = await Promise.all([
     checkZBlockChainRpc(rpcUrl),
     multiNetwork.runHealthCheck(),
-    Promise.resolve(getOraclePriceOverview())
+    Promise.resolve(getOraclePriceOverview()),
+    getZBotHealthSummary()
   ]);
   const btc = manifest ? await checkBtcClone(rpcUrl, manifest) : { minted: false, symbol: "BTC" as const };
 
@@ -117,6 +119,7 @@ export async function getGoLiveStatus() {
       overviewEndpoint: "/api/z-wallet/overview",
       balancesEndpoint: "/api/z-wallet/balances"
     },
+    zBot,
     endpoints: {
       apiHealth: "/health",
       goLiveStatus: "/api/go-live/status",
@@ -133,6 +136,9 @@ export async function getGoLiveStatus() {
       zChartPage: `${process.env.Z_DASHBOARD_URL ?? "http://127.0.0.1:3100"}/zchart`,
       zTradePage: `${process.env.Z_DASHBOARD_URL ?? "http://127.0.0.1:3100"}/ztrade`,
       zSwapPage: `${process.env.Z_DASHBOARD_URL ?? "http://127.0.0.1:3100"}/zswap`,
+      zBotPage: `${process.env.Z_DASHBOARD_URL ?? "http://127.0.0.1:3100"}/zbot`,
+      zBotOverview: "/api/zbot/overview",
+      zBotStatus: "/api/zbot/status",
       zWalletPage: `${process.env.Z_DASHBOARD_URL ?? "http://127.0.0.1:3100"}/wallet`,
       zBankPage: `${process.env.Z_DASHBOARD_URL ?? "http://127.0.0.1:3100"}/zbank`,
       zChainPage: `${process.env.Z_DASHBOARD_URL ?? "http://127.0.0.1:3100"}/z-chain`

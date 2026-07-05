@@ -42,3 +42,4 @@ logs/
 data/
 services/indexer/runtime/
 contracts/deployments/*.json
+scripts/__pycache__/
