@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "settlementChain": {
+    "chainId": 44002,
+    "name": "Z Block Chain",
+    "wrappedNativeSymbol": "WZ"
+  },
+  "providers": [
+    {
+      "id": "dfns",
+      "name": "Dfns",
+      "role": "primary-custody",
+      "access": "ManagedFullAdminAccess",
+      "capabilities": [
+        "wallet-management",
+        "transaction-signing",
+        "policy-enforcement",
+        "treasury-deposits"
+      ],
+      "zBankUseCases": [
+        "Treasury wallet provisioning for Z Block Chain fund loads",
+        "Signed settlement transfers to chain 44002"
+      ]
+    },
+    {
+      "id": "cobo",
+      "name": "Cobo WaaS 2.0",
+      "role": "secondary-custody",
+      "access": "Viewer, Operator, Spender — All Wallets",
+      "capabilities": [
+        "wallet-management",
+        "multi-chain-balances",
+        "withdrawals"
+      ],
+      "zBankUseCases": [
+        "Operational wallet balances for Z Bank online loads",
+        "Withdrawal rail once callback URL is registered"
+      ],
+      "notes": "Dev portal key expires 2026-08-01. Register callback URL before production withdrawals."
+    }
+  ],
+  "flows": {
+    "zBankFundLoad": {
+      "settlementChainId": 44002,
+      "custodyPath": "dfns-treasury -> z-block-chain-settlement",
+      "supportedTokens": ["M1FIAT", "ACX", "SHIVA"]
+    },
+    "zBankWithdrawal": {
+      "status": "pending-callback-url",
+      "custodyPath": "cobo-wallet -> bank-rail"
+    }
+  },
+  "source": {
+    "registryPath": "config/integrations/custody.v1.json",
+    "notes": "Custody bindings for Z Block Chain and Z Bank Online. Secrets are loaded from environment variables only."
+  }
+}

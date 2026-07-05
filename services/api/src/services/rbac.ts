@@ -51,6 +51,16 @@ export const accessPolicies: AccessPolicy[] = [
     route: "/api/z-chain/chart",
     roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
     approvalRequired: false
+  },
+  {
+    route: "/api/custody/integration",
+    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "AUDITOR"],
+    approvalRequired: false
+  },
+  {
+    route: "/api/custody/health",
+    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR"],
+    approvalRequired: false
   }
 ];
 

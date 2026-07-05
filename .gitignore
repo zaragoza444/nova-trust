@@ -25,6 +25,8 @@ coverage/
 .env
 .env.local
 .env.*.local
+custody.env
+**/custody.env
 artifacts/
 cache/
 typechain-types/

@@ -7,6 +7,7 @@ import { handleHealth } from "./routes/health";
 import { handleZBlockChainChart } from "./routes/z-chain";
 import { handleTradingTokensOverview } from "./routes/trading";
 import { handleZBankIntegrationOverview, handleZBankLoadFunds } from "./routes/zbank";
+import { handleCustodyHealth, handleCustodyOverview } from "./routes/custody";
 import { canAccess, type NovaRole } from "./services/rbac";
 
 const config = loadApiConfig();
@@ -106,6 +107,26 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     handleZBlockChainChart(request, response);
+    return;
+  }
+
+  if (request.url === "/api/custody/integration") {
+    if (!requestRole || !canAccess("/api/custody/integration", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleCustodyOverview(request, response);
+    return;
+  }
+
+  if (request.url === "/api/custody/health") {
+    if (!requestRole || !canAccess("/api/custody/health", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleCustodyHealth(request, response);
     return;
   }
 

@@ -6,6 +6,7 @@ import {
   loadZBankIntegration,
   validateLoadAmount
 } from "./tradable-tokens";
+import { getCustodyConfigStatus } from "../config/custody-config";
 
 export interface FundLoadRequest {
   walletAddress: string;
@@ -61,7 +62,12 @@ export class ZBankFundLoaderService {
         type: platform.type,
         supportedTokens: platform.supportedTokens,
         capabilities: platform.capabilities
-      }))
+      })),
+      custody: {
+        settlementChainId: integration.primaryLiquidityChain?.chainId ?? 44002,
+        providers: getCustodyConfigStatus(),
+        healthEndpoint: "/api/custody/health"
+      }
     };
   }
 

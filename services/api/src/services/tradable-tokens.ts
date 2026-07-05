@@ -62,6 +62,11 @@ export interface ZBankIntegration {
     status: string;
   };
   supportedChains: Array<{ chainId: number; name: string }>;
+  primaryLiquidityChain?: {
+    chainId: number;
+    name: string;
+    wrappedNativeSymbol?: string;
+  };
   supportedTokens: string[];
   loadMethods: Array<{
     id: string;
