@@ -46,8 +46,10 @@
       "supportedTokens": ["M1FIAT", "ACX", "SHIVA"]
     },
     "zBankWithdrawal": {
-      "status": "pending-callback-url",
-      "custodyPath": "cobo-wallet -> bank-rail"
+      "status": "callback-ready",
+      "custodyPath": "cobo-wallet -> bank-rail",
+      "webhookEndpoint": "/api/custody/cobo/webhook",
+      "callbackEndpoint": "/api/custody/cobo/callback"
     }
   },
   "source": {

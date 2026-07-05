@@ -1,4 +1,7 @@
 import { randomUUID } from "node:crypto";
+import { getCustodyConfigStatus, loadCustodyConfig } from "../config/custody-config";
+import { DfnsCustodyClient } from "./dfns-client";
+import { DfnsSettlementService } from "./dfns-settlement-service";
 import {
   getTradableToken,
   loadTradableTokenRegistry,
@@ -6,13 +9,23 @@ import {
   loadZBankIntegration,
   validateLoadAmount
 } from "./tradable-tokens";
-import { getCustodyConfigStatus } from "../config/custody-config";
 
 export interface FundLoadRequest {
   walletAddress: string;
   tokenSymbol: string;
   amount: string;
   bankReference?: string;
+}
+
+export interface FundLoadCustody {
+  provider: "dfns";
+  status: "signed" | "skipped" | "failed";
+  walletId?: string;
+  signatureId?: string;
+  signature?: string;
+  network?: string;
+  message: string;
+  error?: string;
 }
 
 export interface FundLoadResult {
@@ -33,11 +46,18 @@ export interface FundLoadResult {
     platformTradingUsable: boolean;
   };
   supportedPlatforms: string[];
+  custody?: FundLoadCustody;
   message: string;
   createdAt: string;
 }
 
 export class ZBankFundLoaderService {
+  private readonly custodyConfig = loadCustodyConfig();
+  private readonly dfnsSettlement = new DfnsSettlementService(
+    this.custodyConfig.dfns,
+    new DfnsCustodyClient(this.custodyConfig.dfns)
+  );
+
   getIntegrationOverview() {
     const integration = loadZBankIntegration();
     const tokenRegistry = loadTradableTokenRegistry();
@@ -66,12 +86,14 @@ export class ZBankFundLoaderService {
       custody: {
         settlementChainId: integration.primaryLiquidityChain?.chainId ?? 44002,
         providers: getCustodyConfigStatus(),
-        healthEndpoint: "/api/custody/health"
+        healthEndpoint: "/api/custody/health",
+        webhookEndpoint: "/api/custody/cobo/webhook",
+        callbackEndpoint: "/api/custody/cobo/callback"
       }
     };
   }
 
-  requestFundLoad(input: FundLoadRequest): FundLoadResult {
+  async requestFundLoad(input: FundLoadRequest): Promise<FundLoadResult> {
     const integration = loadZBankIntegration();
     const tokenRegistry = loadTradableTokenRegistry();
     const platforms = loadTradingPlatformRegistry();
@@ -94,16 +116,35 @@ export class ZBankFundLoaderService {
       .filter((platform) => platform.supportedTokens.includes(token.symbol))
       .map((platform) => platform.name);
 
+    const requestId = randomUUID();
+    const settlementChainId = integration.primaryLiquidityChain?.chainId ?? 44002;
+    const custody = await this.dfnsSettlement.signFundLoadSettlement({
+      requestId,
+      walletAddress: input.walletAddress,
+      tokenSymbol: token.symbol,
+      amount: input.amount,
+      settlementChainId,
+      bankReference: input.bankReference
+    });
+
+    if (custody.status === "failed" && this.custodyConfig.dfns.enabled) {
+      return this.reject(
+        input,
+        integration.provider.name,
+        custody.error ?? "Dfns treasury could not sign the Z Bank settlement attestation"
+      );
+    }
+
     return {
-      requestId: randomUUID(),
+      requestId,
       status: "accepted",
       provider: integration.provider.name,
       channel: integration.provider.channel,
       walletAddress: input.walletAddress,
       tokenSymbol: token.symbol,
       amount: input.amount,
-      chainId: tokenRegistry.chain.settlementChain?.chainId ?? 44002,
-      settlementChainId: 44002,
+      chainId: tokenRegistry.chain.settlementChain?.chainId ?? settlementChainId,
+      settlementChainId,
       capabilities: {
         transferable: token.capabilities.transferable,
         tradable: token.capabilities.tradable,
@@ -112,9 +153,20 @@ export class ZBankFundLoaderService {
         platformTradingUsable: integration.capabilities.platformTradingUsable
       },
       supportedPlatforms,
+      custody: {
+        provider: "dfns",
+        status: custody.status,
+        walletId: custody.walletId,
+        signatureId: custody.signatureId,
+        signature: custody.signature,
+        network: custody.network,
+        message: custody.message,
+        error: custody.error
+      },
       message:
-        `Z Bank online accepted ${input.amount} ${token.symbol} load to ${input.walletAddress}. ` +
-        "Funds settle on Z Block Chain (44002) and become swappable, tradable, and transferable across approved banks and trading platforms.",
+        custody.status === "signed"
+          ? `Z Bank online accepted ${input.amount} ${token.symbol} load to ${input.walletAddress}. Dfns treasury signed settlement for Z Block Chain (${settlementChainId}).`
+          : `Z Bank online accepted ${input.amount} ${token.symbol} load to ${input.walletAddress}. Funds settle on Z Block Chain (${settlementChainId}) and become swappable, tradable, and transferable across approved banks and trading platforms.`,
       createdAt: new Date().toISOString()
     };
   }

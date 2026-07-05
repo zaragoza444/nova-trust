@@ -33,7 +33,7 @@ export async function handleZBankLoadFunds(request: IncomingMessage, response: S
       bankReference?: string;
     }>(request);
 
-    const result = service.requestFundLoad({
+    const result = await service.requestFundLoad({
       walletAddress: body.walletAddress ?? "",
       tokenSymbol: body.tokenSymbol ?? "",
       amount: body.amount ?? "",

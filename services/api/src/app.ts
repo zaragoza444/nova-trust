@@ -7,7 +7,7 @@ import { handleHealth } from "./routes/health";
 import { handleZBlockChainChart } from "./routes/z-chain";
 import { handleTradingTokensOverview } from "./routes/trading";
 import { handleZBankIntegrationOverview, handleZBankLoadFunds } from "./routes/zbank";
-import { handleCustodyHealth, handleCustodyOverview } from "./routes/custody";
+import { handleCustodyHealth, handleCustodyOverview, handleCoboCallback, handleCoboWebhook } from "./routes/custody";
 import { canAccess, type NovaRole } from "./services/rbac";
 
 const config = loadApiConfig();
@@ -15,7 +15,7 @@ const config = loadApiConfig();
 const server = createServer((request: IncomingMessage, response: ServerResponse) => {
   response.setHeader("access-control-allow-origin", config.corsOrigin);
   response.setHeader("access-control-allow-methods", "GET,POST,OPTIONS");
-  response.setHeader("access-control-allow-headers", "content-type,authorization,x-nova-role");
+  response.setHeader("access-control-allow-headers", "content-type,authorization,x-nova-role,biz_timestamp,biz_resp_signature");
 
   if (request.method === "OPTIONS") {
     response.writeHead(204);
@@ -127,6 +127,16 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     void handleCustodyHealth(request, response);
+    return;
+  }
+
+  if (request.url === "/api/custody/cobo/webhook" && request.method === "POST") {
+    void handleCoboWebhook(request, response);
+    return;
+  }
+
+  if (request.url === "/api/custody/cobo/callback" && request.method === "POST") {
+    void handleCoboCallback(request, response);
     return;
   }
 

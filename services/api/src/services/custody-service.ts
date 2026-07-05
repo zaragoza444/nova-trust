@@ -94,7 +94,7 @@ export class CustodyService {
       );
     }
     if (cobo.ok) {
-      notes.push("Register a Cobo callback URL before enabling withdrawal flows.");
+      notes.push("Register Cobo webhook and callback URLs on Cobo Portal before enabling production withdrawals.");
     }
 
     return {
