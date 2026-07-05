@@ -1,5 +1,5 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { loadApiConfig } from "./config";
+import { loadApiConfig, resolveCorsOrigin } from "./config";
 import { handleAdminOverview, handleAdminQueue } from "./routes/admin";
 import { handleAssetsOverview } from "./routes/assets";
 import { handleDashboard } from "./routes/dashboard";
@@ -9,6 +9,7 @@ import { handleMultiNetworkChart, handleMultiNetworkHealth } from "./routes/netw
 import { handleTradingTokensOverview } from "./routes/trading";
 import { handleZBankIntegrationOverview, handleZBankLoadFunds } from "./routes/zbank";
 import { handleGoLiveStatus } from "./routes/go-live";
+import { handleInternationalWiring } from "./routes/international";
 import { handleCustodyHealth, handleCustodyOverview, handleCoboCallback, handleCoboWebhook } from "./routes/custody";
 import { handleOraclePricesGet, handleOraclePricesPut } from "./routes/oracle";
 import { canAccess, type NovaRole } from "./services/rbac";
@@ -16,7 +17,11 @@ import { canAccess, type NovaRole } from "./services/rbac";
 const config = loadApiConfig();
 
 const server = createServer((request: IncomingMessage, response: ServerResponse) => {
-  response.setHeader("access-control-allow-origin", config.corsOrigin);
+  const requestOrigin = request.headers.origin;
+  response.setHeader(
+    "access-control-allow-origin",
+    resolveCorsOrigin(typeof requestOrigin === "string" ? requestOrigin : undefined, config.corsOrigins)
+  );
   response.setHeader("access-control-allow-methods", "GET,POST,PUT,OPTIONS");
   response.setHeader("access-control-allow-headers", "content-type,authorization,x-nova-role,biz_timestamp,biz_resp_signature");
 
@@ -135,6 +140,16 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     void handleMultiNetworkHealth(request, response);
+    return;
+  }
+
+  if (request.url === "/api/networks/international") {
+    if (!requestRole || !canAccess("/api/networks/international", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleInternationalWiring(request, response);
     return;
   }
 
