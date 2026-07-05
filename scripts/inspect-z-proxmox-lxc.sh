@@ -11,7 +11,25 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 REGISTRY="$ROOT/config/integrations/z-proxmox-lxc.v1.json"
-VMIDS=(5820 5821 5822 5823 5824 5825 5826 5827 5828)
+PROXMOX_NODE="${PROXMOX_NODE:-}"
+
+read_node_vmids() {
+  python3 - "$REGISTRY" "$PROXMOX_NODE" <<'PY'
+import json, sys
+registry = json.load(open(sys.argv[1]))
+node_filter = sys.argv[2]
+items = registry["containers"]
+if node_filter:
+    items = [i for i in items if i.get("host") == node_filter]
+for item in sorted(items, key=lambda x: x["vmid"]):
+    print(item["vmid"])
+PY
+}
+
+mapfile -t VMIDS < <(read_node_vmids)
+if [ ${#VMIDS[@]} -eq 0 ]; then
+  VMIDS=(5820 5821 5822 5823 5824 5825 5826 5827 5828)
+fi
 
 RUN_PCT=true
 RUN_HTTP=true
@@ -29,7 +47,7 @@ done
 
 if $RUN_PCT; then
   echo "============================================================"
-  echo "Proxmox LXC status and pct config (5820–5828)"
+  echo "Proxmox LXC status and pct config (${PROXMOX_NODE:-5820–5828})"
   echo "============================================================"
   echo ""
 

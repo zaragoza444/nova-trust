@@ -27,6 +27,8 @@ jobs:
 
       - name: pct config + HTTP reachability (5820–5828)
         env:
+          PROXMOX_R630_04_HOST: ${{ secrets.PROXMOX_R630_04_HOST || secrets.PROXMOX_SSH_HOST || secrets.VPS_SSH_HOST }}
+          PROXMOX_R630_03_HOST: ${{ secrets.PROXMOX_R630_03_HOST || secrets.PROXMOX_SSH_HOST || secrets.VPS_SSH_HOST }}
           PROXMOX_SSH_HOST: ${{ inputs.proxmox_host || secrets.PROXMOX_SSH_HOST || secrets.VPS_SSH_HOST }}
           PROXMOX_SSH_USER: ${{ secrets.PROXMOX_SSH_USER || secrets.VPS_SSH_USER || 'root' }}
           PROXMOX_SSH_PASSWORD: ${{ secrets.PROXMOX_SSH_PASSWORD || secrets.VPS_SSH_PASSWORD }}

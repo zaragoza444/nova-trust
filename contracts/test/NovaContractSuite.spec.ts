@@ -562,11 +562,21 @@ describe("Nova contract suite design", () => {
   it("documents Proxmox LXC pct config and HTTP inspection scripts", () => {
     const inspectScript = readFileSync(path.resolve(repoRoot, "scripts", "inspect-z-proxmox-lxc.sh"), "utf8");
     const remoteInspect = readFileSync(path.resolve(repoRoot, "scripts", "remote-z-proxmox-inspect.py"), "utf8");
+    const nodesRegistry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-proxmox-nodes.v1.json"), "utf8")
+    ) as { nodes: Array<{ id: string; vmids: number[] }> };
+    const setupSecrets = readFileSync(path.resolve(repoRoot, "scripts", "setup-proxmox-github-secrets.sh"), "utf8");
 
     assert.match(inspectScript, /pct config/);
     assert.match(inspectScript, /5820/);
     assert.match(inspectScript, /verify-z-proxmox-lxc\.sh/);
     assert.match(remoteInspect, /inspect-z-proxmox-lxc\.sh/);
+    assert.match(setupSecrets, /PROXMOX_R630_04_HOST/);
+    assert.match(setupSecrets, /PROXMOX_R630_03_HOST/);
+    assert.deepEqual(
+      nodesRegistry.nodes.map((node) => node.id),
+      ["r630-04", "r630-03"]
+    );
   });
 
   it("falls back to plain tmux on VPS for Nova go-live", () => {
