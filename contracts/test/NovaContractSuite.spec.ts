@@ -366,4 +366,13 @@ describe("Nova contract suite design", () => {
     assert.match(source, /setup:clone-btc-1m:z-block-chain/);
     assert.match(source, /clone-tokens-btc-1m\.v1\.json/);
   });
+
+  it("documents Nova Trust go-live production script", () => {
+    const source = readFileSync(path.resolve(repoRoot, "scripts", "go-live.sh"), "utf8");
+
+    assert.match(source, /Nova Trust GO LIVE/);
+    assert.match(source, /setup:clone-btc-1m:z-block-chain/);
+    assert.match(source, /setup:oracle:z-block-chain/);
+    assert.match(source, /api\/go-live\/status/);
+  });
 });

@@ -81,7 +81,7 @@ export const zBlockChainProfile: ChainProfile = {
   role: "Z Online Bank liquidity and world chain",
   nativeSymbol: "Z",
   wrappedSymbol: "WZ",
-  status: "Production",
+  status: "Live",
   networkType: "evm",
   tradableTokens: ["M1FIAT", "ACX", "SHIVA", "USDT", "ETH", "BTC", "BNB", "USDC", "XRCUSDC", "CUSDT", "ICX", "AUSDT", "CHAT"]
 };

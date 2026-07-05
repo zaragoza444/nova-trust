@@ -54,7 +54,7 @@ export default async function MultiNetworkPage() {
               <article key={`${lane.from}-${lane.to}`} className="queueItem">
                 <div>
                   <strong>
-                    {lane.fromName ?? lane.from} → {lane.toName ?? lane.to}
+                    {String(lane.fromName ?? lane.from)} → {String(lane.toName ?? lane.to)}
                   </strong>
                   <p>{lane.purpose}</p>
                 </div>

@@ -8,6 +8,7 @@ import { handleZBlockChainChart } from "./routes/z-chain";
 import { handleMultiNetworkChart, handleMultiNetworkHealth } from "./routes/networks";
 import { handleTradingTokensOverview } from "./routes/trading";
 import { handleZBankIntegrationOverview, handleZBankLoadFunds } from "./routes/zbank";
+import { handleGoLiveStatus } from "./routes/go-live";
 import { handleCustodyHealth, handleCustodyOverview, handleCoboCallback, handleCoboWebhook } from "./routes/custody";
 import { handleOraclePricesGet, handleOraclePricesPut } from "./routes/oracle";
 import { canAccess, type NovaRole } from "./services/rbac";
@@ -27,6 +28,11 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
 
   if (request.url === "/health") {
     handleHealth(request, response);
+    return;
+  }
+
+  if (request.url === "/api/go-live/status") {
+    void handleGoLiveStatus(request, response);
     return;
   }
 
