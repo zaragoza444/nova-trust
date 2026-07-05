@@ -56,6 +56,18 @@
       }
     },
     {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "assetClass": "Native",
+      "networks": ["TRON", "Ethereum", "BNB Smart Chain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      }
+    },
+    {
       "symbol": "USDT",
       "name": "Tether USD",
       "assetClass": "Stablecoin",

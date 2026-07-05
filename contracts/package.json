@@ -19,6 +19,7 @@
     "setup:multi-network:preflight": "node --experimental-strip-types ./scripts/preflight-multi-network.ts",
     "setup:clone-tokens:z-block-chain": "node --experimental-strip-types ./scripts/setup-clone-tokens-z-block-chain.ts",
     "setup:clone-tokens-100b:z-block-chain": "ZBC_CLONE_CATALOG_PATH=config/tokens/clone-tokens-100b.v1.json node --experimental-strip-types ./scripts/setup-clone-tokens-z-block-chain.ts",
+    "setup:clone-btc-1m:z-block-chain": "ZBC_CLONE_CATALOG_PATH=config/tokens/clone-tokens-btc-1m.v1.json node --experimental-strip-types ./scripts/setup-clone-tokens-z-block-chain.ts",
     "setup:oracle:z-block-chain": "node --experimental-strip-types ./scripts/setup-z-block-chain-oracle.ts",
     "setup:clone-tokens:z-block-chain:local": "bash ./scripts/run-local-clone-tokens-bootstrap.sh"
   },

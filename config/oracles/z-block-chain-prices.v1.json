@@ -74,6 +74,13 @@
       "referenceSource": "ethereum-mainnet"
     },
     {
+      "symbol": "BTC",
+      "priceUsd": "108432.75",
+      "category": "synthetic-native",
+      "cloneOf": "BTC",
+      "referenceSource": "multi-network"
+    },
+    {
       "symbol": "BNB",
       "priceUsd": "662.18",
       "category": "synthetic-native",

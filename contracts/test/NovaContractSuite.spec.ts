@@ -149,7 +149,8 @@ describe("Nova contract suite design", () => {
     assert.ok(chart.liquidityPools.includes("M1FIAT/WZ"));
     assert.ok(chart.liquidityPools.includes("USDT/WZ"));
     assert.ok(chart.liquidityPools.includes("CHAT/WZ"));
-    assert.equal(chart.liquidityPools.length, 12);
+    assert.ok(chart.liquidityPools.includes("BTC/WZ"));
+    assert.equal(chart.liquidityPools.length, 13);
     assert.equal(chart.capabilities.swappable, true);
     assert.equal(chart.capabilities.tradable, true);
     assert.equal(chart.capabilities.transferable, true);
@@ -273,8 +274,8 @@ describe("Nova contract suite design", () => {
       tokens: Array<{ symbol: string; cloneOf: string }>;
     };
 
-    assert.equal(registry.tokens.length, 9);
-    for (const symbol of ["USDT", "ETH", "BNB", "USDC", "XRCUSDC", "CUSDT", "ICX", "AUSDT", "CHAT"]) {
+    assert.equal(registry.tokens.length, 10);
+    for (const symbol of ["USDT", "ETH", "BTC", "BNB", "USDC", "XRCUSDC", "CUSDT", "ICX", "AUSDT", "CHAT"]) {
       const token = registry.tokens.find((item) => item.symbol === symbol);
       assert.ok(token, `missing clone token ${symbol}`);
     }
@@ -325,8 +326,8 @@ describe("Nova contract suite design", () => {
     assert.equal(registry.chain.chainId, 44002);
     assert.equal(registry.quoteCurrency, "USD");
     assert.equal(registry.priceDecimals, 8);
-    assert.equal(registry.prices.length, 13);
-    for (const symbol of ["M1FIAT", "USDT", "ETH", "BNB", "CHAT", "WZ"]) {
+    assert.equal(registry.prices.length, 14);
+    for (const symbol of ["M1FIAT", "USDT", "ETH", "BTC", "BNB", "CHAT", "WZ"]) {
       const entry = registry.prices.find((item) => item.symbol === symbol);
       assert.ok(entry, `missing oracle price for ${symbol}`);
       assert.match(entry?.priceUsd ?? "", /^\d+(\.\d+)?$/);
@@ -343,5 +344,26 @@ describe("Nova contract suite design", () => {
     assert.match(source, /NovaPriceOracle/);
     assert.match(source, /setPrices/);
     assert.match(source, /ZBC_ORACLE_REGISTRY_PATH/);
+  });
+
+  it("registers 1 million supply BTC clone token catalog", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "tokens", "clone-tokens-btc-1m.v1.json"), "utf8")
+    ) as {
+      defaultSupply: string;
+      tokens: Array<{ assetId: string; symbol: string }>;
+    };
+
+    assert.equal(registry.defaultSupply, "1000000");
+    assert.equal(registry.tokens.length, 1);
+    assert.equal(registry.tokens[0]?.symbol, "BTC");
+    assert.equal(registry.tokens[0]?.assetId, "BTC-ZBC-CLONE-001");
+  });
+
+  it("documents BTC clone mint script for Z Blockchain", () => {
+    const source = readFileSync(path.resolve(contractsRoot, "package.json"), "utf8");
+
+    assert.match(source, /setup:clone-btc-1m:z-block-chain/);
+    assert.match(source, /clone-tokens-btc-1m\.v1\.json/);
   });
 });

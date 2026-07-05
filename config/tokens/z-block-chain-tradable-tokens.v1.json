@@ -84,8 +84,24 @@
         "swappable": true,
         "zBankLoadable": false
       },
-      "liquidityPairs": ["WZ", "USDT", "USDC"],
+      "liquidityPairs": ["WZ", "USDT", "USDC", "BTC"],
       "notes": "Synthetic ETH clone on Z Blockchain."
+    },
+    {
+      "assetId": "BTC-ZBC-CLONE-001",
+      "symbol": "BTC",
+      "name": "Bitcoin Clone",
+      "assetClass": "Synthetic Native",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "0.0001",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WZ", "USDT", "ETH"],
+      "notes": "Synthetic BTC clone on Z Blockchain."
     },
     {
       "assetId": "BNB-ZBC-CLONE-001",
@@ -202,6 +218,6 @@
   ],
   "source": {
     "registryPath": "config/tokens/z-block-chain-tradable-tokens.v1.json",
-    "notes": "Tradable token catalog for Z Blockchain including clone tokens USDT, ETH, BNB, USDC, XRCUSDC, CUSDT, ICX, AUSDT, and CHAT."
+    "notes": "Tradable token catalog for Z Blockchain including clone tokens USDT, ETH, BTC, BNB, USDC, XRCUSDC, CUSDT, ICX, AUSDT, and CHAT."
   }
 }

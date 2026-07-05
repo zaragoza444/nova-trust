@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "Z Blockchain",
+    "chainId": 44002,
+    "nativeSymbol": "Z",
+    "wrappedSymbol": "WZ"
+  },
+  "defaultSupply": "1000000",
+  "defaultLiquidity": "100000",
+  "defaultWrappedLiquidity": "100",
+  "tokens": [
+    {
+      "assetId": "BTC-ZBC-CLONE-001",
+      "symbol": "BTC",
+      "name": "Bitcoin Clone",
+      "assetClass": "Synthetic Native",
+      "cloneOf": "BTC",
+      "networks": ["TRON", "Ethereum", "BNB Smart Chain"],
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WZ", "USDT", "ETH"]
+    }
+  ],
+  "source": {
+    "registryPath": "config/tokens/clone-tokens-btc-1m.v1.json",
+    "notes": "One million supply Bitcoin clone catalog for Z Blockchain."
+  }
+}

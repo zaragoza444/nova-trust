@@ -41,8 +41,8 @@ function getFallback(): ZBlockChainOverview {
       name: "Z Blockchain",
       nativeSymbol: "Z",
       wrappedSymbol: "WZ",
-      liquidityPools: ["M1FIAT/WZ", "ACX/WZ", "SHIVA/WZ", "USDT/WZ", "ETH/WZ", "BNB/WZ", "USDC/WZ", "XRCUSDC/WZ", "CUSDT/WZ", "ICX/WZ", "AUSDT/WZ", "CHAT/WZ"],
-      tradableTokens: ["M1FIAT", "ACX", "SHIVA", "WZ", "USDT", "ETH", "BNB", "USDC", "XRCUSDC", "CUSDT", "ICX", "AUSDT", "CHAT"],
+      liquidityPools: ["M1FIAT/WZ", "ACX/WZ", "SHIVA/WZ", "USDT/WZ", "ETH/WZ", "BTC/WZ", "BNB/WZ", "USDC/WZ", "XRCUSDC/WZ", "CUSDT/WZ", "ICX/WZ", "AUSDT/WZ", "CHAT/WZ"],
+      tradableTokens: ["M1FIAT", "ACX", "SHIVA", "WZ", "USDT", "ETH", "BTC", "BNB", "USDC", "XRCUSDC", "CUSDT", "ICX", "AUSDT", "CHAT"],
       capabilities: {
         transferable: true,
         tradable: true,
