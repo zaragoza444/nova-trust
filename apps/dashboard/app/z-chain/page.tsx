@@ -132,6 +132,14 @@ export default async function ZBlockChainPage() {
                 <strong>Local validation</strong>
                 <p>`npm run setup:z-block-chain:local --workspace @nova/contracts`</p>
               </div>
+              <div>
+                <strong>Clone tokens</strong>
+                <p>`npm run setup:clone-tokens:z-block-chain --workspace @nova/contracts`</p>
+              </div>
+              <div>
+                <strong>Clone mint (VPS)</strong>
+                <p>`bash scripts/mint-clone-tokens-vps.sh`</p>
+              </div>
             </div>
           </article>
         </div>

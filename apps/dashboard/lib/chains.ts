@@ -83,7 +83,7 @@ export const zBlockChainProfile: ChainProfile = {
   wrappedSymbol: "WZ",
   status: "Production",
   networkType: "evm",
-  tradableTokens: ["M1FIAT", "ACX", "SHIVA"]
+  tradableTokens: ["M1FIAT", "ACX", "SHIVA", "USDT", "ETH", "BNB", "USDC", "XRCUSDC", "CUSDT", "ICX", "AUSDT", "CHAT"]
 };
 
 export const nrwWorldProfile: ChainProfile = {

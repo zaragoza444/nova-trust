@@ -68,7 +68,7 @@
     "name": "Z Blockchain",
     "wrappedNativeSymbol": "WZ"
   },
-  "supportedTokens": ["M1FIAT", "ACX", "SHIVA"],
+  "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "USDT", "USDC", "XRCUSDC", "CUSDT", "AUSDT"],
   "loadMethods": [
     {
       "id": "zbank-m1-online-transfer",

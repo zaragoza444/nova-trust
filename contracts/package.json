@@ -16,7 +16,9 @@
     "setup:nrw-world": "node --experimental-strip-types ./scripts/setup-nrw-world-liquidity.ts",
     "setup:nrw-world:local": "bash ./scripts/run-local-nrw-world-bootstrap.sh",
     "setup:nrw-world:preflight": "node --experimental-strip-types ./scripts/preflight-nrw-world.ts",
-    "setup:multi-network:preflight": "node --experimental-strip-types ./scripts/preflight-multi-network.ts"
+    "setup:multi-network:preflight": "node --experimental-strip-types ./scripts/preflight-multi-network.ts",
+    "setup:clone-tokens:z-block-chain": "node --experimental-strip-types ./scripts/setup-clone-tokens-z-block-chain.ts",
+    "setup:clone-tokens:z-block-chain:local": "bash ./scripts/run-local-clone-tokens-bootstrap.sh"
   },
   "devDependencies": {
     "hardhat": "^3.9.1"

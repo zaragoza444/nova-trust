@@ -20,7 +20,7 @@
         "swappable": true,
         "zBankLoadable": true
       },
-      "liquidityPairs": ["WZ", "ACX", "SHIVA"],
+      "liquidityPairs": ["WZ", "ACX", "SHIVA", "USDT", "USDC"],
       "notes": "Primary Z Online Bank M1 rail on Z Blockchain."
     },
     {
@@ -36,7 +36,7 @@
         "swappable": true,
         "zBankLoadable": true
       },
-      "liquidityPairs": ["WZ", "M1FIAT"],
+      "liquidityPairs": ["WZ", "M1FIAT", "ICX"],
       "notes": "ACX exchange token on Z Blockchain."
     },
     {
@@ -52,12 +52,156 @@
         "swappable": true,
         "zBankLoadable": true
       },
-      "liquidityPairs": ["WZ", "M1FIAT"],
+      "liquidityPairs": ["WZ", "M1FIAT", "CHAT"],
       "notes": "SHIVA utility token on Z Blockchain."
+    },
+    {
+      "assetId": "USDT-ZBC-CLONE-001",
+      "symbol": "USDT",
+      "name": "Tether USD Clone",
+      "assetClass": "Stablecoin",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "USDC", "AUSDT", "CUSDT"],
+      "notes": "Synthetic USDT clone on Z Blockchain."
+    },
+    {
+      "assetId": "ETH-ZBC-CLONE-001",
+      "symbol": "ETH",
+      "name": "Ethereum Clone",
+      "assetClass": "Synthetic Native",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "0.01",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WZ", "USDT", "USDC"],
+      "notes": "Synthetic ETH clone on Z Blockchain."
+    },
+    {
+      "assetId": "BNB-ZBC-CLONE-001",
+      "symbol": "BNB",
+      "name": "BNB Clone",
+      "assetClass": "Synthetic Native",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "0.01",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WZ", "USDT", "ICX"],
+      "notes": "Synthetic BNB clone on Z Blockchain."
+    },
+    {
+      "assetId": "USDC-ZBC-CLONE-001",
+      "symbol": "USDC",
+      "name": "USD Coin Clone",
+      "assetClass": "Stablecoin",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "USDT", "XRCUSDC"],
+      "notes": "Synthetic USDC clone on Z Blockchain."
+    },
+    {
+      "assetId": "XRCUSDC-ZBC-CLONE-001",
+      "symbol": "XRCUSDC",
+      "name": "XRC USD Coin Clone",
+      "assetClass": "Stablecoin",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "USDC", "CUSDT"],
+      "notes": "Synthetic XRCUSDC clone on Z Blockchain."
+    },
+    {
+      "assetId": "CUSDT-ZBC-CLONE-001",
+      "symbol": "CUSDT",
+      "name": "C USD T Clone",
+      "assetClass": "Stablecoin",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "USDT", "AUSDT"],
+      "notes": "Synthetic CUSDT clone on Z Blockchain."
+    },
+    {
+      "assetId": "ICX-ZBC-CLONE-001",
+      "symbol": "ICX",
+      "name": "ICON Clone",
+      "assetClass": "Exchange",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WZ", "BNB", "CHAT"],
+      "notes": "Synthetic ICX clone on Z Blockchain."
+    },
+    {
+      "assetId": "AUSDT-ZBC-CLONE-001",
+      "symbol": "AUSDT",
+      "name": "A USD T Clone",
+      "assetClass": "Stablecoin",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "USDT", "CUSDT"],
+      "notes": "Synthetic AUSDT clone on Z Blockchain."
+    },
+    {
+      "assetId": "CHAT-ZBC-CLONE-001",
+      "symbol": "CHAT",
+      "name": "Chat Coin",
+      "assetClass": "Utility",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": false
+      },
+      "liquidityPairs": ["WZ", "ICX", "SHIVA"],
+      "notes": "Chat Coin utility clone on Z Blockchain."
     }
   ],
   "source": {
     "registryPath": "config/tokens/z-block-chain-tradable-tokens.v1.json",
-    "notes": "Tradable token catalog for Z Blockchain liquidity pools."
+    "notes": "Tradable token catalog for Z Blockchain including clone tokens USDT, ETH, BNB, USDC, XRCUSDC, CUSDT, ICX, AUSDT, and CHAT."
   }
 }

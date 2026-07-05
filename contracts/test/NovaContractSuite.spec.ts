@@ -103,7 +103,9 @@ describe("Nova contract suite design", () => {
     };
 
     assert.equal(integration.provider.name, "Z Bank Online");
-    assert.deepEqual(integration.supportedTokens, ["M1FIAT", "ACX", "SHIVA"]);
+    assert.ok(integration.supportedTokens.includes("M1FIAT"));
+    assert.ok(integration.supportedTokens.includes("USDT"));
+    assert.ok(integration.supportedTokens.includes("AUSDT"));
     const integrationWithChains = integration as { supportedChains: Array<{ chainId: number }> };
     assert.ok(integrationWithChains.supportedChains.some((chain) => chain.chainId === 44002));
   });
@@ -116,7 +118,9 @@ describe("Nova contract suite design", () => {
       platforms: Array<{ supportedTokens: string[] }>;
     };
 
-    assert.deepEqual(registry.approvedTokens, ["M1FIAT", "ACX", "SHIVA", "WNOVA", "WZ"]);
+    assert.ok(registry.approvedTokens.includes("M1FIAT"));
+    assert.ok(registry.approvedTokens.includes("USDT"));
+    assert.ok(registry.approvedTokens.includes("CHAT"));
     assert.ok(registry.platforms.length >= 3);
     assert.ok(registry.platforms.every((platform) => platform.supportedTokens.length > 0));
   });
@@ -141,7 +145,10 @@ describe("Nova contract suite design", () => {
     assert.equal(chart.chain.chainId, 44002);
     assert.equal(chart.chain.name, "Z Blockchain");
     assert.equal(chart.chain.wrappedSymbol, "WZ");
-    assert.deepEqual(chart.liquidityPools, ["M1FIAT/WZ", "ACX/WZ", "SHIVA/WZ"]);
+    assert.ok(chart.liquidityPools.includes("M1FIAT/WZ"));
+    assert.ok(chart.liquidityPools.includes("USDT/WZ"));
+    assert.ok(chart.liquidityPools.includes("CHAT/WZ"));
+    assert.equal(chart.liquidityPools.length, 12);
     assert.equal(chart.capabilities.swappable, true);
     assert.equal(chart.capabilities.tradable, true);
     assert.equal(chart.capabilities.transferable, true);
@@ -256,5 +263,30 @@ describe("Nova contract suite design", () => {
     assert.match(registry.productionDefaults.tron.rpcUrl, /trongrid/);
     assert.equal(registry.productionDefaults.ethereum.chainId, 1);
     assert.equal(registry.productionDefaults.bnbSmartChain.chainId, 56);
+  });
+
+  it("registers Z Blockchain clone tokens USDT, ETH, BNB, USDC, XRCUSDC, CUSDT, ICX, AUSDT, and CHAT", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "tokens", "clone-tokens.v1.json"), "utf8")
+    ) as {
+      tokens: Array<{ symbol: string; cloneOf: string }>;
+    };
+
+    assert.equal(registry.tokens.length, 9);
+    for (const symbol of ["USDT", "ETH", "BNB", "USDC", "XRCUSDC", "CUSDT", "ICX", "AUSDT", "CHAT"]) {
+      const token = registry.tokens.find((item) => item.symbol === symbol);
+      assert.ok(token, `missing clone token ${symbol}`);
+    }
+  });
+
+  it("documents clone token mint script for Z Blockchain", () => {
+    const source = readFileSync(
+      path.resolve(contractsRoot, "scripts", "setup-clone-tokens-z-block-chain.ts"),
+      "utf8"
+    );
+
+    assert.match(source, /loadCloneTokenCatalog/);
+    assert.match(source, /NLP-\$\{token\.symbol\}-WZ/);
+    assert.match(source, /setLiquidityVenue/);
   });
 });

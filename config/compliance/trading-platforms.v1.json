@@ -4,20 +4,35 @@
     "name": "Chain 138",
     "chainId": 138
   },
-  "approvedTokens": ["M1FIAT", "ACX", "SHIVA", "WNOVA", "WZ"],
+  "approvedTokens": [
+    "M1FIAT",
+    "ACX",
+    "SHIVA",
+    "WNOVA",
+    "WZ",
+    "USDT",
+    "ETH",
+    "BNB",
+    "USDC",
+    "XRCUSDC",
+    "CUSDT",
+    "ICX",
+    "AUSDT",
+    "CHAT"
+  ],
   "platforms": [
     {
       "id": "z-bank-online",
       "name": "Z Bank Online",
       "type": "bank",
-      "supportedTokens": ["M1FIAT", "ACX", "SHIVA"],
+      "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "USDT", "USDC", "XRCUSDC", "CUSDT", "AUSDT"],
       "capabilities": ["load", "transfer", "trade"]
     },
     {
       "id": "z-block-chain-pool",
       "name": "Z Blockchain Liquidity Pool",
       "type": "dex",
-      "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "WZ"],
+      "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "USDT", "USDC", "XRCUSDC", "CUSDT", "AUSDT"],
       "capabilities": ["swap", "add-liquidity", "remove-liquidity", "transfer", "trade"]
     },
     {
