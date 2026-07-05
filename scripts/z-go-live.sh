@@ -95,7 +95,7 @@ wait_for_services() {
 }
 
 print_urls() {
-  local public_host="${Z_PUBLIC_HOST:-51.75.64.28}"
+  local public_host="${Z_PUBLIC_HOST:-192.168.11.127}"
   local public_scheme="${Z_PUBLIC_SCHEME:-http}"
   local use_nginx="${Z_INTERNATIONAL_NGINX:-false}"
   local dashboard_base api_base

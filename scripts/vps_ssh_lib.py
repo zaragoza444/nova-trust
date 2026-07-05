@@ -16,26 +16,51 @@ except ImportError:
     import paramiko
 
 
-DEFAULT_VPS_HOST = "51.75.64.28"
-DEFAULT_VPS_USER = "ubuntu"
+DEFAULT_PRODUCTION_DASHBOARD_HOST = "192.168.11.127"
+DEFAULT_PRODUCTION_HUB_HOST = "192.168.11.126"
+DEFAULT_VPS_USER = "root"
+
+
+def resolve_ssh_host() -> str:
+    """Resolve Proxmox management SSH host (legacy VPS 51.75.64.28 retired)."""
+    for name in (
+        "PROXMOX_SSH_HOST",
+        "VPS_SSH_HOST",
+        "PROXMOX_R630_04_HOST",
+        "PROXMOX_R630_03_HOST",
+    ):
+        value = env(name)
+        if value:
+            return value
+    raise SystemExit(
+        "Missing Proxmox SSH host. Set PROXMOX_R630_04_HOST and PROXMOX_R630_03_HOST "
+        "(or PROXMOX_SSH_HOST / VPS_SSH_HOST as fallback)."
+    )
 
 
 def env(name: str, default: str | None = None) -> str | None:
     value = os.environ.get(name)
     if value is None or value.strip() == "":
+        # Allow PROXMOX_* aliases for deploy scripts
+        if name.startswith("VPS_"):
+            proxmox_name = name.replace("VPS_", "PROXMOX_", 1)
+            proxmox_value = os.environ.get(proxmox_name)
+            if proxmox_value is not None and proxmox_value.strip() != "":
+                return proxmox_value.strip()
         return default
     return value.strip()
 
 
 def require_vps_auth() -> None:
-    password = env("VPS_SSH_PASSWORD")
-    key_data = env("VPS_SSH_PRIVATE_KEY")
-    key_path = env("VPS_SSH_KEY_PATH")
+    password = env("VPS_SSH_PASSWORD") or env("PROXMOX_SSH_PASSWORD")
+    key_data = env("VPS_SSH_PRIVATE_KEY") or env("PROXMOX_SSH_PRIVATE_KEY")
+    key_path = env("VPS_SSH_KEY_PATH") or env("PROXMOX_SSH_KEY_PATH")
     if password or key_data or key_path:
         return
     raise SystemExit(
-        "Missing VPS SSH credentials. Configure GitHub secrets "
-        "VPS_SSH_PRIVATE_KEY or VPS_SSH_PASSWORD (and optionally VPS_SSH_HOST, VPS_SSH_USER)."
+        "Missing SSH credentials. Configure GitHub secrets "
+        "VPS_SSH_PRIVATE_KEY or VPS_SSH_PASSWORD (or PROXMOX_SSH_* equivalents), "
+        "and optionally VPS_SSH_HOST / VPS_SSH_USER."
     )
 
 
@@ -58,8 +83,12 @@ def load_private_key(key_data: str) -> paramiko.PKey:
 def connect_vps() -> paramiko.SSHClient:
     require_vps_auth()
 
-    host = env("VPS_SSH_HOST", DEFAULT_VPS_HOST) or DEFAULT_VPS_HOST
-    user = env("VPS_SSH_USER", DEFAULT_VPS_USER) or DEFAULT_VPS_USER
+    host = resolve_ssh_host()
+    user = (
+        env("PROXMOX_SSH_USER")
+        or env("VPS_SSH_USER")
+        or DEFAULT_VPS_USER
+    )
     password = env("VPS_SSH_PASSWORD")
     key_data = env("VPS_SSH_PRIVATE_KEY")
     key_path = env("VPS_SSH_KEY_PATH")

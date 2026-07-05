@@ -21,11 +21,11 @@ if [ ! -f "$Z_ENV" ]; then
   echo "Created ${Z_ENV}"
 fi
 
-PUBLIC_HOST="${Z_PUBLIC_HOST:-51.75.64.28}"
+PUBLIC_HOST="${Z_PUBLIC_HOST:-192.168.11.127}"
 PUBLIC_SCHEME="${Z_PUBLIC_SCHEME:-http}"
 
 echo "==> Verifying international public network RPC connectivity"
-bash "$ROOT/scripts/wire-multi-network-vps.sh"
+Z_WIRE_STACK=z bash "$ROOT/scripts/wire-multi-network-vps.sh"
 
 echo "==> Merging public VPS settings into Z production runtime env"
 {

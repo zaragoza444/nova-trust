@@ -20,10 +20,10 @@
         "transferable": true,
         "tradable": true,
         "swappable": true,
-        "zBankLoadable": true
+        "bankLoadable": true
       },
       "liquidityPairs": ["WNOVA", "ACX", "SHIVA"],
-      "notes": "Primary M1 fiat rail for bank settlement, swaps, and Z Bank online fund loading."
+      "notes": "Primary M1 fiat rail for bank settlement, swaps, and partner bank fund loading on Chain 138."
     },
     {
       "assetId": "ACX-2026-001",
@@ -36,7 +36,7 @@
         "transferable": true,
         "tradable": true,
         "swappable": true,
-        "zBankLoadable": true
+        "bankLoadable": true
       },
       "liquidityPairs": ["WNOVA", "M1FIAT"],
       "notes": "ACX exchange token for cross-bank and platform trading on Chain 138."
@@ -52,7 +52,7 @@
         "transferable": true,
         "tradable": true,
         "swappable": true,
-        "zBankLoadable": true
+        "bankLoadable": true
       },
       "liquidityPairs": ["WNOVA", "M1FIAT"],
       "notes": "SHIVA utility token for trading platforms and liquidity venues."

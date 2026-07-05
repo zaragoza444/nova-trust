@@ -1,0 +1,65 @@
+name: Deploy Z Ecosystem (Proxmox LXC)
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Git branch to deploy
+        required: false
+        default: main
+      proxmox_host:
+        description: Proxmox node SSH host (management IP)
+        required: false
+        default: ""
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Prepare SSH
+        uses: ./.github/actions/vps-deploy-setup
+        with:
+          vps_ssh_password: ${{ secrets.PROXMOX_SSH_PASSWORD || secrets.VPS_SSH_PASSWORD }}
+          vps_ssh_private_key: ${{ secrets.PROXMOX_SSH_PRIVATE_KEY || secrets.VPS_SSH_PRIVATE_KEY }}
+
+      - name: Deploy Z Ecosystem to LXC 5820–5828
+        env:
+          PROXMOX_R630_04_HOST: ${{ secrets.PROXMOX_R630_04_HOST || secrets.PROXMOX_SSH_HOST || secrets.VPS_SSH_HOST }}
+          PROXMOX_R630_03_HOST: ${{ secrets.PROXMOX_R630_03_HOST || secrets.PROXMOX_SSH_HOST || secrets.VPS_SSH_HOST }}
+          PROXMOX_SSH_HOST: ${{ inputs.proxmox_host || secrets.PROXMOX_SSH_HOST || secrets.VPS_SSH_HOST }}
+          PROXMOX_SSH_USER: ${{ secrets.PROXMOX_SSH_USER || secrets.VPS_SSH_USER || 'root' }}
+          PROXMOX_SSH_PASSWORD: ${{ secrets.PROXMOX_SSH_PASSWORD || secrets.VPS_SSH_PASSWORD }}
+          PROXMOX_SSH_PRIVATE_KEY: ${{ secrets.PROXMOX_SSH_PRIVATE_KEY || secrets.VPS_SSH_PRIVATE_KEY }}
+          Z_LXC_BRANCH: ${{ inputs.branch }}
+        run: python scripts/remote-z-proxmox-deploy.py
+
+      - name: Inspect pct config and HTTP reachability
+        env:
+          PROXMOX_R630_04_HOST: ${{ secrets.PROXMOX_R630_04_HOST || secrets.PROXMOX_SSH_HOST || secrets.VPS_SSH_HOST }}
+          PROXMOX_R630_03_HOST: ${{ secrets.PROXMOX_R630_03_HOST || secrets.PROXMOX_SSH_HOST || secrets.VPS_SSH_HOST }}
+          PROXMOX_SSH_HOST: ${{ inputs.proxmox_host || secrets.PROXMOX_SSH_HOST || secrets.VPS_SSH_HOST }}
+          PROXMOX_SSH_USER: ${{ secrets.PROXMOX_SSH_USER || secrets.VPS_SSH_USER || 'root' }}
+          PROXMOX_SSH_PASSWORD: ${{ secrets.PROXMOX_SSH_PASSWORD || secrets.VPS_SSH_PASSWORD }}
+          PROXMOX_SSH_PRIVATE_KEY: ${{ secrets.PROXMOX_SSH_PRIVATE_KEY || secrets.VPS_SSH_PRIVATE_KEY }}
+          Z_LXC_BRANCH: ${{ inputs.branch }}
+        run: python scripts/remote-z-proxmox-inspect.py
+        continue-on-error: true
+
+      - name: Deployment summary
+        run: |
+          echo "## Z Ecosystem — Proxmox LXC" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| VMID | Portal | IP | Product | URL |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|--------|-----|---------|-----|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 5824 | omdnl-digital-portal | 192.168.11.126 | Z Chain (hub) | http://192.168.11.126/z-chain |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 5825 | omnl-office24-portal | 192.168.11.127 | Z Chart | http://192.168.11.127:3100/zchart |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 5820 | omdnl-exchange-portal | 192.168.11.121 | Z Trade | http://192.168.11.121/ztrade |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 5821 | omdnl-secure-portal | 192.168.11.122 | Z Wallet | http://192.168.11.122/wallet |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 5822 | omdnl-online-portal | 192.168.11.123 | Z Bank | http://192.168.11.123/zbank |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 5823 | omdnl-forex-portal | 192.168.11.124 | Z Bot | http://192.168.11.124/zbot |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 5826 | dbis-exchange-portal | 192.168.11.186 | Z Trade | http://192.168.11.186/ztrade |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 5827 | dbis-secure-portal | 192.168.11.187 | Z Wallet | http://192.168.11.187/wallet |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| 5828 | dbis-forex-portal | 192.168.11.188 | Z Swap | http://192.168.11.188/zswap |" >> "$GITHUB_STEP_SUMMARY"

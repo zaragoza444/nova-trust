@@ -7,7 +7,7 @@ export interface ZApiConfig {
 }
 
 export function loadZApiConfig(): ZApiConfig {
-  const corsOrigin = process.env.Z_CORS_ORIGIN ?? process.env.NOVA_CORS_ORIGIN ?? "http://localhost:3100";
+  const corsOrigin = process.env.Z_CORS_ORIGIN ?? "http://localhost:3100";
   const corsOrigins = corsOrigin
     .split(",")
     .map((origin) => origin.trim())
@@ -15,7 +15,7 @@ export function loadZApiConfig(): ZApiConfig {
 
   return {
     port: Number(process.env.Z_API_PORT ?? process.env.PORT ?? 4100),
-    host: process.env.Z_API_HOST ?? process.env.NOVA_API_HOST ?? "127.0.0.1",
+    host: process.env.Z_API_HOST ?? "0.0.0.0",
     nodeEnv: process.env.NODE_ENV ?? "development",
     corsOrigin,
     corsOrigins: corsOrigins.length > 0 ? corsOrigins : ["http://localhost:3100"]

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "nodes": [
+    {
+      "id": "r630-04",
+      "label": "Proxmox r630-04",
+      "managementHostEnv": "PROXMOX_R630_04_HOST",
+      "fallbackHostEnv": "PROXMOX_SSH_HOST",
+      "defaultSshUser": "root",
+      "vmids": [5820, 5821, 5822, 5823, 5824]
+    },
+    {
+      "id": "r630-03",
+      "label": "Proxmox r630-03",
+      "managementHostEnv": "PROXMOX_R630_03_HOST",
+      "fallbackHostEnv": "PROXMOX_SSH_HOST",
+      "defaultSshUser": "root",
+      "vmids": [5825, 5826, 5827, 5828]
+    }
+  ],
+  "githubSecrets": [
+    {
+      "name": "PROXMOX_SSH_PRIVATE_KEY",
+      "required": true,
+      "description": "SSH private key with root access to Proxmox nodes (pct + docker on LXCs)"
+    },
+    {
+      "name": "PROXMOX_SSH_PASSWORD",
+      "required": false,
+      "description": "Alternative to private key — password auth for root@Proxmox"
+    },
+    {
+      "name": "PROXMOX_SSH_USER",
+      "required": false,
+      "description": "SSH user on Proxmox nodes (default root)"
+    },
+    {
+      "name": "PROXMOX_R630_04_HOST",
+      "required": true,
+      "description": "Management IP/hostname for r630-04 (hosts VMIDs 5820–5824)"
+    },
+    {
+      "name": "PROXMOX_R630_03_HOST",
+      "required": true,
+      "description": "Management IP/hostname for r630-03 (hosts VMIDs 5825–5828)"
+    },
+    {
+      "name": "PROXMOX_SSH_HOST",
+      "required": false,
+      "description": "Fallback single-host Proxmox IP if both nodes share one SSH entry point"
+    }
+  ],
+  "source": {
+    "registryPath": "config/integrations/z-proxmox-nodes.v1.json",
+    "notes": "Proxmox cluster SSH targets for Z Ecosystem LXC deployment. Set management IPs in GitHub secrets or deploy/proxmox/github-secrets.env."
+  }
+}

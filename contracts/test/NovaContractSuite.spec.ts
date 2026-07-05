@@ -91,7 +91,7 @@ describe("Nova contract suite design", () => {
       assert.equal(token?.capabilities.transferable, true);
       assert.equal(token?.capabilities.tradable, true);
       assert.equal(token?.capabilities.swappable, true);
-      assert.equal(token?.capabilities.zBankLoadable, true);
+      assert.equal(token?.capabilities.bankLoadable, true);
     }
   });
 
@@ -382,12 +382,13 @@ describe("Nova contract suite design", () => {
     const source = readFileSync(path.resolve(repoRoot, "scripts", "go-live.sh"), "utf8");
 
     assert.match(source, /Nova Trust GO LIVE/);
-    assert.match(source, /setup:clone-btc-1m:z-block-chain/);
-    assert.match(source, /setup:oracle:z-block-chain/);
+    assert.match(source, /test:multi-network --workspace @nova\/api/);
     assert.match(source, /api\/go-live\/status/);
+    assert.doesNotMatch(source, /setup:clone-btc-1m:z-block-chain/);
+    assert.doesNotMatch(source, /z-blockchain/);
   });
 
-  it("registers international wiring for TRON, Ethereum, BNB, and Z Blockchain", () => {
+  it("registers international wiring for TRON, Ethereum, BNB, and Nova One", () => {
     const registry = JSON.parse(
       readFileSync(path.resolve(repoRoot, "config", "integrations", "international-wiring.v1.json"), "utf8")
     ) as {
@@ -527,14 +528,77 @@ describe("Nova contract suite design", () => {
     assert.match(zBotScript, /@z\/bot/);
   });
 
-  it("uses shared VPS SSH helpers with empty-secret-safe defaults", () => {
+  it("uses shared SSH helpers with Proxmox production defaults", () => {
     const sshLib = readFileSync(path.resolve(repoRoot, "scripts", "vps_ssh_lib.py"), "utf8");
     const remoteGoLive = readFileSync(path.resolve(repoRoot, "scripts", "remote-go-live-vps.py"), "utf8");
+    const proxmoxLib = readFileSync(path.resolve(repoRoot, "scripts", "proxmox_ssh_lib.py"), "utf8");
 
-    assert.match(sshLib, /DEFAULT_VPS_HOST = "51.75.64.28"/);
+    assert.match(sshLib, /DEFAULT_PRODUCTION_DASHBOARD_HOST = "192.168.11.127"/);
+    assert.match(sshLib, /PROXMOX_R630_04_HOST/);
+    assert.match(sshLib, /resolve_ssh_host/);
     assert.match(sshLib, /require_vps_auth/);
     assert.match(sshLib, /value.strip\(\) == ""/);
-    assert.match(remoteGoLive, /from vps_ssh_lib import connect_vps, run_remote/);
+    assert.match(remoteGoLive, /run_in_dashboard/);
+    assert.match(proxmoxLib, /run_in_hub/);
+    assert.match(proxmoxLib, /HUB_VMID = 5824/);
+  });
+
+  it("registers Proxmox LXC placement for Z Ecosystem VMIDs 5820–5828", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-proxmox-lxc.v1.json"), "utf8")
+    ) as {
+      containers: Array<{ vmid: number; ip: string; role: string; zProduct: string }>;
+      routing: { hubApi: string; dashboard: string };
+    };
+    const deployScript = readFileSync(path.resolve(repoRoot, "scripts", "deploy-z-proxmox-lxc.sh"), "utf8");
+    const dashboardScript = readFileSync(path.resolve(repoRoot, "scripts", "z-lxc-dashboard-go-live.sh"), "utf8");
+
+    assert.equal(registry.containers.length, 9);
+    assert.equal(registry.routing.hubApi, "http://192.168.11.126:4100");
+    assert.equal(registry.routing.dashboard, "http://192.168.11.127:3100");
+    assert.equal(registry.productionDefaults?.primaryDashboardHost, "192.168.11.127");
+    assert.equal(registry.productionDefaults?.primaryApiHost, "192.168.11.126");
+    const hub = registry.containers.find((item) => item.vmid === 5824);
+    assert.equal(hub?.role, "hub");
+    assert.equal(hub?.zProduct, "z-chain");
+    assert.match(deployScript, /5824/);
+    assert.match(deployScript, /z-lxc-hub-go-live\.sh/);
+    assert.match(deployScript, /z-lxc-portal-wire\.sh/);
+    assert.match(deployScript, /z-lxc-dashboard-go-live\.sh/);
+    assert.match(dashboardScript, /z-lxc-dashboard-wire\.sh/);
+    assert.match(deployScript, /inspect-z-proxmox-lxc\.sh/);
+  });
+
+  it("documents Proxmox LXC pct config and HTTP inspection scripts", () => {
+    const inspectScript = readFileSync(path.resolve(repoRoot, "scripts", "inspect-z-proxmox-lxc.sh"), "utf8");
+    const remoteInspect = readFileSync(path.resolve(repoRoot, "scripts", "remote-z-proxmox-inspect.py"), "utf8");
+    const nodesRegistry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-proxmox-nodes.v1.json"), "utf8")
+    ) as { nodes: Array<{ id: string; vmids: number[] }> };
+    const setupSecrets = readFileSync(path.resolve(repoRoot, "scripts", "setup-proxmox-github-secrets.sh"), "utf8");
+
+    assert.match(inspectScript, /pct config/);
+    assert.match(inspectScript, /5820/);
+    assert.match(inspectScript, /verify-z-proxmox-lxc\.sh/);
+    assert.match(remoteInspect, /inspect-z-proxmox-lxc\.sh/);
+    assert.match(setupSecrets, /PROXMOX_R630_04_HOST/);
+    assert.match(setupSecrets, /PROXMOX_R630_03_HOST/);
+    assert.deepEqual(
+      nodesRegistry.nodes.map((node) => node.id),
+      ["r630-04", "r630-03"]
+    );
+  });
+
+  it("documents Proxmox management IP discovery and secrets bootstrap", () => {
+    const discover = readFileSync(path.resolve(repoRoot, "scripts", "discover-proxmox-management-ips.sh"), "utf8");
+    const bootstrap = readFileSync(path.resolve(repoRoot, "scripts", "bootstrap-proxmox-z-deploy.sh"), "utf8");
+
+    assert.match(discover, /5824/);
+    assert.match(discover, /5825/);
+    assert.match(discover, /r630-04/);
+    assert.match(bootstrap, /discover-proxmox-management-ips\.sh/);
+    assert.match(bootstrap, /setup-proxmox-github-secrets\.sh/);
+    assert.match(bootstrap, /--apply/);
   });
 
   it("falls back to plain tmux on VPS for Nova go-live", () => {

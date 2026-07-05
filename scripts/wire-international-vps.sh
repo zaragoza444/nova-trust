@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Wire Nova Trust internationally:
 # - TRON basement + Ethereum + BNB public RPCs
-# - Z Blockchain permissioned settlement on 44002
+# - Nova One permissioned settlement on 22016
 # - Public dashboard/API exposure via nginx on the VPS
 #
 # Usage:
@@ -70,7 +70,7 @@ npm run build --workspace @nova/api
 curl -sf -H "x-nova-role: AUDITOR" "http://127.0.0.1:4000/api/networks/international" | tee /tmp/nova-international-wiring.json
 echo ""
 
-PUBLIC_HOST="${NOVA_PUBLIC_HOST:-51.75.64.28}"
+PUBLIC_HOST="${NOVA_PUBLIC_HOST:-192.168.11.127}"
 PUBLIC_SCHEME="${NOVA_PUBLIC_SCHEME:-http}"
 if [ "${NOVA_INTERNATIONAL_NGINX:-true}" = "true" ]; then
   DASHBOARD_URL="${PUBLIC_SCHEME}://${PUBLIC_HOST}"
@@ -91,7 +91,7 @@ Nova Trust wired internationally
   Go-live status    ${API_URL}/api/go-live/status
 
   Public networks   TRON · Ethereum · BNB Smart Chain
-  Settlement chain  Z Blockchain (44002)
+  Settlement chain  Nova One (22016)
   Clone tokens      USDT · ETH · BTC · BNB · USDC · ...
 
 EOF

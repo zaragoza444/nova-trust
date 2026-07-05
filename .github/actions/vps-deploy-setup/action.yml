@@ -1,18 +1,19 @@
-name: VPS deploy setup
-description: Checkout, Python, and validate VPS SSH secrets for deploy workflows
+name: Proxmox deploy setup
+description: Checkout, Python, and validate Proxmox SSH secrets for deploy workflows
 
 runs:
   using: composite
   steps:
-    - name: Validate VPS SSH secrets
+    - name: Validate Proxmox SSH secrets
       shell: bash
       env:
         VPS_SSH_PASSWORD: ${{ inputs.vps_ssh_password }}
         VPS_SSH_PRIVATE_KEY: ${{ inputs.vps_ssh_private_key }}
       run: |
         if [ -z "$VPS_SSH_PASSWORD" ] && [ -z "$VPS_SSH_PRIVATE_KEY" ]; then
-          echo "::error::Configure repository secrets VPS_SSH_PRIVATE_KEY or VPS_SSH_PASSWORD before running VPS deploy workflows."
-          echo "Optional: VPS_SSH_HOST (default 51.75.64.28), VPS_SSH_USER (default ubuntu)"
+          echo "::error::Configure repository secrets PROXMOX_SSH_PRIVATE_KEY or PROXMOX_SSH_PASSWORD before running deploy workflows."
+          echo "Required: PROXMOX_R630_04_HOST, PROXMOX_R630_03_HOST (management IPs for r630-04 / r630-03)"
+          echo "Optional: PROXMOX_SSH_USER (default root), PROXMOX_SSH_HOST (single-host fallback)"
           exit 1
         fi
 

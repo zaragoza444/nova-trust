@@ -74,18 +74,6 @@ export const novaOneProfile: ChainProfile = {
   tradableTokens: ["M1FIAT", "ACX", "SHIVA"]
 };
 
-export const zBlockChainProfile: ChainProfile = {
-  name: "Z Blockchain",
-  chainId: 44002,
-  slug: "z-block-chain",
-  role: "Z Online Bank liquidity and world chain",
-  nativeSymbol: "Z",
-  wrappedSymbol: "WZ",
-  status: "Live",
-  networkType: "evm",
-  tradableTokens: ["M1FIAT", "ACX", "SHIVA", "USDT", "ETH", "BTC", "BNB", "USDC", "XRCUSDC", "CUSDT", "ICX", "AUSDT", "CHAT"]
-};
-
 export const nrwWorldProfile: ChainProfile = {
   name: "NRW World",
   chainId: 33001,
@@ -99,12 +87,7 @@ export const nrwWorldProfile: ChainProfile = {
 
 export const multiNetworkProfiles: ChainProfile[] = [tronProfile, ethereumProfile, bnbSmartChainProfile];
 
-export const permissionedChainProfiles: ChainProfile[] = [
-  chain138Profile,
-  novaOneProfile,
-  nrwWorldProfile,
-  zBlockChainProfile
-];
+export const permissionedChainProfiles: ChainProfile[] = [chain138Profile, novaOneProfile, nrwWorldProfile];
 
 export const chainProfiles: ChainProfile[] = [...multiNetworkProfiles, ...permissionedChainProfiles];
 
@@ -112,7 +95,6 @@ export const basementNetwork = tronProfile;
 export const primaryChain = novaOneProfile;
 export const settlementChain = chain138Profile;
 export const bridgeChain = nrwWorldProfile;
-export const zBankChain = zBlockChainProfile;
 
 export function formatChainIdentifier(chain: ChainProfile): string {
   if (chain.networkType === "tron") {
