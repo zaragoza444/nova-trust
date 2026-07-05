@@ -39,9 +39,6 @@ services:
     env_file:
       - .env.z-production
     environment:
-      Z_API_PORT: "4100"
-      Z_API_HOST: "0.0.0.0"
-      Z_CORS_ORIGIN: "http://127.0.0.1:3100"
       ZBC_RPC_URL: "http://z-chain:8546"
     command: >-
       bash -lc "npm install && npm run build --workspace @z/api && node services/z-api/dist/app.js"
