@@ -27,11 +27,11 @@ export async function getInternationalWiringOverview() {
   const config = loadMultiNetworkConfig();
   const multiNetwork = new MultiNetworkService();
   const health = await multiNetwork.runHealthCheck();
-  const publicHost = process.env.Z_PUBLIC_HOST ?? process.env.NOVA_PUBLIC_HOST ?? registry.productionDefaults.vpsHost;
-  const publicScheme = process.env.Z_PUBLIC_SCHEME ?? process.env.NOVA_PUBLIC_SCHEME ?? "http";
+  const publicHost = process.env.Z_PUBLIC_HOST ?? String(registry.productionDefaults.vpsHost);
+  const publicScheme = process.env.Z_PUBLIC_SCHEME ?? "http";
   const dashboardPort = Number(process.env.Z_DASHBOARD_PORT ?? registry.productionDefaults.dashboardPort);
-  const apiPort = Number(process.env.Z_API_PORT ?? process.env.PORT ?? registry.productionDefaults.apiPort);
-  const useNginx = process.env.Z_INTERNATIONAL_NGINX === "true" || process.env.NOVA_INTERNATIONAL_NGINX === "true";
+  const apiPort = Number(process.env.Z_API_PORT ?? registry.productionDefaults.apiPort);
+  const useNginx = process.env.Z_INTERNATIONAL_NGINX === "true";
   const publicBase = useNginx
     ? `${publicScheme}://${publicHost}`
     : `${publicScheme}://${publicHost}:${dashboardPort}`;
@@ -80,7 +80,7 @@ export async function getInternationalWiringOverview() {
       apiUrl: publicApiBase,
       goLiveUrl: `${publicApiBase}${registry.publicEndpoints.goLivePath}`,
       multiNetworkHealthUrl: `${publicApiBase}${registry.publicEndpoints.multiNetworkHealthPath}`,
-      corsOrigin: process.env.NOVA_CORS_ORIGIN ?? publicBase
+      corsOrigin: process.env.Z_CORS_ORIGIN ?? publicBase
     },
     endpoints: registry.publicEndpoints
   };

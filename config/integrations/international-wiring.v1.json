@@ -71,7 +71,7 @@
     }
   ],
   "cloneTokens": {
-    "settlementChainId": 44002,
+    "settlementChainId": 22016,
     "symbols": ["USDT", "USDC", "ETH", "BTC", "BNB", "XRCUSDC", "CUSDT", "AUSDT", "ICX", "CHAT"]
   },
   "publicEndpoints": {
@@ -86,11 +86,10 @@
     "vpsHost": "51.75.64.28",
     "dashboardPort": 3000,
     "apiPort": 4000,
-    "zBlockChainRpcPort": 8546,
     "nginxConfigPath": "deploy/nginx/nova-trust.conf"
   },
   "source": {
     "registryPath": "config/integrations/international-wiring.v1.json",
-    "notes": "International wiring for TRON basement, Ethereum, BNB Smart Chain, and Z Blockchain settlement with public dashboard/API exposure."
+    "notes": "International wiring for TRON basement, Ethereum, BNB Smart Chain, and Nova One settlement with public dashboard/API exposure."
   }
 }

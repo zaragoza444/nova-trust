@@ -47,4 +47,4 @@ fi
 
 echo ""
 echo "Z Wallet production registration complete."
-echo "Verify balances: curl -H 'x-nova-role: AUDITOR' http://127.0.0.1:4000/api/z-wallet/overview"
+echo "Verify balances: curl -H 'x-z-role: AUDITOR' http://127.0.0.1:4100/api/z-wallet/overview"

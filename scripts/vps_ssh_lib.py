@@ -23,19 +23,26 @@ DEFAULT_VPS_USER = "ubuntu"
 def env(name: str, default: str | None = None) -> str | None:
     value = os.environ.get(name)
     if value is None or value.strip() == "":
+        # Allow PROXMOX_* aliases for deploy scripts
+        if name.startswith("VPS_"):
+            proxmox_name = name.replace("VPS_", "PROXMOX_", 1)
+            proxmox_value = os.environ.get(proxmox_name)
+            if proxmox_value is not None and proxmox_value.strip() != "":
+                return proxmox_value.strip()
         return default
     return value.strip()
 
 
 def require_vps_auth() -> None:
-    password = env("VPS_SSH_PASSWORD")
-    key_data = env("VPS_SSH_PRIVATE_KEY")
-    key_path = env("VPS_SSH_KEY_PATH")
+    password = env("VPS_SSH_PASSWORD") or env("PROXMOX_SSH_PASSWORD")
+    key_data = env("VPS_SSH_PRIVATE_KEY") or env("PROXMOX_SSH_PRIVATE_KEY")
+    key_path = env("VPS_SSH_KEY_PATH") or env("PROXMOX_SSH_KEY_PATH")
     if password or key_data or key_path:
         return
     raise SystemExit(
-        "Missing VPS SSH credentials. Configure GitHub secrets "
-        "VPS_SSH_PRIVATE_KEY or VPS_SSH_PASSWORD (and optionally VPS_SSH_HOST, VPS_SSH_USER)."
+        "Missing SSH credentials. Configure GitHub secrets "
+        "VPS_SSH_PRIVATE_KEY or VPS_SSH_PASSWORD (or PROXMOX_SSH_* equivalents), "
+        "and optionally VPS_SSH_HOST / VPS_SSH_USER."
     )
 
 

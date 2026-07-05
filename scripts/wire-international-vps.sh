@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Wire Nova Trust internationally:
 # - TRON basement + Ethereum + BNB public RPCs
-# - Z Blockchain permissioned settlement on 44002
+# - Nova One permissioned settlement on 22016
 # - Public dashboard/API exposure via nginx on the VPS
 #
 # Usage:
@@ -91,7 +91,7 @@ Nova Trust wired internationally
   Go-live status    ${API_URL}/api/go-live/status
 
   Public networks   TRON · Ethereum · BNB Smart Chain
-  Settlement chain  Z Blockchain (44002)
+  Settlement chain  Nova One (22016)
   Clone tokens      USDT · ETH · BTC · BNB · USDC · ...
 
 EOF

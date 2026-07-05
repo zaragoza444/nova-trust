@@ -4,7 +4,7 @@ export interface TokenCapabilities {
   transferable: boolean;
   tradable: boolean;
   swappable: boolean;
-  zBankLoadable: boolean;
+  bankLoadable?: boolean;
 }
 
 export interface TradableToken {
@@ -42,44 +42,6 @@ export interface TradingOverviewData {
   tradingInsights: Array<{ label: string; value: string }>;
 }
 
-export interface ZBankIntegrationData {
-  shellSignals: Array<{ label: string; value: string; tone: string }>;
-  provider: {
-    id: string;
-    name: string;
-    channel: string;
-    status: string;
-  };
-  supportedChains: Array<{ chainId: number; name: string }>;
-  supportedTokens: string[];
-  loadMethods: Array<{
-    id: string;
-    label: string;
-    description: string;
-    minAmount: string;
-    settlementToken: string;
-    requiresKyc: boolean;
-  }>;
-  capabilities: TokenCapabilities & {
-    crossBankUsable: boolean;
-    platformTradingUsable: boolean;
-  };
-  tradableTokens: Array<{
-    symbol: string;
-    name: string;
-    minLoadAmount: string;
-    capabilities: TokenCapabilities;
-    liquidityPairs: string[];
-  }>;
-  approvedPlatforms: Array<{
-    id: string;
-    name: string;
-    type: string;
-    supportedTokens: string[];
-    capabilities: string[];
-  }>;
-}
-
 const fallbackTokens: TradableToken[] = [
   {
     assetId: "M1FIAT-2026-001",
@@ -92,7 +54,7 @@ const fallbackTokens: TradableToken[] = [
       transferable: true,
       tradable: true,
       swappable: true,
-      zBankLoadable: true
+      bankLoadable: true
     },
     liquidityPairs: ["WNOVA", "ACX", "SHIVA"]
   },
@@ -107,7 +69,7 @@ const fallbackTokens: TradableToken[] = [
       transferable: true,
       tradable: true,
       swappable: true,
-      zBankLoadable: true
+      bankLoadable: true
     },
     liquidityPairs: ["WNOVA", "M1FIAT"]
   },
@@ -122,20 +84,13 @@ const fallbackTokens: TradableToken[] = [
       transferable: true,
       tradable: true,
       swappable: true,
-      zBankLoadable: true
+      bankLoadable: true
     },
     liquidityPairs: ["WNOVA", "M1FIAT"]
   }
 ];
 
 const fallbackPlatforms: TradingPlatform[] = [
-  {
-    id: "z-bank-online",
-    name: "Z Bank Online",
-    type: "bank",
-    supportedTokens: ["M1FIAT", "ACX", "SHIVA"],
-    capabilities: ["load", "transfer", "trade"]
-  },
   {
     id: "nova-liquidity-pool",
     name: "Nova Liquidity Pool",
@@ -169,7 +124,7 @@ function getFallbackTradingData(): TradingOverviewData {
     shellSignals: [
       { label: "Chain 138 rail", value: "M1 / ACX / SHIVA live", tone: "positive" },
       { label: "Swap venues", value: "3 WNOVA pools", tone: "positive" },
-      { label: "Z Bank load", value: "Online M1 channel", tone: "neutral" },
+      { label: "Partner banks", value: "OMNL settlement channel", tone: "neutral" },
       { label: "Platforms", value: `${fallbackPlatforms.length} approved`, tone: "positive" }
     ],
     chainProfiles: allChains,
@@ -192,54 +147,6 @@ function getFallbackTradingData(): TradingOverviewData {
       { label: "Wrapped native", value: chain138Profile.wrappedSymbol },
       { label: "Cross-bank usage", value: "Enabled for approved venues" }
     ]
-  };
-}
-
-function getFallbackZBankData(): ZBankIntegrationData {
-  return {
-    shellSignals: [
-      { label: "Provider", value: "Z Bank Online", tone: "positive" },
-      { label: "Channel", value: "M1", tone: "neutral" },
-      { label: "Loadable tokens", value: "M1FIAT, ACX, SHIVA", tone: "positive" },
-      { label: "KYC", value: "Required", tone: "neutral" }
-    ],
-    provider: {
-      id: "z-bank-online",
-      name: "Z Bank Online",
-      channel: "M1",
-      status: "active"
-    },
-    supportedChains: [
-      { chainId: 138, name: "Chain 138" },
-      { chainId: 22016, name: "Nova One" }
-    ],
-    supportedTokens: ["M1FIAT", "ACX", "SHIVA"],
-    loadMethods: [
-      {
-        id: "zbank-m1-online-transfer",
-        label: "Z Bank Online M1 Transfer",
-        description: "Load M1FIAT, ACX, or SHIVA from Z Bank online into a compliant Chain 138 wallet.",
-        minAmount: "1",
-        settlementToken: "M1FIAT",
-        requiresKyc: true
-      }
-    ],
-    capabilities: {
-      transferable: true,
-      tradable: true,
-      swappable: true,
-      zBankLoadable: true,
-      crossBankUsable: true,
-      platformTradingUsable: true
-    },
-    tradableTokens: fallbackTokens.map((token) => ({
-      symbol: token.symbol,
-      name: token.name,
-      minLoadAmount: token.minLoadAmount,
-      capabilities: token.capabilities,
-      liquidityPairs: token.liquidityPairs
-    })),
-    approvedPlatforms: fallbackPlatforms
   };
 }
 
@@ -272,27 +179,5 @@ export async function getTradingOverviewData(): Promise<TradingOverviewData> {
     };
   } catch {
     return getFallbackTradingData();
-  }
-}
-
-export async function getZBankIntegrationData(): Promise<ZBankIntegrationData> {
-  try {
-    const response = await fetch(`${apiBaseUrl}/api/zbank/integration`, {
-      headers: apiHeaders,
-      next: { revalidate: 30 }
-    });
-
-    if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
-    }
-
-    const payload = (await response.json()) as ZBankIntegrationData;
-    return {
-      ...getFallbackZBankData(),
-      ...payload,
-      shellSignals: getFallbackZBankData().shellSignals
-    };
-  } catch {
-    return getFallbackZBankData();
   }
 }

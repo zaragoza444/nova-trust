@@ -7,6 +7,7 @@ import { handleHealth } from "./routes/health";
 import { handleMultiNetworkChart, handleMultiNetworkHealth } from "./routes/networks";
 import { handleTradingTokensOverview } from "./routes/trading";
 import { handleInternationalWiring } from "./routes/international";
+import { handleGoLiveStatus } from "./routes/go-live";
 import { handleCustodyHealth, handleCustodyOverview, handleCoboCallback, handleCoboWebhook } from "./routes/custody";
 import { canAccess, type NovaRole } from "./services/rbac";
 
@@ -111,6 +112,11 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     void handleInternationalWiring(request, response);
+    return;
+  }
+
+  if (request.url === "/api/go-live/status") {
+    void handleGoLiveStatus(request, response);
     return;
   }
 

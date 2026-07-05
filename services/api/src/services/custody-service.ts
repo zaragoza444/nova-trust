@@ -3,7 +3,6 @@ import path from "node:path";
 import { getCustodyConfigStatus, loadCustodyConfig } from "../config/custody-config";
 import { CoboCustodyClient } from "./cobo-client";
 import { DfnsCustodyClient } from "./dfns-client";
-import { loadZBankIntegration } from "./tradable-tokens";
 
 const repoRoot = path.resolve(__dirname, "../../../..");
 
@@ -20,7 +19,7 @@ export interface CustodyRegistry {
     role: string;
     access?: string;
     capabilities: string[];
-    zBankUseCases?: string[];
+    settlementUseCases?: string[];
     notes?: string;
   }>;
   flows: Record<string, unknown>;
@@ -29,10 +28,10 @@ export interface CustodyRegistry {
 export interface CustodyOverview {
   registry: CustodyRegistry;
   configStatus: ReturnType<typeof getCustodyConfigStatus>;
-  zBank: {
-    provider: string;
-    primaryLiquidityChainId: number;
-    supportedTokens: string[];
+  settlement: {
+    chainId: number;
+    chainName: string;
+    wrappedNativeSymbol?: string;
   };
 }
 
@@ -41,7 +40,7 @@ export interface CustodyHealthReport {
   settlementChainId: number;
   dfns: Awaited<ReturnType<DfnsCustodyClient["testConnectivity"]>>;
   cobo: Awaited<ReturnType<CoboCustodyClient["testConnectivity"]>>;
-  readyForZBank: boolean;
+  readyForProduction: boolean;
   notes: string[];
 }
 
@@ -56,15 +55,15 @@ export class CustodyService {
   private readonly cobo = new CoboCustodyClient(this.config.cobo);
 
   getOverview(): CustodyOverview {
-    const zBank = loadZBankIntegration();
+    const registry = loadCustodyRegistry();
 
     return {
-      registry: loadCustodyRegistry(),
+      registry,
       configStatus: getCustodyConfigStatus(this.config),
-      zBank: {
-        provider: zBank.provider.name,
-        primaryLiquidityChainId: zBank.primaryLiquidityChain?.chainId ?? 44002,
-        supportedTokens: zBank.supportedTokens
+      settlement: {
+        chainId: registry.settlementChain.chainId,
+        chainName: registry.settlementChain.name,
+        wrappedNativeSymbol: registry.settlementChain.wrappedNativeSymbol
       }
     };
   }
@@ -102,7 +101,7 @@ export class CustodyService {
       settlementChainId: registry.settlementChain.chainId,
       dfns,
       cobo,
-      readyForZBank: dfns.ok && cobo.ok,
+      readyForProduction: dfns.ok && cobo.ok,
       notes
     };
   }

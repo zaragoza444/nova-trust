@@ -8,9 +8,9 @@
     "nativeSymbol": "TRX"
   },
   "settlementChain": {
-    "chainId": 44002,
-    "name": "Z Blockchain",
-    "wrappedNativeSymbol": "WZ"
+    "chainId": 22016,
+    "name": "Nova One",
+    "wrappedNativeSymbol": "WNOVA"
   },
   "publicNetworks": [
     {
@@ -49,9 +49,9 @@
         "treasury-deposits"
       ],
       "supportedNetworks": ["TRON", "ETH", "BSC", "EVM"],
-      "zBankUseCases": [
-        "Treasury wallet provisioning for Z Blockchain fund loads",
-        "Signed settlement transfers to chain 44002",
+      "settlementUseCases": [
+        "Treasury wallet provisioning for Nova One settlement",
+        "Signed settlement transfers to chain 22016",
         "Multi-network operational wallets on TRON, Ethereum, and BNB"
       ]
     },
@@ -66,8 +66,8 @@
         "withdrawals"
       ],
       "supportedNetworks": ["TRON", "ETH", "BSC_BNB"],
-      "zBankUseCases": [
-        "Operational wallet balances for Z Bank online loads",
+      "settlementUseCases": [
+        "Operational wallet balances for partner bank settlement",
         "Withdrawal rail once callback URL is registered",
         "Cross-network TRON, Ethereum, and BNB Smart Chain treasury routing"
       ],
@@ -75,12 +75,12 @@
     }
   ],
   "flows": {
-    "zBankFundLoad": {
-      "settlementChainId": 44002,
-      "custodyPath": "dfns-treasury -> z-block-chain-settlement",
+    "novaSettlement": {
+      "settlementChainId": 22016,
+      "custodyPath": "dfns-treasury -> nova-one-settlement",
       "supportedTokens": ["M1FIAT", "ACX", "SHIVA"]
     },
-    "zBankWithdrawal": {
+    "partnerBankWithdrawal": {
       "status": "callback-ready",
       "custodyPath": "cobo-wallet -> bank-rail",
       "webhookEndpoint": "/api/custody/cobo/webhook",
@@ -94,6 +94,6 @@
   },
   "source": {
     "registryPath": "config/integrations/custody.v1.json",
-    "notes": "Custody bindings for TRON basement, Ethereum, BNB Smart Chain, Z Blockchain, and Z Bank Online."
+    "notes": "Custody bindings for TRON basement, Ethereum, BNB Smart Chain, and Nova One settlement."
   }
 }
