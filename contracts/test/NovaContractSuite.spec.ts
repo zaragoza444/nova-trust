@@ -430,4 +430,36 @@ describe("Nova contract suite design", () => {
     assert.match(packageJson, /test:contracts/);
     assert.match(packageJson, /test:multi-network/);
   });
+
+  it("registers production Z Wallet integration for Z Blockchain", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-wallet.v1.json"), "utf8")
+    ) as {
+      product: { id: string; style: string };
+      settlementChain: { chainId: number };
+      productionWallet: { address: string; role: string };
+      accounts: Array<{ id: string }>;
+    };
+
+    assert.equal(registry.product.id, "z-wallet");
+    assert.equal(registry.product.style, "binance-production");
+    assert.equal(registry.settlementChain.chainId, 44002);
+    assert.equal(registry.productionWallet.address, "0xc2D6E6981D1A415967A683D615cf97bA9bC26F0f");
+    assert.deepEqual(
+      registry.accounts.map((account) => account.id),
+      ["funding", "spot", "earn"]
+    );
+  });
+
+  it("documents Z Wallet production setup script and API routes", () => {
+    const setupScript = readFileSync(path.resolve(repoRoot, "scripts", "setup-z-wallet-production.sh"), "utf8");
+    const appSource = readFileSync(path.resolve(repoRoot, "services", "api", "src", "app.ts"), "utf8");
+    const contractsPackage = readFileSync(path.resolve(contractsRoot, "package.json"), "utf8");
+
+    assert.match(setupScript, /setup:z-wallet:production/);
+    assert.match(contractsPackage, /setup:z-wallet:production/);
+    assert.match(appSource, /\/api\/z-wallet\/overview/);
+    assert.match(appSource, /\/api\/z-wallet\/balances/);
+    assert.match(appSource, /\/api\/z-wallet\/transfer/);
+  });
 });

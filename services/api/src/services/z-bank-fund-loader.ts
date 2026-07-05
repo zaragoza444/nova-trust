@@ -100,7 +100,7 @@ export class ZBankFundLoaderService {
     const token = getTradableToken(input.tokenSymbol);
 
     if (!token) {
-      return this.reject(input, integration.provider.name, `Token ${input.tokenSymbol} is not registered for Chain 138`);
+      return this.reject(input, integration.provider.name, `Token ${input.tokenSymbol} is not registered for Z Blockchain`);
     }
 
     const amountCheck = validateLoadAmount(input.tokenSymbol, input.amount);
@@ -172,6 +172,8 @@ export class ZBankFundLoaderService {
   }
 
   private reject(input: FundLoadRequest, provider: string, message: string): FundLoadResult {
+    const integration = loadZBankIntegration();
+    const settlementChainId = integration.primaryLiquidityChain?.chainId ?? 44002;
     return {
       requestId: randomUUID(),
       status: "rejected",
@@ -180,8 +182,8 @@ export class ZBankFundLoaderService {
       walletAddress: input.walletAddress,
       tokenSymbol: input.tokenSymbol,
       amount: input.amount,
-      chainId: 138,
-      settlementChainId: 22016,
+      chainId: settlementChainId,
+      settlementChainId,
       capabilities: {
         transferable: false,
         tradable: false,

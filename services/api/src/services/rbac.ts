@@ -81,6 +81,21 @@ export const accessPolicies: AccessPolicy[] = [
     route: "/api/oracle/prices",
     roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
     approvalRequired: false
+  },
+  {
+    route: "/api/z-wallet/overview",
+    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
+    approvalRequired: false
+  },
+  {
+    route: "/api/z-wallet/balances",
+    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
+    approvalRequired: false
+  },
+  {
+    route: "/api/z-wallet/transfer",
+    roles: ["SUPER_ADMIN", "TREASURY_OPERATOR"],
+    approvalRequired: true
   }
 ];
 

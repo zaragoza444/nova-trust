@@ -88,7 +88,9 @@ function readJson<T>(relativePath: string): T {
 }
 
 export function loadTradableTokenRegistry(): TradableTokenRegistry {
-  return readJson<TradableTokenRegistry>("config/tokens/chain138-tradable-tokens.v1.json");
+  const registryPath =
+    process.env.NOVA_TOKEN_REGISTRY_PATH ?? "config/tokens/z-block-chain-tradable-tokens.v1.json";
+  return readJson<TradableTokenRegistry>(registryPath);
 }
 
 export function loadTradingPlatformRegistry(): TradingPlatformRegistry {

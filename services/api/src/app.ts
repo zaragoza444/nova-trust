@@ -10,6 +10,7 @@ import { handleTradingTokensOverview } from "./routes/trading";
 import { handleZBankIntegrationOverview, handleZBankLoadFunds } from "./routes/zbank";
 import { handleGoLiveStatus } from "./routes/go-live";
 import { handleInternationalWiring } from "./routes/international";
+import { handleZWalletBalances, handleZWalletOverview, handleZWalletTransfer } from "./routes/z-wallet";
 import { handleCustodyHealth, handleCustodyOverview, handleCoboCallback, handleCoboWebhook } from "./routes/custody";
 import { handleOraclePricesGet, handleOraclePricesPut } from "./routes/oracle";
 import { canAccess, type NovaRole } from "./services/rbac";
@@ -36,12 +37,42 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
     return;
   }
 
+  const requestRole = request.headers["x-nova-role"] as NovaRole | undefined;
+
   if (request.url === "/api/go-live/status") {
     void handleGoLiveStatus(request, response);
     return;
   }
 
-  const requestRole = request.headers["x-nova-role"] as NovaRole | undefined;
+  if (request.url === "/api/z-wallet/overview") {
+    if (!requestRole || !canAccess("/api/z-wallet/overview", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleZWalletOverview(request, response);
+    return;
+  }
+
+  if (request.url === "/api/z-wallet/balances") {
+    if (!requestRole || !canAccess("/api/z-wallet/balances", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleZWalletBalances(request, response);
+    return;
+  }
+
+  if (request.url === "/api/z-wallet/transfer" && request.method === "POST") {
+    if (!requestRole || !canAccess("/api/z-wallet/transfer", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleZWalletTransfer(request, response);
+    return;
+  }
 
   if (request.url === "/api/dashboard") {
     if (!requestRole || !canAccess("/api/dashboard", requestRole)) {
