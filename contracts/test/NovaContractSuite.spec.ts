@@ -228,4 +228,33 @@ describe("Nova contract suite design", () => {
     assert.ok(usdt);
     assert.deepEqual(usdt?.networks, ["TRON", "Ethereum", "BNB Smart Chain"]);
   });
+
+  it("activates TRON permissioned bridge lanes to Z Blockchain and Nova One", () => {
+    const chart = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "chains", "multi-network.v1.json"), "utf8")
+    ) as {
+      permissionedBridges: Array<{ to: number; status: string }>;
+    };
+
+    const zBridge = chart.permissionedBridges.find((lane) => lane.to === 44002);
+    const novaBridge = chart.permissionedBridges.find((lane) => lane.to === 22016);
+    assert.equal(zBridge?.status, "active");
+    assert.equal(novaBridge?.status, "active");
+  });
+
+  it("documents production multi-network RPC defaults", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "multi-network-rpc.v1.json"), "utf8")
+    ) as {
+      productionDefaults: {
+        tron: { rpcUrl: string };
+        ethereum: { rpcUrl: string; chainId: number };
+        bnbSmartChain: { rpcUrl: string; chainId: number };
+      };
+    };
+
+    assert.match(registry.productionDefaults.tron.rpcUrl, /trongrid/);
+    assert.equal(registry.productionDefaults.ethereum.chainId, 1);
+    assert.equal(registry.productionDefaults.bnbSmartChain.chainId, 56);
+  });
 });

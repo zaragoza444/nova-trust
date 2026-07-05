@@ -100,7 +100,7 @@ function getFallback(): MultiNetworkOverview {
         to: 44002,
         fromName: "TRON",
         toName: "Z Blockchain",
-        status: "planned",
+        status: "active",
         purpose: "TRON basement to Z Online Bank liquidity"
       },
       {
@@ -108,7 +108,7 @@ function getFallback(): MultiNetworkOverview {
         to: 22016,
         fromName: "TRON",
         toName: "Nova One",
-        status: "planned",
+        status: "active",
         purpose: "TRON basement to Nova One settlement"
       }
     ],

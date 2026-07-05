@@ -53,7 +53,7 @@ function getFallback(): ZBlockChainOverview {
       }
     },
     bridgeLanes: [
-      { from: 728126428, to: 44002, status: "planned", purpose: "TRON basement foundation to Z Online Bank liquidity" },
+      { from: 728126428, to: 44002, status: "active", purpose: "TRON basement foundation to Z Online Bank liquidity" },
       { from: 22016, to: 44002, status: "active", purpose: "Nova One settlement to Z Online Bank liquidity" },
       { from: 33001, to: 44002, status: "active", purpose: "NRW World world liquidity to Z Blockchain" },
       { from: 138, to: 44002, status: "active", purpose: "Chain 138 bank rail to Z Online Bank" }

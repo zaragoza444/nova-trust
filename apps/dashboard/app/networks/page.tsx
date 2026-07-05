@@ -106,7 +106,7 @@ export default async function MultiNetworkPage() {
                   </strong>
                   <p>{lane.purpose}</p>
                 </div>
-                <span className="statusBadge pending">{lane.status}</span>
+                <span className="statusBadge approved">{lane.status}</span>
               </article>
             ))}
           </div>
@@ -154,6 +154,33 @@ export default async function MultiNetworkPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <section className="card">
+        <div className="sectionHeader">
+          <div>
+            <span className="eyebrow">Production wiring</span>
+            <h3>VPS RPC endpoints and bridge activation</h3>
+          </div>
+        </div>
+        <div className="featureChecklist">
+          <div>
+            <strong>Env file</strong>
+            <p>`cp contracts/multi-network.env.example ~/nova-trust/.env.multi-network`</p>
+          </div>
+          <div>
+            <strong>VPS wire script</strong>
+            <p>`bash scripts/wire-multi-network-vps.sh`</p>
+          </div>
+          <div>
+            <strong>Preflight</strong>
+            <p>`npm run setup:multi-network:preflight --workspace @nova/contracts`</p>
+          </div>
+          <div>
+            <strong>Health check</strong>
+            <p>`GET /api/networks/health` · `npm run test:multi-network`</p>
+          </div>
         </div>
       </section>
     </PageShell>

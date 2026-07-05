@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "productionDefaults": {
+    "tron": {
+      "rpcUrl": "https://api.trongrid.io",
+      "networkId": "mainnet",
+      "envVar": "TRON_RPC_URL"
+    },
+    "ethereum": {
+      "rpcUrl": "https://ethereum.publicnode.com",
+      "chainId": 1,
+      "envVar": "ETH_RPC_URL"
+    },
+    "bnbSmartChain": {
+      "rpcUrl": "https://bsc-dataseed.binance.org",
+      "chainId": 56,
+      "envVar": "BSC_RPC_URL"
+    },
+    "zBlockChain": {
+      "rpcUrl": "http://127.0.0.1:8546",
+      "chainId": 44002,
+      "envVar": "ZBC_RPC_URL"
+    }
+  },
+  "healthEndpoint": "/api/networks/health",
+  "source": {
+    "registryPath": "config/integrations/multi-network-rpc.v1.json",
+    "notes": "Production RPC wiring for TRON basement, Ethereum, BNB Smart Chain, and local Z Blockchain on the VPS."
+  }
+}

@@ -6,7 +6,8 @@
     "dev": "npm run build && node ./dist/app.js",
     "build": "tsc -p tsconfig.json",
     "start": "node ./dist/app.js",
-    "test:custody": "npm run build && node ./dist/scripts/test-custody-connectivity.js"
+    "test:custody": "npm run build && node ./dist/scripts/test-custody-connectivity.js",
+    "test:multi-network": "npm run build && node ./dist/scripts/test-multi-network-connectivity.js"
   },
   "dependencies": {
     "@cobo/cobo-waas2": "^1.38.0",
