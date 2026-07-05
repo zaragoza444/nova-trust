@@ -10,6 +10,8 @@ const routeMap: Record<string, string> = {
   Validators: "/validators",
   Settlement: "/",
   "Asset issuance": "/assets",
+  "Token trading": "/trading",
+  "Z Bank load": "/zbank",
   Treasury: "/admin",
   Governance: "/admin",
   Reporting: "/admin",
