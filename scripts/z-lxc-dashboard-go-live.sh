@@ -32,16 +32,22 @@ for _ in $(seq 1 30); do
   sleep 2
 done
 
+echo "==> Installing nginx for Z Dashboard on port 80"
+bash "$ROOT/scripts/z-lxc-dashboard-wire.sh"
+
 cat <<EOF
 
 Z Dashboard LIVE on $(hostname -I | awk '{print $1}')
 
-  Z Chart     http://192.168.11.127:3100/zchart
-  Z Trade     http://192.168.11.127:3100/ztrade
-  Z Swap      http://192.168.11.127:3100/zswap
-  Z Wallet    http://192.168.11.127:3100/wallet
-  Z Bank      http://192.168.11.127:3100/zbank
-  Z Chain     http://192.168.11.127:3100/z-chain
-  Z Bot       http://192.168.11.127:3100/zbot
+  Z Chart     http://192.168.11.127/zchart
+  Z Trade     http://192.168.11.127/ztrade
+  Z Swap      http://192.168.11.127/zswap
+  Z Wallet    http://192.168.11.127/wallet
+  Z Bank      http://192.168.11.127/zbank
+  Z Chain     http://192.168.11.127/z-chain
+  Z Bot       http://192.168.11.127/zbot
+  API         http://192.168.11.127/api/go-live/status
+
+  Direct      http://192.168.11.127:3100/zchart
 
 EOF

@@ -58,8 +58,9 @@ for item in sorted(registry["containers"], key=lambda x: x["vmid"]):
         check(f"{label_prefix} portal {path}", f"http://{ip}{path}", required=False)
         check(f"{label_prefix} api :4100/health", f"{hub}/health")
     elif role == "dashboard":
-        check(f"{label_prefix} :3100{path}", f"http://{ip}:3100{path}")
-        check(f"{label_prefix} :3100/ (root)", f"http://{ip}:3100/", required=False)
+        check(f"{label_prefix} :80{path}", f"http://{ip}{path}")
+        check(f"{label_prefix} /health via nginx", f"http://{ip}/health")
+        check(f"{label_prefix} :3100{path}", f"http://{ip}:3100{path}", required=False)
     elif role == "portal":
         check(f"{label_prefix} portal {path}", f"http://{ip}{path}")
         check(f"{label_prefix} /health via nginx", f"http://{ip}/health")

@@ -546,6 +546,7 @@ describe("Nova contract suite design", () => {
       routing: { hubApi: string; dashboard: string };
     };
     const deployScript = readFileSync(path.resolve(repoRoot, "scripts", "deploy-z-proxmox-lxc.sh"), "utf8");
+    const dashboardScript = readFileSync(path.resolve(repoRoot, "scripts", "z-lxc-dashboard-go-live.sh"), "utf8");
 
     assert.equal(registry.containers.length, 9);
     assert.equal(registry.routing.hubApi, "http://192.168.11.126:4100");
@@ -556,6 +557,8 @@ describe("Nova contract suite design", () => {
     assert.match(deployScript, /5824/);
     assert.match(deployScript, /z-lxc-hub-go-live\.sh/);
     assert.match(deployScript, /z-lxc-portal-wire\.sh/);
+    assert.match(deployScript, /z-lxc-dashboard-go-live\.sh/);
+    assert.match(dashboardScript, /z-lxc-dashboard-wire\.sh/);
     assert.match(deployScript, /inspect-z-proxmox-lxc\.sh/);
   });
 

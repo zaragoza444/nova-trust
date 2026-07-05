@@ -153,7 +153,7 @@ for item in sorted(registry["containers"], key=lambda x: x["vmid"]):
     path = item.get("primaryPath", "/")
     print(f"  VMID {item['vmid']:4}  {item['name']:28}  {item['ip']:16}  {item.get('zProduct','?'):10}  http://{item['ip']}{path}")
 print("\n  Hub API     http://192.168.11.126:4100/health")
-print("  Dashboard   http://192.168.11.127:3100/zchart")
+print("  Dashboard   http://192.168.11.127/zchart")
 print("  Go-live     http://192.168.11.126:4100/api/go-live/status")
 print("\n  Re-check:    bash scripts/inspect-z-proxmox-lxc.sh")
 PY
