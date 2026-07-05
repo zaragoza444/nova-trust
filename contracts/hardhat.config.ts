@@ -11,6 +11,19 @@ const config: HardhatUserConfig = {
       viaIR: true
     }
   },
+  networks: {
+    hardhat: {
+      type: "edr-simulated",
+      chainType: "l1",
+      chainId: 22016
+    },
+    localhost: {
+      type: "http",
+      chainType: "l1",
+      url: "http://127.0.0.1:8545",
+      chainId: 22016
+    }
+  },
   paths: {
     sources: "./src",
     tests: "./test",

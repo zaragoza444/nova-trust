@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { Contract, ContractFactory, formatUnits, id, JsonRpcProvider, parseUnits, Wallet, ZeroHash } from "ethers";
+import { Contract, ContractFactory, formatUnits, id, JsonRpcProvider, NonceManager, parseUnits, Wallet, ZeroHash } from "ethers";
 
 interface BootstrapConfig {
   rpcUrl: string;
@@ -117,16 +117,17 @@ async function loadConfig(walletAddress: string): Promise<BootstrapConfig> {
   };
 }
 
-async function deployContract(wallet: Wallet, contractName: string, args: unknown[]): Promise<DeployedContract> {
+async function deployContract(signer: NonceManager, contractName: string, args: unknown[]): Promise<DeployedContract> {
   const artifact = loadArtifact(contractName);
-  const factory = new ContractFactory(artifact.abi, artifact.bytecode, wallet);
+  const factory = new ContractFactory(artifact.abi, artifact.bytecode, signer);
   const contract = await factory.deploy(...args);
-  await contract.waitForDeployment();
-
   const deploymentTx = contract.deploymentTransaction();
   if (!deploymentTx) {
     throw new Error(`No deployment transaction found for ${contractName}`);
   }
+
+  await deploymentTx.wait();
+  await contract.waitForDeployment();
 
   return {
     contract,
@@ -212,7 +213,7 @@ async function issueAsset(
 }
 
 async function bootstrapLiquidityPool(
-  wallet: Wallet,
+  signer: NonceManager,
   walletAddress: string,
   compliance: DeployedContract,
   token0Address: string,
@@ -224,15 +225,15 @@ async function bootstrapLiquidityPool(
   token0Symbol: string,
   token1Symbol: string
 ): Promise<LiquidityPoolRecord> {
-  const liquidityPool = await deployContract(wallet, "NovaLiquidityPool", [
+  const liquidityPool = await deployContract(signer, "NovaLiquidityPool", [
     token0Address,
     token1Address,
     poolName,
     poolSymbol
   ]);
 
-  const token0 = new Contract(token0Address, erc20Abi, wallet);
-  const token1 = new Contract(token1Address, erc20Abi, wallet);
+  const token0 = new Contract(token0Address, erc20Abi, signer);
+  const token1 = new Contract(token1Address, erc20Abi, signer);
   await approveIfNeeded(token0, walletAddress, liquidityPool.record.address, amount0);
   await approveIfNeeded(token1, walletAddress, liquidityPool.record.address, amount1);
   await waitForTransaction(await liquidityPool.contract.addLiquidity(amount0, amount1, walletAddress));
@@ -254,6 +255,7 @@ async function bootstrapLiquidityPool(
 async function main() {
   const preflightProvider = new JsonRpcProvider(process.env.NOVA_RPC_URL ?? "http://127.0.0.1:8545");
   const wallet = new Wallet(requireEnv("NOVA_DEPLOYER_PRIVATE_KEY"), preflightProvider);
+  const signer = new NonceManager(wallet);
   const walletAddress = await wallet.getAddress();
   const config = await loadConfig(walletAddress);
   const network = await preflightProvider.getNetwork();
@@ -265,13 +267,13 @@ async function main() {
     );
   }
 
-  const identity = await deployContract(wallet, "IdentityRegistry", [config.initialOwner]);
-  const compliance = await deployContract(wallet, "ComplianceRegistry", [config.initialOwner, identity.record.address]);
-  const settlement = await deployContract(wallet, "NovaSettlementToken", [config.initialOwner, compliance.record.address]);
-  const wrappedNovaOne = await deployContract(wallet, "WrappedNovaOneToken", []);
-  const assetFactory = await deployContract(wallet, "NovaAssetFactory", [config.initialOwner]);
-  const treasury = await deployContract(wallet, "TreasuryController", [config.initialOwner, settlement.record.address]);
-  const auditEvents = await deployContract(wallet, "AuditEvents", [config.initialOwner]);
+  const identity = await deployContract(signer, "IdentityRegistry", [config.initialOwner]);
+  const compliance = await deployContract(signer, "ComplianceRegistry", [config.initialOwner, identity.record.address]);
+  const settlement = await deployContract(signer, "NovaSettlementToken", [config.initialOwner, compliance.record.address]);
+  const wrappedNovaOne = await deployContract(signer, "WrappedNovaOneToken", []);
+  const assetFactory = await deployContract(signer, "NovaAssetFactory", [config.initialOwner]);
+  const treasury = await deployContract(signer, "TreasuryController", [config.initialOwner, settlement.record.address]);
+  const auditEvents = await deployContract(signer, "AuditEvents", [config.initialOwner]);
 
   await grantRole(identity.contract, await identity.contract.COMPLIANCE_ADMIN_ROLE(), config.complianceAdmin);
   await grantRole(compliance.contract, await compliance.contract.COMPLIANCE_ADMIN_ROLE(), config.complianceAdmin);
@@ -323,7 +325,7 @@ async function main() {
   await waitForTransaction(await wrappedNovaOne.contract.deposit({ value: totalWnovaWrap }));
 
   const m1FiatPool = await bootstrapLiquidityPool(
-    wallet,
+    signer,
     walletAddress,
     compliance,
     m1FiatAddress,
@@ -337,7 +339,7 @@ async function main() {
   );
 
   const acxPool = await bootstrapLiquidityPool(
-    wallet,
+    signer,
     walletAddress,
     compliance,
     acxAddress,
@@ -351,7 +353,7 @@ async function main() {
   );
 
   const shivaPool = await bootstrapLiquidityPool(
-    wallet,
+    signer,
     walletAddress,
     compliance,
     shivaAddress,

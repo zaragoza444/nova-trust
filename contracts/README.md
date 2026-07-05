@@ -77,3 +77,21 @@ NOVA_WNOVA_SHIVA_LIQUIDITY
 The deployer wallet must hold enough native NOVA to pay gas and wrap the configured `NOVA_WNOVA_LIQUIDITY`. Do not commit private keys or production manifests containing sensitive endpoint details.
 
 For the one-command bootstrap, leave `NOVA_INITIAL_OWNER`, `NOVA_COMPLIANCE_ADMIN`, and `NOVA_ASSET_ISSUER` unset or set them to the deployer wallet. The script performs role-gated registration, asset issuance, and venue approval with the deployer key, then role transfers can be handled through governance after bootstrap.
+
+## Local validation (no production secrets)
+
+Validate the full M1FIAT / ACX / SHIVA bootstrap on a local Hardhat node (chain 22016):
+
+```bash
+npm run setup:local --workspace @nova/contracts
+```
+
+This starts a temporary local node, deploys all contracts, seeds three liquidity pools, and writes `contracts/deployments/nova-one-local-liquidity.json`.
+
+Before production, run preflight against your real RPC:
+
+```bash
+source /tmp/nova-production.env
+npm run setup:production:preflight --workspace @nova/contracts
+npm run setup:production --workspace @nova/contracts
+```

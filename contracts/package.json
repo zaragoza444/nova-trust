@@ -7,7 +7,9 @@
     "build": "hardhat compile",
     "test": "hardhat test && node --test --experimental-strip-types ./test/NovaContractSuite.spec.ts",
     "deploy": "node --experimental-strip-types ./scripts/deploy.ts",
-    "setup:production": "node --experimental-strip-types ./scripts/setup-production-liquidity.ts"
+    "setup:production": "node --experimental-strip-types ./scripts/setup-production-liquidity.ts",
+    "setup:local": "bash ./scripts/run-local-bootstrap.sh",
+    "setup:production:preflight": "node --experimental-strip-types ./scripts/preflight-production.ts"
   },
   "devDependencies": {
     "hardhat": "^3.9.1"
