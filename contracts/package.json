@@ -9,7 +9,10 @@
     "deploy": "node --experimental-strip-types ./scripts/deploy.ts",
     "setup:production": "node --experimental-strip-types ./scripts/setup-production-liquidity.ts",
     "setup:local": "bash ./scripts/run-local-bootstrap.sh",
-    "setup:production:preflight": "node --experimental-strip-types ./scripts/preflight-production.ts"
+    "setup:production:preflight": "node --experimental-strip-types ./scripts/preflight-production.ts",
+    "setup:z-block-chain": "node --experimental-strip-types ./scripts/setup-z-block-chain-liquidity.ts",
+    "setup:z-block-chain:local": "bash ./scripts/run-local-z-block-chain-bootstrap.sh",
+    "setup:z-block-chain:preflight": "node --experimental-strip-types ./scripts/preflight-z-block-chain.ts"
   },
   "devDependencies": {
     "hardhat": "^3.9.1"

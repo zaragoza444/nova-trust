@@ -31,6 +31,17 @@ export const novaOneProfile: ChainProfile = {
   tradableTokens: ["M1FIAT", "ACX", "SHIVA"]
 };
 
+export const zBlockChainProfile: ChainProfile = {
+  name: "Z Block Chain",
+  chainId: 44002,
+  slug: "z-block-chain",
+  role: "Z Online Bank liquidity and world chain",
+  nativeSymbol: "Z",
+  wrappedSymbol: "WZ",
+  status: "Production",
+  tradableTokens: ["M1FIAT", "ACX", "SHIVA"]
+};
+
 export const nrwWorldProfile: ChainProfile = {
   name: "NRW World",
   chainId: 33001,
@@ -41,8 +52,9 @@ export const nrwWorldProfile: ChainProfile = {
   status: "Bridge"
 };
 
-export const chainProfiles: ChainProfile[] = [chain138Profile, novaOneProfile, nrwWorldProfile];
+export const chainProfiles: ChainProfile[] = [chain138Profile, novaOneProfile, nrwWorldProfile, zBlockChainProfile];
 
 export const primaryChain = novaOneProfile;
 export const settlementChain = chain138Profile;
 export const bridgeChain = nrwWorldProfile;
+export const zBankChain = zBlockChainProfile;

@@ -96,8 +96,8 @@ export class ZBankFundLoaderService {
       walletAddress: input.walletAddress,
       tokenSymbol: token.symbol,
       amount: input.amount,
-      chainId: tokenRegistry.chain.chainId,
-      settlementChainId: tokenRegistry.chain.settlementChain?.chainId ?? tokenRegistry.chain.chainId,
+      chainId: tokenRegistry.chain.settlementChain?.chainId ?? 44002,
+      settlementChainId: 44002,
       capabilities: {
         transferable: token.capabilities.transferable,
         tradable: token.capabilities.tradable,
@@ -108,7 +108,7 @@ export class ZBankFundLoaderService {
       supportedPlatforms,
       message:
         `Z Bank online accepted ${input.amount} ${token.symbol} load to ${input.walletAddress}. ` +
-        "Funds will mint on Chain 138 settlement and become swappable, tradable, and transferable across approved banks and trading platforms.",
+        "Funds settle on Z Block Chain (44002) and become swappable, tradable, and transferable across approved banks and trading platforms.",
       createdAt: new Date().toISOString()
     };
   }

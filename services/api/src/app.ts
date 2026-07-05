@@ -4,6 +4,7 @@ import { handleAdminOverview, handleAdminQueue } from "./routes/admin";
 import { handleAssetsOverview } from "./routes/assets";
 import { handleDashboard } from "./routes/dashboard";
 import { handleHealth } from "./routes/health";
+import { handleZBlockChainChart } from "./routes/z-chain";
 import { handleTradingTokensOverview } from "./routes/trading";
 import { handleZBankIntegrationOverview, handleZBankLoadFunds } from "./routes/zbank";
 import { canAccess, type NovaRole } from "./services/rbac";
@@ -95,6 +96,16 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     void handleZBankLoadFunds(request, response);
+    return;
+  }
+
+  if (request.url === "/api/z-chain/chart") {
+    if (!requestRole || !canAccess("/api/z-chain/chart", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleZBlockChainChart(request, response);
     return;
   }
 

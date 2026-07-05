@@ -127,7 +127,7 @@ export const featureGroups = [
   },
   {
     title: "Finance",
-    items: ["Settlement", "Asset issuance", "Token trading", "Z Bank load", "Treasury", "Governance", "Reporting"]
+    items: ["Settlement", "Asset issuance", "Token trading", "Z Bank load", "Z Block Chain", "Treasury", "Governance", "Reporting"]
   },
   {
     title: "Admin",

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "Z Block Chain",
+    "chainId": 44002,
+    "nativeSymbol": "Z",
+    "wrappedSymbol": "WZ"
+  },
+  "tokens": [
+    {
+      "assetId": "M1FIAT-ZBC-001",
+      "symbol": "M1FIAT",
+      "name": "M1 Fiat Token",
+      "assetClass": "Stablecoin",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "ACX", "SHIVA"],
+      "notes": "Primary Z Online Bank M1 rail on Z Block Chain."
+    },
+    {
+      "assetId": "ACX-ZBC-001",
+      "symbol": "ACX",
+      "name": "ACX Token",
+      "assetClass": "Exchange",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "M1FIAT"],
+      "notes": "ACX exchange token on Z Block Chain."
+    },
+    {
+      "assetId": "SHIVA-ZBC-001",
+      "symbol": "SHIVA",
+      "name": "Shiva Token",
+      "assetClass": "Utility",
+      "jurisdiction": "GLOBAL",
+      "minLoadAmount": "1",
+      "capabilities": {
+        "transferable": true,
+        "tradable": true,
+        "swappable": true,
+        "zBankLoadable": true
+      },
+      "liquidityPairs": ["WZ", "M1FIAT"],
+      "notes": "SHIVA utility token on Z Block Chain."
+    }
+  ],
+  "source": {
+    "registryPath": "config/tokens/z-block-chain-tradable-tokens.v1.json",
+    "notes": "Tradable token catalog for Z Block Chain liquidity pools."
+  }
+}

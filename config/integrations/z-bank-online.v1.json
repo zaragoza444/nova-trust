@@ -14,14 +14,23 @@
     {
       "chainId": 22016,
       "name": "Nova One"
+    },
+    {
+      "chainId": 44002,
+      "name": "Z Block Chain"
     }
   ],
+  "primaryLiquidityChain": {
+    "chainId": 44002,
+    "name": "Z Block Chain",
+    "wrappedNativeSymbol": "WZ"
+  },
   "supportedTokens": ["M1FIAT", "ACX", "SHIVA"],
   "loadMethods": [
     {
       "id": "zbank-m1-online-transfer",
       "label": "Z Bank Online M1 Transfer",
-      "description": "Load M1FIAT, ACX, or SHIVA from Z Bank online into a compliant Chain 138 wallet.",
+      "description": "Load M1FIAT, ACX, or SHIVA from Z Bank online into a compliant Z Block Chain wallet.",
       "minAmount": "1",
       "settlementToken": "M1FIAT",
       "requiresKyc": true
@@ -36,6 +45,6 @@
   },
   "source": {
     "registryPath": "config/integrations/z-bank-online.v1.json",
-    "notes": "Z Bank online fund loading rail for M1, ACX, and SHIVA on Chain 138."
+    "notes": "Z Bank online fund loading rail for Z Block Chain and partner settlement chains."
   }
 }

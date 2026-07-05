@@ -104,6 +104,8 @@ describe("Nova contract suite design", () => {
 
     assert.equal(integration.provider.name, "Z Bank Online");
     assert.deepEqual(integration.supportedTokens, ["M1FIAT", "ACX", "SHIVA"]);
+    const integrationWithChains = integration as { supportedChains: Array<{ chainId: number }> };
+    assert.ok(integrationWithChains.supportedChains.some((chain) => chain.chainId === 44002));
   });
 
   it("approves banks and trading platforms for Chain 138 tokens", () => {
@@ -114,9 +116,44 @@ describe("Nova contract suite design", () => {
       platforms: Array<{ supportedTokens: string[] }>;
     };
 
-    assert.deepEqual(registry.approvedTokens, ["M1FIAT", "ACX", "SHIVA", "WNOVA"]);
+    assert.deepEqual(registry.approvedTokens, ["M1FIAT", "ACX", "SHIVA", "WNOVA", "WZ"]);
     assert.ok(registry.platforms.length >= 3);
     assert.ok(registry.platforms.every((platform) => platform.supportedTokens.length > 0));
+  });
+
+  it("provides WZ for native Z Block Chain liquidity pairs", () => {
+    const source = readContract("WrappedZBlockChainToken.sol");
+
+    assert.match(source, /string public constant symbol = "WZ";/);
+    assert.match(source, /receive\(\) external payable/);
+    assert.match(source, /function deposit\(\) public payable/);
+  });
+
+  it("registers the Z Block Chain production chart on chain 44002", () => {
+    const chart = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "chains", "z-block-chain.v1.json"), "utf8")
+    ) as {
+      chain: { chainId: number; name: string; wrappedSymbol: string };
+      liquidityPools: string[];
+      capabilities: Record<string, boolean>;
+    };
+
+    assert.equal(chart.chain.chainId, 44002);
+    assert.equal(chart.chain.name, "Z Block Chain");
+    assert.equal(chart.chain.wrappedSymbol, "WZ");
+    assert.deepEqual(chart.liquidityPools, ["M1FIAT/WZ", "ACX/WZ", "SHIVA/WZ"]);
+    assert.equal(chart.capabilities.swappable, true);
+    assert.equal(chart.capabilities.tradable, true);
+    assert.equal(chart.capabilities.transferable, true);
+  });
+
+  it("documents Z Block Chain bootstrap scripts", () => {
+    const source = readFileSync(path.resolve(contractsRoot, "scripts", "setup-z-block-chain-liquidity.ts"), "utf8");
+
+    assert.match(source, /ZBC_RPC_URL/);
+    assert.match(source, /WrappedZBlockChainToken/);
+    assert.match(source, /NLP-M1FIAT-WZ/);
+    assert.match(source, /setLiquidityVenue\(liquidityPool\.record\.address, true\)/);
   });
 
   it("registers the canonical Chain 138 Safe contracts and deployed safes", () => {

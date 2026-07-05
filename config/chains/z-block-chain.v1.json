@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "Z Block Chain",
+    "chainId": 44002,
+    "slug": "z-block-chain",
+    "role": "Z Online Bank liquidity and world chain",
+    "nativeSymbol": "Z",
+    "wrappedSymbol": "WZ",
+    "status": "Production",
+    "consensus": "QBFT",
+    "environment": "prod"
+  },
+  "pairedNetworks": [
+    {
+      "name": "Nova One",
+      "chainId": 22016,
+      "relationship": "primary-settlement"
+    },
+    {
+      "name": "NRW World",
+      "chainId": 33001,
+      "relationship": "world-bridge"
+    },
+    {
+      "name": "Chain 138",
+      "chainId": 138,
+      "relationship": "omnl-settlement"
+    }
+  ],
+  "bridgeLanes": [
+    {
+      "from": 22016,
+      "to": 44002,
+      "status": "active",
+      "purpose": "Nova One settlement to Z Online Bank liquidity"
+    },
+    {
+      "from": 33001,
+      "to": 44002,
+      "status": "active",
+      "purpose": "NRW World world liquidity to Z Block Chain"
+    },
+    {
+      "from": 138,
+      "to": 44002,
+      "status": "active",
+      "purpose": "Chain 138 bank rail to Z Online Bank"
+    }
+  ],
+  "topology": {
+    "validators": 4,
+    "rpcNodes": 2,
+    "bootnodes": 1,
+    "blockPeriodSeconds": 5
+  },
+  "tradableTokens": ["M1FIAT", "ACX", "SHIVA", "WZ"],
+  "liquidityPools": [
+    "M1FIAT/WZ",
+    "ACX/WZ",
+    "SHIVA/WZ"
+  ],
+  "capabilities": {
+    "transferable": true,
+    "tradable": true,
+    "swappable": true,
+    "zBankLoadable": true,
+    "crossBankUsable": true,
+    "platformTradingUsable": true
+  },
+  "integrations": {
+    "zBankOnline": "config/integrations/z-bank-online.v1.json",
+    "tradableTokens": "config/tokens/z-block-chain-tradable-tokens.v1.json",
+    "tradingPlatforms": "config/compliance/trading-platforms.v1.json"
+  },
+  "source": {
+    "registryPath": "config/chains/z-block-chain.v1.json",
+    "notes": "Full production chart for Z Block Chain with Z Online Bank liquidity support."
+  }
+}

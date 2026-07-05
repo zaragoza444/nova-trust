@@ -17,6 +17,11 @@ const config: HardhatUserConfig = {
       chainType: "l1",
       chainId: 22016
     },
+    zBlockChainHardhat: {
+      type: "edr-simulated",
+      chainType: "l1",
+      chainId: 44002
+    },
     localhost: {
       type: "http",
       chainType: "l1",
