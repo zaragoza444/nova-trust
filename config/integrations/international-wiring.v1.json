@@ -10,7 +10,7 @@
     {
       "id": "permissioned-settlement",
       "label": "Permissioned settlement",
-      "networks": ["Z Blockchain", "Nova One", "Chain 138"]
+      "networks": ["Nova One", "Chain 138"]
     }
   ],
   "publicNetworks": [
@@ -64,9 +64,9 @@
     },
     {
       "from": 728126428,
-      "to": 44002,
+      "to": 22016,
       "fromName": "TRON",
-      "toName": "Z Blockchain",
+      "toName": "Nova One",
       "status": "active"
     }
   ],

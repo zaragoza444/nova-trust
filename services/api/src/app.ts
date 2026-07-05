@@ -4,15 +4,10 @@ import { handleAdminOverview, handleAdminQueue } from "./routes/admin";
 import { handleAssetsOverview } from "./routes/assets";
 import { handleDashboard } from "./routes/dashboard";
 import { handleHealth } from "./routes/health";
-import { handleZBlockChainChart } from "./routes/z-chain";
 import { handleMultiNetworkChart, handleMultiNetworkHealth } from "./routes/networks";
 import { handleTradingTokensOverview } from "./routes/trading";
-import { handleZBankIntegrationOverview, handleZBankLoadFunds } from "./routes/zbank";
-import { handleGoLiveStatus } from "./routes/go-live";
 import { handleInternationalWiring } from "./routes/international";
-import { handleZWalletBalances, handleZWalletOverview, handleZWalletTransfer } from "./routes/z-wallet";
 import { handleCustodyHealth, handleCustodyOverview, handleCoboCallback, handleCoboWebhook } from "./routes/custody";
-import { handleOraclePricesGet, handleOraclePricesPut } from "./routes/oracle";
 import { canAccess, type NovaRole } from "./services/rbac";
 
 const config = loadApiConfig();
@@ -38,41 +33,6 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
   }
 
   const requestRole = request.headers["x-nova-role"] as NovaRole | undefined;
-
-  if (request.url === "/api/go-live/status") {
-    void handleGoLiveStatus(request, response);
-    return;
-  }
-
-  if (request.url === "/api/z-wallet/overview") {
-    if (!requestRole || !canAccess("/api/z-wallet/overview", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    handleZWalletOverview(request, response);
-    return;
-  }
-
-  if (request.url === "/api/z-wallet/balances") {
-    if (!requestRole || !canAccess("/api/z-wallet/balances", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    void handleZWalletBalances(request, response);
-    return;
-  }
-
-  if (request.url === "/api/z-wallet/transfer" && request.method === "POST") {
-    if (!requestRole || !canAccess("/api/z-wallet/transfer", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    void handleZWalletTransfer(request, response);
-    return;
-  }
 
   if (request.url === "/api/dashboard") {
     if (!requestRole || !canAccess("/api/dashboard", requestRole)) {
@@ -121,36 +81,6 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     handleTradingTokensOverview(request, response);
-    return;
-  }
-
-  if (request.url === "/api/zbank/integration") {
-    if (!requestRole || !canAccess("/api/zbank/integration", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    handleZBankIntegrationOverview(request, response);
-    return;
-  }
-
-  if (request.url === "/api/zbank/load-funds" && request.method === "POST") {
-    if (!requestRole || !canAccess("/api/zbank/load-funds", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    void handleZBankLoadFunds(request, response);
-    return;
-  }
-
-  if (request.url === "/api/z-chain/chart") {
-    if (!requestRole || !canAccess("/api/z-chain/chart", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    handleZBlockChainChart(request, response);
     return;
   }
 
@@ -211,26 +141,6 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
 
   if (request.url === "/api/custody/cobo/callback" && request.method === "POST") {
     void handleCoboCallback(request, response);
-    return;
-  }
-
-  if (request.url === "/api/oracle/prices" && request.method === "GET") {
-    if (!requestRole || !canAccess("/api/oracle/prices", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    handleOraclePricesGet(request, response);
-    return;
-  }
-
-  if (request.url === "/api/oracle/prices" && request.method === "PUT") {
-    if (!requestRole || !canAccess("/api/oracle/prices", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    void handleOraclePricesPut(request, response);
     return;
   }
 

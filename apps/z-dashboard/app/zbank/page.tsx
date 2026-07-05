@@ -11,28 +11,24 @@ export default async function ZBankPage() {
 
   return (
     <PageShell
-      title="Z Bank online fund loading"
-      description="Load M1FIAT, ACX, and SHIVA from Z Bank online into Chain 138 wallets for swap, trade, and transfer across all approved banks and platforms."
+      title="Z Bank"
+      description="Binance Funding-style online rail. Load M1FIAT, ACX, and SHIVA from Z Bank online into Z Chain wallets for Z Swap, Z Trade, and Z Wallet treasury flows."
       signals={data.shellSignals}
     >
       <section className="grid">
         <KpiCard label="Provider" value={data.provider.name} delta={`Channel ${data.provider.channel}`} />
         <KpiCard label="Supported tokens" value={`${data.supportedTokens.length}`} delta={data.supportedTokens.join(", ")} />
-        <KpiCard
-          label="Settlement"
-          value={`Chain ${data.supportedChains[0]?.chainId ?? 138}`}
-          delta={`Nova One ${data.supportedChains[1]?.chainId ?? 22016}`}
-        />
+        <KpiCard label="Settlement" value="Z Chain 44002" delta="WZ liquidity pools" />
         <KpiCard label="Platforms" value={`${data.approvedPlatforms.length}`} delta="banks and exchanges" />
       </section>
 
       <section className="heroGrid">
         <article className="card heroCard heroCardPrimary">
-          <span className="eyebrow">M1 online load rail</span>
-          <h2>Load funds from Z Bank online into swappable Chain 138 tokens.</h2>
+          <span className="eyebrow">Z Bank online</span>
+          <h2>Load funds from Z Bank into Z Chain wallets.</h2>
           <p>
-            Submit a compliant load request for M1FIAT, ACX, or SHIVA. Accepted loads mint to the destination wallet on
-            Chain 138 settlement and become immediately usable for trading, swapping, and bank transfers.
+            Submit a compliant load request for M1FIAT, ACX, or SHIVA. Accepted loads settle on Z Chain (44002) and
+            become immediately usable on Z Swap, Z Trade, and Z Wallet.
           </p>
           <div className="highlightGrid">
             {data.loadMethods.map((method) => (
@@ -57,7 +53,7 @@ export default async function ZBankPage() {
             </div>
             <div>
               <strong>Swap ready</strong>
-              <p>Tokens route to WNOVA liquidity pools after load confirmation.</p>
+              <p>Tokens route to WZ liquidity pools on Z Swap after load confirmation.</p>
             </div>
           </div>
         </article>
@@ -68,10 +64,10 @@ export default async function ZBankPage() {
           <div className="sectionHeader">
             <div>
               <span className="eyebrow">Load request</span>
-              <h3>Z Bank online → Chain 138 wallet</h3>
+              <h3>Z Bank → Z Chain wallet</h3>
             </div>
-            <Link href="/trading" className="secondaryButton">
-              View trading catalog
+            <Link href="/ztrade" className="secondaryButton">
+              Open Z Trade
             </Link>
           </div>
           <ZBankLoadForm supportedTokens={data.supportedTokens} minAmounts={minAmounts} />

@@ -1,0 +1,73 @@
+# Z Ecosystem production stack — Z Chain + Z API + Z Dashboard
+# Usage:
+#   cp deploy/z-production.env.example deploy/.env.z-production
+#   bash scripts/z-go-live.sh
+
+services:
+  z-chain:
+    image: node:20-alpine
+    restart: unless-stopped
+    container_name: z-chain-1
+    command: >-
+      npx --yes ganache
+      --chain.chainId 44002
+      --server.port 8546
+      --host 0.0.0.0
+      --miner.blockTime 2
+      --wallet.totalAccounts 10
+      --wallet.mnemonic "test test test test test test test test test test test junk"
+    ports:
+      - "127.0.0.1:8546:8546"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8546/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_chainId',params:[]})}).then(r=>r.json()).then(j=>process.exit(j.result==='0xabe2'?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 30s
+
+  z-api:
+    image: node:22-bookworm
+    restart: unless-stopped
+    container_name: z-api-1
+    working_dir: /work
+    env_file:
+      - .env.z-production
+    environment:
+      Z_API_PORT: "4100"
+      Z_API_HOST: "0.0.0.0"
+      Z_CORS_ORIGIN: "http://127.0.0.1:3100"
+      ZBC_RPC_URL: "http://z-chain:8546"
+    command: >-
+      bash -lc "npm install && npm run build --workspace @z/api && node services/z-api/dist/app.js"
+    volumes:
+      - ..:/work
+    ports:
+      - "4100:4100"
+    depends_on:
+      z-chain:
+        condition: service_healthy
+
+  z-dashboard:
+    image: node:22-bookworm
+    restart: unless-stopped
+    container_name: z-dashboard-1
+    working_dir: /work
+    env_file:
+      - .env.z-production
+    environment:
+      Z_API_URL: "http://z-api:4100"
+      PORT: "3100"
+    command: >-
+      bash -lc "npm install && npm run build --workspace @z/dashboard && npm run start --workspace @z/dashboard"
+    volumes:
+      - ..:/work
+    ports:
+      - "3100:3100"
+    depends_on:
+      - z-api

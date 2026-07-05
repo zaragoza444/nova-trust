@@ -238,17 +238,28 @@ describe("Nova contract suite design", () => {
     assert.deepEqual(usdt?.networks, ["TRON", "Ethereum", "BNB Smart Chain"]);
   });
 
-  it("activates TRON permissioned bridge lanes to Z Blockchain and Nova One", () => {
+  it("activates TRON permissioned bridge lane to Nova One in Nova multi-network", () => {
     const chart = JSON.parse(
       readFileSync(path.resolve(repoRoot, "config", "chains", "multi-network.v1.json"), "utf8")
     ) as {
       permissionedBridges: Array<{ to: number; status: string }>;
     };
 
-    const zBridge = chart.permissionedBridges.find((lane) => lane.to === 44002);
     const novaBridge = chart.permissionedBridges.find((lane) => lane.to === 22016);
-    assert.equal(zBridge?.status, "active");
+    const zBridge = chart.permissionedBridges.find((lane) => lane.to === 44002);
     assert.equal(novaBridge?.status, "active");
+    assert.equal(zBridge, undefined);
+  });
+
+  it("activates TRON permissioned bridge lane to Z Chain in Z international wiring", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-international-wiring.v1.json"), "utf8")
+    ) as {
+      internationalBridgeLanes: Array<{ to: number; status: string }>;
+    };
+
+    const zBridge = registry.internationalBridgeLanes.find((lane) => lane.to === 44002);
+    assert.equal(zBridge?.status, "active");
   });
 
   it("documents production multi-network RPC defaults", () => {
@@ -451,15 +462,49 @@ describe("Nova contract suite design", () => {
     );
   });
 
-  it("documents Z Wallet production setup script and API routes", () => {
+  it("documents Z Wallet production setup script and Z API routes", () => {
     const setupScript = readFileSync(path.resolve(repoRoot, "scripts", "setup-z-wallet-production.sh"), "utf8");
-    const appSource = readFileSync(path.resolve(repoRoot, "services", "api", "src", "app.ts"), "utf8");
+    const zAppSource = readFileSync(path.resolve(repoRoot, "services", "z-api", "src", "app.ts"), "utf8");
+    const novaAppSource = readFileSync(path.resolve(repoRoot, "services", "api", "src", "app.ts"), "utf8");
     const contractsPackage = readFileSync(path.resolve(contractsRoot, "package.json"), "utf8");
 
     assert.match(setupScript, /setup:z-wallet:production/);
     assert.match(contractsPackage, /setup:z-wallet:production/);
-    assert.match(appSource, /\/api\/z-wallet\/overview/);
-    assert.match(appSource, /\/api\/z-wallet\/balances/);
-    assert.match(appSource, /\/api\/z-wallet\/transfer/);
+    assert.match(zAppSource, /\/api\/z-wallet\/overview/);
+    assert.match(zAppSource, /\/api\/zchart\/markets/);
+    assert.match(zAppSource, /\/api\/zswap\/pools/);
+    assert.match(zAppSource, /\/api\/ztrade\/markets/);
+    assert.doesNotMatch(novaAppSource, /\/api\/z-wallet\/overview/);
+    assert.doesNotMatch(novaAppSource, /\/api\/zbank\/integration/);
+  });
+
+  it("registers standalone Z ecosystem products separate from Nova", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-ecosystem.v1.json"), "utf8")
+    ) as {
+      brand: { style: string };
+      products: Array<{ id: string; path: string }>;
+    };
+    const zChainChart = readFileSync(path.resolve(repoRoot, "config", "chains", "z-block-chain.v1.json"), "utf8");
+    const multiNetwork = readFileSync(path.resolve(repoRoot, "config", "chains", "multi-network.v1.json"), "utf8");
+
+    assert.equal(registry.brand.style, "binance-production");
+    assert.deepEqual(
+      registry.products.map((product) => product.id),
+      ["z-chain", "z-wallet", "z-bank", "z-swap", "z-trade", "z-chart"]
+    );
+    assert.doesNotMatch(zChainChart, /Nova One/);
+    assert.doesNotMatch(multiNetwork, /Z Blockchain/);
+  });
+
+  it("documents Z production go-live stack separate from Nova", () => {
+    const zGoLive = readFileSync(path.resolve(repoRoot, "scripts", "z-go-live.sh"), "utf8");
+    const packageJson = readFileSync(path.resolve(repoRoot, "package.json"), "utf8");
+
+    assert.match(zGoLive, /@z\/api/);
+    assert.match(zGoLive, /@z\/dashboard/);
+    assert.match(zGoLive, /\/zchart/);
+    assert.match(packageJson, /dev:z-dashboard/);
+    assert.match(packageJson, /start:z-api/);
   });
 });

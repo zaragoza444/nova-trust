@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "Z Blockchain",
+    "chainId": 44002
+  },
+  "approvedTokens": [
+    "M1FIAT",
+    "ACX",
+    "SHIVA",
+    "WZ",
+    "USDT",
+    "ETH",
+    "BTC",
+    "BNB",
+    "USDC",
+    "XRCUSDC",
+    "CUSDT",
+    "ICX",
+    "AUSDT",
+    "CHAT"
+  ],
+  "platforms": [
+    {
+      "id": "z-bank-online",
+      "name": "Z Bank Online",
+      "type": "bank",
+      "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "USDT", "ETH", "BTC", "BNB", "USDC", "XRCUSDC", "CUSDT", "AUSDT"],
+      "capabilities": ["load", "transfer", "trade"]
+    },
+    {
+      "id": "z-block-chain-pool",
+      "name": "Z Blockchain Liquidity Pool",
+      "type": "dex",
+      "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "USDT", "ETH", "BTC", "BNB", "USDC", "XRCUSDC", "CUSDT", "AUSDT"],
+      "capabilities": ["swap", "add-liquidity", "remove-liquidity", "transfer", "trade"]
+    },
+    {
+      "id": "z-wallet-production",
+      "name": "Z Wallet Production",
+      "type": "wallet",
+      "supportedTokens": ["Z", "M1FIAT", "ACX", "SHIVA", "USDT", "ETH", "BTC", "BNB", "USDC"],
+      "capabilities": ["deposit", "withdraw", "transfer", "swap", "trade"]
+    },
+    {
+      "id": "omnl-exchange",
+      "name": "OMNL Exchange",
+      "type": "exchange",
+      "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "USDT", "USDC"],
+      "capabilities": ["trade", "transfer", "settle"]
+    },
+    {
+      "id": "partner-banks",
+      "name": "Partner Banks Network",
+      "type": "bank-network",
+      "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "USDT", "USDC"],
+      "capabilities": ["transfer", "trade", "settle"]
+    }
+  ],
+  "source": {
+    "registryPath": "config/compliance/z-trading-platforms.v1.json",
+    "notes": "Approved banks, wallets, and trading platforms for Z Blockchain token usage."
+  }
+}

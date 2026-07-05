@@ -23,20 +23,6 @@
   ],
   "platforms": [
     {
-      "id": "z-bank-online",
-      "name": "Z Bank Online",
-      "type": "bank",
-      "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "USDT", "ETH", "BTC", "BNB", "USDC", "XRCUSDC", "CUSDT", "AUSDT"],
-      "capabilities": ["load", "transfer", "trade"]
-    },
-    {
-      "id": "z-block-chain-pool",
-      "name": "Z Blockchain Liquidity Pool",
-      "type": "dex",
-      "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "USDT", "ETH", "BTC", "BNB", "USDC", "XRCUSDC", "CUSDT", "AUSDT"],
-      "capabilities": ["swap", "add-liquidity", "remove-liquidity", "transfer", "trade"]
-    },
-    {
       "id": "nova-liquidity-pool",
       "name": "Nova Liquidity Pool",
       "type": "dex",

@@ -71,14 +71,6 @@
   "permissionedBridges": [
     {
       "from": 728126428,
-      "to": 44002,
-      "fromName": "TRON",
-      "toName": "Z Blockchain",
-      "status": "active",
-      "purpose": "TRON basement to Z Online Bank liquidity"
-    },
-    {
-      "from": 728126428,
       "to": 22016,
       "fromName": "TRON",
       "toName": "Nova One",
@@ -93,7 +85,6 @@
   },
   "integrations": {
     "custody": "config/integrations/custody.v1.json",
-    "zBankOnline": "config/integrations/z-bank-online.v1.json",
     "tradableTokens": "config/tokens/public-network-tokens.v1.json",
     "internationalWiring": "config/integrations/international-wiring.v1.json"
   },

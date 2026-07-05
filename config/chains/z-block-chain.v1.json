@@ -4,7 +4,7 @@
     "name": "Z Blockchain",
     "chainId": 44002,
     "slug": "z-block-chain",
-    "role": "Z Online Bank liquidity and world chain",
+    "role": "Z Online Bank liquidity and settlement",
     "nativeSymbol": "Z",
     "wrappedSymbol": "WZ",
     "status": "Live",
@@ -26,21 +26,6 @@
       "name": "BNB Smart Chain",
       "chainId": 56,
       "relationship": "public-evm-liquidity"
-    },
-    {
-      "name": "Nova One",
-      "chainId": 22016,
-      "relationship": "primary-settlement"
-    },
-    {
-      "name": "NRW World",
-      "chainId": 33001,
-      "relationship": "world-bridge"
-    },
-    {
-      "name": "Chain 138",
-      "chainId": 138,
-      "relationship": "omnl-settlement"
     }
   ],
   "bridgeLanes": [
@@ -51,22 +36,16 @@
       "purpose": "TRON basement foundation to Z Online Bank liquidity"
     },
     {
-      "from": 22016,
+      "from": 1,
       "to": 44002,
       "status": "active",
-      "purpose": "Nova One settlement to Z Online Bank liquidity"
+      "purpose": "Ethereum public settlement to Z Blockchain"
     },
     {
-      "from": 33001,
+      "from": 56,
       "to": 44002,
       "status": "active",
-      "purpose": "NRW World world liquidity to Z Blockchain"
-    },
-    {
-      "from": 138,
-      "to": 44002,
-      "status": "active",
-      "purpose": "Chain 138 bank rail to Z Online Bank"
+      "purpose": "BNB Smart Chain liquidity routing to Z Blockchain"
     }
   ],
   "topology": {
@@ -116,13 +95,14 @@
   },
   "integrations": {
     "zBankOnline": "config/integrations/z-bank-online.v1.json",
+    "zWallet": "config/integrations/z-wallet.v1.json",
     "tradableTokens": "config/tokens/z-block-chain-tradable-tokens.v1.json",
-    "tradingPlatforms": "config/compliance/trading-platforms.v1.json",
-    "multiNetwork": "config/chains/multi-network.v1.json",
+    "tradingPlatforms": "config/compliance/z-trading-platforms.v1.json",
+    "multiNetwork": "config/integrations/z-international-wiring.v1.json",
     "priceOracle": "config/oracles/z-block-chain-prices.v1.json"
   },
   "source": {
     "registryPath": "config/chains/z-block-chain.v1.json",
-    "notes": "Full production chart for Z Blockchain with Z Online Bank liquidity support."
+    "notes": "Standalone Z Blockchain chart for the Z Bank and Z Wallet ecosystem."
   }
 }
