@@ -538,6 +538,26 @@ describe("Nova contract suite design", () => {
     assert.match(remoteGoLive, /from vps_ssh_lib import connect_vps, run_remote/);
   });
 
+  it("registers Proxmox LXC placement for Z Ecosystem VMIDs 5820–5828", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-proxmox-lxc.v1.json"), "utf8")
+    ) as {
+      containers: Array<{ vmid: number; ip: string; role: string; zProduct: string }>;
+      routing: { hubApi: string; dashboard: string };
+    };
+    const deployScript = readFileSync(path.resolve(repoRoot, "scripts", "deploy-z-proxmox-lxc.sh"), "utf8");
+
+    assert.equal(registry.containers.length, 9);
+    assert.equal(registry.routing.hubApi, "http://192.168.11.126:4100");
+    assert.equal(registry.routing.dashboard, "http://192.168.11.127:3100");
+    const hub = registry.containers.find((item) => item.vmid === 5824);
+    assert.equal(hub?.role, "hub");
+    assert.equal(hub?.zProduct, "z-chain");
+    assert.match(deployScript, /5824/);
+    assert.match(deployScript, /z-lxc-hub-go-live\.sh/);
+    assert.match(deployScript, /z-lxc-portal-wire\.sh/);
+  });
+
   it("falls back to plain tmux on VPS for Nova go-live", () => {
     const goLive = readFileSync(path.resolve(repoRoot, "scripts", "go-live.sh"), "utf8");
     assert.match(goLive, /tmux_cmd\(\)/);

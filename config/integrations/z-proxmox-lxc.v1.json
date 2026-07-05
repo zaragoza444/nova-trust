@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "cluster": {
+    "networkCidr": "192.168.11.0/24",
+    "repoPath": "/opt/nova-trust",
+    "branch": "main"
+  },
+  "roles": {
+    "hub": {
+      "description": "Z Chain RPC, Z API, Z Bot worker",
+      "services": ["z-chain", "z-api", "z-bot"],
+      "ports": {
+        "rpc": 8546,
+        "api": 4100
+      }
+    },
+    "dashboard": {
+      "description": "Z Dashboard Next.js UI (all product pages)",
+      "services": ["z-dashboard"],
+      "ports": {
+        "dashboard": 3100
+      }
+    },
+    "portal": {
+      "description": "nginx reverse proxy — product entry + same-origin /api to hub",
+      "services": ["nginx"],
+      "ports": {
+        "http": 80
+      }
+    }
+  },
+  "containers": [
+    {
+      "vmid": 5824,
+      "name": "omdnl-digital-portal",
+      "host": "r630-04",
+      "ip": "192.168.11.126",
+      "role": "hub",
+      "zProduct": "z-chain",
+      "primaryPath": "/z-chain",
+      "publicUrl": "http://192.168.11.126"
+    },
+    {
+      "vmid": 5825,
+      "name": "omnl-office24-portal",
+      "host": "r630-03",
+      "ip": "192.168.11.127",
+      "role": "dashboard",
+      "zProduct": "z-chart",
+      "primaryPath": "/zchart",
+      "publicUrl": "http://192.168.11.127"
+    },
+    {
+      "vmid": 5820,
+      "name": "omdnl-exchange-portal",
+      "host": "r630-04",
+      "ip": "192.168.11.121",
+      "role": "portal",
+      "zProduct": "z-trade",
+      "primaryPath": "/ztrade",
+      "publicUrl": "http://192.168.11.121"
+    },
+    {
+      "vmid": 5821,
+      "name": "omdnl-secure-portal",
+      "host": "r630-04",
+      "ip": "192.168.11.122",
+      "role": "portal",
+      "zProduct": "z-wallet",
+      "primaryPath": "/wallet",
+      "publicUrl": "http://192.168.11.122"
+    },
+    {
+      "vmid": 5822,
+      "name": "omdnl-online-portal",
+      "host": "r630-04",
+      "ip": "192.168.11.123",
+      "role": "portal",
+      "zProduct": "z-bank",
+      "primaryPath": "/zbank",
+      "publicUrl": "http://192.168.11.123"
+    },
+    {
+      "vmid": 5823,
+      "name": "omdnl-forex-portal",
+      "host": "r630-04",
+      "ip": "192.168.11.124",
+      "role": "portal",
+      "zProduct": "z-bot",
+      "primaryPath": "/zbot",
+      "publicUrl": "http://192.168.11.124"
+    },
+    {
+      "vmid": 5826,
+      "name": "dbis-exchange-portal",
+      "host": "r630-03",
+      "ip": "192.168.11.186",
+      "role": "portal",
+      "zProduct": "z-trade",
+      "primaryPath": "/ztrade",
+      "brand": "dbis",
+      "publicUrl": "http://192.168.11.186"
+    },
+    {
+      "vmid": 5827,
+      "name": "dbis-secure-portal",
+      "host": "r630-03",
+      "ip": "192.168.11.187",
+      "role": "portal",
+      "zProduct": "z-wallet",
+      "primaryPath": "/wallet",
+      "brand": "dbis",
+      "publicUrl": "http://192.168.11.187"
+    },
+    {
+      "vmid": 5828,
+      "name": "dbis-forex-portal",
+      "host": "r630-03",
+      "ip": "192.168.11.188",
+      "role": "portal",
+      "zProduct": "z-swap",
+      "primaryPath": "/zswap",
+      "brand": "dbis",
+      "publicUrl": "http://192.168.11.188"
+    }
+  ],
+  "routing": {
+    "hubApi": "http://192.168.11.126:4100",
+    "hubRpc": "http://192.168.11.126:8546",
+    "dashboard": "http://192.168.11.127:3100"
+  },
+  "source": {
+    "registryPath": "config/integrations/z-proxmox-lxc.v1.json",
+    "notes": "Proxmox LXC placement for Z Ecosystem VMIDs 5820–5828. Hub on 5824, dashboard on 5825, product portals on remaining LXCs."
+  }
+}
