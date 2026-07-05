@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const contractsRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const repoRoot = path.resolve(contractsRoot, "..");
 
 function readContract(contractPath: string) {
   return readFileSync(path.resolve(contractsRoot, "src", contractPath), "utf8");
@@ -70,5 +71,21 @@ describe("Nova contract suite design", () => {
     assert.match(source, /NOVA_M1FIAT_LIQUIDITY/);
     assert.match(source, /NOVA_WNOVA_LIQUIDITY/);
     assert.match(source, /setLiquidityVenue\(liquidityPool\.record\.address, true\)/);
+  });
+
+  it("registers the canonical Chain 138 Safe contracts and deployed safes", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "compliance", "gnosis-safe-chain138-deployed.v1.json"), "utf8")
+    ) as {
+      chain: { chainId: number };
+      safeAppBundle: Record<string, string>;
+      deployedSafes: Array<{ name: string; address: string }>;
+    };
+
+    assert.equal(registry.chain.chainId, 138);
+    assert.equal(registry.safeAppBundle.GnosisSafeProxyFactory, "0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2");
+    assert.equal(registry.safeAppBundle.GnosisSafeL2, "0x3E5c63644E683549055b9Be8653de26E0B4CD36E");
+    assert.ok(registry.deployedSafes.some((safe) => safe.name === "OMNL Admin Safe"));
+    assert.ok(registry.deployedSafes.some((safe) => safe.name === "OMNL Vault Recovery Safe"));
   });
 });

@@ -19,6 +19,9 @@
 - validator and treasury signing keys must live in HSM or cloud KMS
 - deploy keys must be separated by environment and rotated on a fixed schedule
 - test and development keys must never be promoted into UAT or production
+- Chain 138 production administration should use the local Safe registry at `config/compliance/gnosis-safe-chain138-deployed.v1.json`
+- `OMNL Admin Safe` (`0xf1f77bcce4646ffe14ba4c7fad53a11c57edce67`) is the preferred owner for privileged admin roles
+- `OMNL Vault Recovery Safe` (`0xeC5Da3249c896733b06fc6904488Fdd24b06054d`) is reserved for vault recovery and emergency treasury operations
 
 ## Infrastructure Controls
 
