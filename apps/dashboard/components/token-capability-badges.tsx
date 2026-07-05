@@ -2,7 +2,7 @@ interface TokenCapabilities {
   transferable: boolean;
   tradable: boolean;
   swappable: boolean;
-  zBankLoadable?: boolean;
+  bankLoadable?: boolean;
 }
 
 interface TokenCapabilityBadgesProps {
@@ -14,7 +14,7 @@ export function TokenCapabilityBadges({ capabilities }: TokenCapabilityBadgesPro
     { key: "transferable", label: "Transferable", enabled: capabilities.transferable },
     { key: "tradable", label: "Tradable", enabled: capabilities.tradable },
     { key: "swappable", label: "Swappable", enabled: capabilities.swappable },
-    { key: "zBankLoadable", label: "Z Bank load", enabled: capabilities.zBankLoadable ?? false }
+    { key: "bankLoadable", label: "Bank load", enabled: capabilities.bankLoadable ?? false }
   ];
 
   return (

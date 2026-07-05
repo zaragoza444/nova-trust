@@ -24,7 +24,7 @@ export default async function MultiNetworkPage() {
         <KpiCard
           label="Permissioned bridges"
           value={`${data.summary.permissionedBridgeCount}`}
-          delta="TRON to Nova / Z Bank"
+          delta="TRON to Nova One"
         />
       </section>
 
@@ -145,7 +145,7 @@ export default async function MultiNetworkPage() {
                           transferable: boolean;
                           tradable: boolean;
                           swappable: boolean;
-                          zBankLoadable?: boolean;
+                          bankLoadable?: boolean;
                         }
                       }
                     />

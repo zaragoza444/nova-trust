@@ -167,19 +167,19 @@ export default async function MultiNetworkPage() {
         <div className="featureChecklist">
           <div>
             <strong>Env file</strong>
-            <p>`cp contracts/multi-network.env.example ~/nova-trust/.env.multi-network`</p>
+            <p>`cp deploy/z-production.env.example deploy/.env.z-production`</p>
           </div>
           <div>
             <strong>VPS wire script</strong>
-            <p>`bash scripts/wire-multi-network-vps.sh`</p>
+            <p>`bash scripts/wire-z-vps.sh`</p>
           </div>
           <div>
-            <strong>Preflight</strong>
-            <p>`npm run setup:multi-network:preflight --workspace @nova/contracts`</p>
+            <strong>Go-live</strong>
+            <p>`bash scripts/z-go-live.sh`</p>
           </div>
           <div>
             <strong>Health check</strong>
-            <p>`GET /api/networks/health` · `npm run test:multi-network`</p>
+            <p>`GET /api/networks/health` on port 4100 · `npm run test:z-multi-network`</p>
           </div>
         </div>
       </section>

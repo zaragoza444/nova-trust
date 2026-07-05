@@ -120,40 +120,6 @@ async function checkEvmRpc(config: PublicNetworkRpcConfig): Promise<NetworkRpcHe
   }
 }
 
-async function checkZBlockChainRpc(rpcUrl: string): Promise<NetworkRpcHealth> {
-  const started = Date.now();
-
-  try {
-    const response = await timedFetch(rpcUrl, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_chainId", params: [] })
-    });
-    const payload = (await response.json()) as { result?: string };
-    const observedChainId = payload.result ? Number.parseInt(payload.result, 16) : NaN;
-
-    return {
-      name: "Z Blockchain",
-      chainId: 44002,
-      networkType: "evm",
-      rpcUrl,
-      ok: response.ok && observedChainId === 44002,
-      latencyMs: Date.now() - started,
-      chainIdMatch: observedChainId === 44002
-    };
-  } catch (error) {
-    return {
-      name: "Z Blockchain",
-      chainId: 44002,
-      networkType: "evm",
-      rpcUrl,
-      ok: false,
-      latencyMs: Date.now() - started,
-      error: error instanceof Error ? error.message : "Unknown error"
-    };
-  }
-}
-
 export class MultiNetworkService {
   private readonly config: MultiNetworkConfig = loadMultiNetworkConfig();
 
@@ -176,11 +142,10 @@ export class MultiNetworkService {
 
   async runHealthCheck(): Promise<MultiNetworkHealthReport> {
     const tronApiKey = process.env.TRON_API_KEY?.trim();
-    const [tron, ethereum, bnbSmartChain, zBlockchain] = await Promise.all([
+    const [tron, ethereum, bnbSmartChain] = await Promise.all([
       checkTronRpc(this.config.tron, tronApiKey),
       checkEvmRpc(this.config.ethereum),
-      checkEvmRpc(this.config.bnbSmartChain),
-      checkZBlockChainRpc(this.config.zBlockChainRpcUrl)
+      checkEvmRpc(this.config.bnbSmartChain)
     ]);
 
     const overview = getMultiNetworkOverview();
@@ -199,18 +164,15 @@ export class MultiNetworkService {
     if (!this.config.bnbSmartChain.configured) {
       notes.push("BSC_RPC_URL not set; using default BNB Smart Chain endpoint.");
     }
-    if (!zBlockchain.ok) {
-      notes.push("Z Blockchain RPC unreachable; set ZBC_RPC_URL for permissioned bridge settlement.");
-    }
     if (bridgesOperational) {
-      notes.push("All TRON basement bridge lanes are active, including permissioned Nova and Z Bank routes.");
+      notes.push("All TRON basement bridge lanes are active, including permissioned Nova One routes.");
     }
 
     return {
       checkedAt: new Date().toISOString(),
       basementNetwork: "TRON",
       rpcEndpoints: [tron, ethereum, bnbSmartChain],
-      permissionedRpc: zBlockchain,
+      permissionedRpc: null,
       allPublicNetworksHealthy,
       bridgesOperational,
       notes

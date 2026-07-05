@@ -70,7 +70,7 @@ function getFallback(): MultiNetworkOverview {
       },
       publicNetworkCount: 3,
       bridgeLaneCount: 3,
-      permissionedBridgeCount: 2,
+      permissionedBridgeCount: 1,
       capabilities: {
         multiNetworkCustody: true,
         crossChainSettlement: true,
@@ -116,14 +116,6 @@ function getFallback(): MultiNetworkOverview {
     permissionedBridges: [
       {
         from: 728126428,
-        to: 44002,
-        fromName: "TRON",
-        toName: "Z Blockchain",
-        status: "active",
-        purpose: "TRON basement to Z Online Bank liquidity"
-      },
-      {
-        from: 728126428,
         to: 22016,
         fromName: "TRON",
         toName: "Nova One",
@@ -137,35 +129,35 @@ function getFallback(): MultiNetworkOverview {
         name: "TRON",
         assetClass: "Native",
         networks: ["TRON"],
-        capabilities: { transferable: true, tradable: true, swappable: true, zBankLoadable: false }
+        capabilities: { transferable: true, tradable: true, swappable: true }
       },
       {
         symbol: "ETH",
         name: "Ether",
         assetClass: "Native",
         networks: ["Ethereum"],
-        capabilities: { transferable: true, tradable: true, swappable: true, zBankLoadable: false }
+        capabilities: { transferable: true, tradable: true, swappable: true }
       },
       {
         symbol: "BNB",
         name: "BNB",
         assetClass: "Native",
         networks: ["BNB Smart Chain"],
-        capabilities: { transferable: true, tradable: true, swappable: true, zBankLoadable: false }
+        capabilities: { transferable: true, tradable: true, swappable: true }
       },
       {
         symbol: "USDT",
         name: "Tether USD",
         assetClass: "Stablecoin",
         networks: ["TRON", "Ethereum", "BNB Smart Chain"],
-        capabilities: { transferable: true, tradable: true, swappable: true, zBankLoadable: false }
+        capabilities: { transferable: true, tradable: true, swappable: true }
       },
       {
         symbol: "USDC",
         name: "USD Coin",
         assetClass: "Stablecoin",
         networks: ["TRON", "Ethereum", "BNB Smart Chain"],
-        capabilities: { transferable: true, tradable: true, swappable: true, zBankLoadable: false }
+        capabilities: { transferable: true, tradable: true, swappable: true }
       }
     ]
   };

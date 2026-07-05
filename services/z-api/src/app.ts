@@ -34,7 +34,7 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
   response.setHeader("access-control-allow-methods", "GET,POST,PUT,OPTIONS");
   response.setHeader(
     "access-control-allow-headers",
-    "content-type,authorization,x-z-role,x-nova-role,biz_timestamp,biz_resp_signature"
+    "content-type,authorization,x-z-role,biz_timestamp,biz_resp_signature"
   );
 
   if (request.method === "OPTIONS") {
@@ -48,7 +48,7 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
     return;
   }
 
-  const requestRole = (request.headers["x-z-role"] ?? request.headers["x-nova-role"]) as ZRole | undefined;
+  const requestRole = request.headers["x-z-role"] as ZRole | undefined;
 
   if (request.url === "/api/go-live/status") {
     void handleGoLiveStatus(request, response);

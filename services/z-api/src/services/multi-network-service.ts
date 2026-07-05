@@ -203,7 +203,7 @@ export class MultiNetworkService {
       notes.push("Z Blockchain RPC unreachable; set ZBC_RPC_URL for permissioned bridge settlement.");
     }
     if (bridgesOperational) {
-      notes.push("All TRON basement bridge lanes are active, including permissioned Nova and Z Bank routes.");
+      notes.push("All TRON basement bridge lanes are active for Z Blockchain international settlement.");
     }
 
     return {

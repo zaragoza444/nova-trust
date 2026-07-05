@@ -27,8 +27,7 @@
       "capabilities": {
         "transferable": true,
         "tradable": true,
-        "swappable": true,
-        "zBankLoadable": false
+        "swappable": true
       }
     },
     {
@@ -39,8 +38,7 @@
       "capabilities": {
         "transferable": true,
         "tradable": true,
-        "swappable": true,
-        "zBankLoadable": false
+        "swappable": true
       }
     },
     {
@@ -51,8 +49,7 @@
       "capabilities": {
         "transferable": true,
         "tradable": true,
-        "swappable": true,
-        "zBankLoadable": false
+        "swappable": true
       }
     },
     {
@@ -63,8 +60,7 @@
       "capabilities": {
         "transferable": true,
         "tradable": true,
-        "swappable": true,
-        "zBankLoadable": false
+        "swappable": true
       }
     },
     {
@@ -75,8 +71,7 @@
       "capabilities": {
         "transferable": true,
         "tradable": true,
-        "swappable": true,
-        "zBankLoadable": false
+        "swappable": true
       }
     },
     {
@@ -87,8 +82,7 @@
       "capabilities": {
         "transferable": true,
         "tradable": true,
-        "swappable": true,
-        "zBankLoadable": false
+        "swappable": true
       }
     }
   ],

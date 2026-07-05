@@ -7,7 +7,7 @@ export interface TokenCapabilities {
   transferable: boolean;
   tradable: boolean;
   swappable: boolean;
-  zBankLoadable: boolean;
+  bankLoadable?: boolean;
 }
 
 export interface TradableToken {
@@ -53,35 +53,6 @@ export interface TradingPlatformRegistry {
   platforms: TradingPlatform[];
 }
 
-export interface ZBankIntegration {
-  schemaVersion: number;
-  provider: {
-    id: string;
-    name: string;
-    channel: string;
-    status: string;
-  };
-  supportedChains: Array<{ chainId: number; name: string }>;
-  primaryLiquidityChain?: {
-    chainId: number;
-    name: string;
-    wrappedNativeSymbol?: string;
-  };
-  supportedTokens: string[];
-  loadMethods: Array<{
-    id: string;
-    label: string;
-    description: string;
-    minAmount: string;
-    settlementToken: string;
-    requiresKyc: boolean;
-  }>;
-  capabilities: TokenCapabilities & {
-    crossBankUsable: boolean;
-    platformTradingUsable: boolean;
-  };
-}
-
 function readJson<T>(relativePath: string): T {
   const absolutePath = path.resolve(repoRoot, relativePath);
   return JSON.parse(readFileSync(absolutePath, "utf8")) as T;
@@ -95,10 +66,6 @@ export function loadTradingPlatformRegistry(): TradingPlatformRegistry {
   return readJson<TradingPlatformRegistry>("config/compliance/trading-platforms.v1.json");
 }
 
-export function loadZBankIntegration(): ZBankIntegration {
-  return readJson<ZBankIntegration>("config/integrations/z-bank-online.v1.json");
-}
-
 export function getTradableToken(symbol: string): TradableToken | undefined {
   const registry = loadTradableTokenRegistry();
   return registry.tokens.find((token) => token.symbol.toUpperCase() === symbol.toUpperCase());
@@ -110,8 +77,8 @@ export function validateLoadAmount(symbol: string, amount: string): { valid: boo
     return { valid: false, reason: `Unsupported token: ${symbol}` };
   }
 
-  if (!token.capabilities.zBankLoadable) {
-    return { valid: false, reason: `${symbol} is not loadable from Z Bank online` };
+  if (!token.capabilities.bankLoadable) {
+    return { valid: false, reason: `${symbol} is not loadable from partner bank rails` };
   }
 
   const numericAmount = Number(amount);
