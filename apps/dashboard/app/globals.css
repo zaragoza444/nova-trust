@@ -599,6 +599,56 @@ button {
   background: rgba(255, 99, 132, 0.12);
 }
 
+.zWalletHero h2 {
+  max-width: 18ch;
+}
+
+.zWalletPanel {
+  display: grid;
+  gap: 20px;
+}
+
+.zWalletTabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.zWalletTab {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.zWalletTab strong {
+  font-size: 1.1rem;
+}
+
+.zWalletTab.active {
+  border-color: rgba(247, 181, 0, 0.55);
+  background: rgba(247, 181, 0, 0.08);
+}
+
+.zWalletToolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.zWalletActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 @media (max-width: 1024px) {
   .appShell,
   .grid,

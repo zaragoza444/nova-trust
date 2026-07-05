@@ -8,8 +8,8 @@ export default async function ZBlockChainPage() {
 
   return (
     <PageShell
-      title="Z Blockchain production chart"
-      description="Full production network for Z Online Bank on chain 44002 — swappable, tradable, and transferable M1FIAT, ACX, and SHIVA with WZ liquidity pools, aligned to NRW World 33001 architecture."
+      title="Z Chain"
+      description="Binance Chain-style production settlement layer on chain 44002 — WZ liquidity, Z Bank loads, Z Swap pools, and Z Trade markets."
       signals={data.shellSignals}
       chains={data.chainProfiles}
     >
@@ -22,11 +22,11 @@ export default async function ZBlockChainPage() {
 
       <section className="heroGrid">
         <article className="card heroCard heroCardPrimary">
-          <span className="eyebrow">Production chart</span>
-          <h2>Z Blockchain is the Z Online Bank liquidity world chain.</h2>
+          <span className="eyebrow">Z Chain production</span>
+          <h2>Z Chain is the settlement layer for the full Z ecosystem.</h2>
           <p>
-            Like NRW World on chain 33001, Z Blockchain on 44002 hosts full liquidity infrastructure for Z Bank online
-            loads, partner bank transfers, and platform trading with compliance-approved pools.
+            Z Chain on 44002 hosts WZ liquidity infrastructure for Z Bank online loads, Z Swap pools, Z Trade spot
+            markets, and Z Wallet treasury flows — independent from Nova Trust.
           </p>
           <div className="highlightGrid">
             {Object.entries(data.summary.capabilities).map(([key, enabled]) => (

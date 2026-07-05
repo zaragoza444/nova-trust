@@ -1,0 +1,49 @@
+name: GitHub Deploy (Z Ecosystem)
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Git branch to deploy to VPS
+        required: false
+        default: cursor/z-bot-international-trading-4f28
+      wire_public:
+        description: Wire nginx + public URLs on VPS
+        required: false
+        default: "true"
+      include_z_bot:
+        description: Start Z Bot international trading worker
+        required: false
+        default: "true"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Deploy Z Ecosystem + Z Bot to VPS
+        env:
+          VPS_SSH_HOST: ${{ secrets.VPS_SSH_HOST }}
+          VPS_SSH_USER: ${{ secrets.VPS_SSH_USER }}
+          VPS_SSH_PASSWORD: ${{ secrets.VPS_SSH_PASSWORD }}
+          VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          VPS_DEPLOY_BRANCH: ${{ inputs.branch }}
+          Z_VPS_USE_WIRE: ${{ inputs.wire_public }}
+          Z_BOT_AUTO_START: ${{ inputs.include_z_bot }}
+        run: python scripts/remote-z-go-live-vps.py
+
+      - name: Deployment summary
+        run: |
+          echo "## Z Ecosystem deployed" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Branch: \`${{ inputs.branch }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Public dashboard: http://51.75.64.28/zchart" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Z Bot: http://51.75.64.28/zbot" >> "$GITHUB_STEP_SUMMARY"
+          echo "- API status: http://51.75.64.28/api/go-live/status" >> "$GITHUB_STEP_SUMMARY"

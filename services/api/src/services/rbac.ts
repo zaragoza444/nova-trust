@@ -38,21 +38,6 @@ export const accessPolicies: AccessPolicy[] = [
     approvalRequired: false
   },
   {
-    route: "/api/zbank/integration",
-    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
-    approvalRequired: false
-  },
-  {
-    route: "/api/zbank/load-funds",
-    roles: ["SUPER_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER"],
-    approvalRequired: true
-  },
-  {
-    route: "/api/z-chain/chart",
-    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
-    approvalRequired: false
-  },
-  {
     route: "/api/networks/multi",
     roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
     approvalRequired: false
@@ -75,11 +60,6 @@ export const accessPolicies: AccessPolicy[] = [
   {
     route: "/api/custody/health",
     roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR"],
-    approvalRequired: false
-  },
-  {
-    route: "/api/oracle/prices",
-    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
     approvalRequired: false
   }
 ];

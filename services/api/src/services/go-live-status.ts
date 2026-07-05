@@ -16,6 +16,7 @@ function loadManifestSnapshot() {
       contracts?: { priceOracle?: { address: string } };
       tradableTokens?: Array<{ symbol: string; address: string }>;
       oracle?: { feeds?: Array<{ symbol: string; active?: boolean }> };
+      zWallet?: { address: string; registeredAt?: string };
     };
   } catch {
     return null;
@@ -109,6 +110,13 @@ export async function getGoLiveStatus() {
       btcPriceUsd: oracle.prices.find((entry) => entry.symbol === "BTC")?.priceUsd ?? null
     },
     btcClone: btc,
+    zWallet: {
+      address: manifest?.zWallet?.address ?? process.env.Z_WALLET_ADDRESS ?? null,
+      registered: Boolean(manifest?.zWallet?.address),
+      registeredAt: manifest?.zWallet?.registeredAt ?? null,
+      overviewEndpoint: "/api/z-wallet/overview",
+      balancesEndpoint: "/api/z-wallet/balances"
+    },
     endpoints: {
       apiHealth: "/health",
       goLiveStatus: "/api/go-live/status",
@@ -117,7 +125,8 @@ export async function getGoLiveStatus() {
       multiNetwork: "/api/networks/multi",
       multiNetworkHealth: "/api/networks/health",
       internationalWiring: "/api/networks/international",
-      dashboard: process.env.NOVA_DASHBOARD_URL ?? "http://127.0.0.1:3000"
+      dashboard: process.env.NOVA_DASHBOARD_URL ?? "http://127.0.0.1:3000",
+      zWallet: `${process.env.NOVA_DASHBOARD_URL ?? "http://127.0.0.1:3000"}/wallet`
     }
   };
 }

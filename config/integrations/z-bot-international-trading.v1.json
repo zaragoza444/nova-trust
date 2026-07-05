@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "product": {
+    "id": "z-bot",
+    "name": "Z Bot",
+    "binanceAnalog": "Binance Trading Bots",
+    "description": "Automated international trading on Z Chain with TRON, Ethereum, and BNB Smart Chain routing."
+  },
+  "settlementChain": {
+    "id": "z-chain",
+    "chainId": 44002,
+    "nativeSymbol": "Z",
+    "wrappedSymbol": "WZ"
+  },
+  "internationalNetworks": ["TRON", "Ethereum", "BNB Smart Chain"],
+  "strategies": [
+    {
+      "id": "oracle-pool-arb",
+      "name": "Oracle Pool Arbitrage",
+      "enabled": true,
+      "description": "Swap on Z Chain WZ pools when implied pool price deviates from oracle USD reference.",
+      "minDeviationPct": 0.75,
+      "maxTradeUsd": 5000,
+      "pairs": ["USDT/WZ", "ETH/WZ", "BTC/WZ", "BNB/WZ", "USDC/WZ"]
+    },
+    {
+      "id": "international-routing",
+      "name": "International Routing",
+      "enabled": true,
+      "description": "Route clone-token liquidity when all public networks and Z settlement bridges are healthy.",
+      "requireAllNetworksHealthy": true,
+      "preferredStablecoins": ["USDT", "USDC", "M1FIAT"]
+    },
+    {
+      "id": "liquidity-rebalance",
+      "name": "Liquidity Rebalance",
+      "enabled": true,
+      "description": "Rebalance WZ pool inventory toward oracle-weighted targets on Z Chain.",
+      "rebalanceThresholdPct": 5,
+      "maxTradeUsd": 2500
+    }
+  ],
+  "risk": {
+    "maxSlippageBps": 50,
+    "maxDailyTrades": 100,
+    "maxNotionalUsdPerCycle": 10000,
+    "dryRunWithoutSigningKey": true,
+    "requireInternationalWiring": true
+  },
+  "runtime": {
+    "defaultIntervalSeconds": 60,
+    "manifestPath": "contracts/deployments/z-blockchain-production-liquidity.json",
+    "internationalWiringPath": "config/integrations/z-international-wiring.v1.json"
+  },
+  "source": {
+    "registryPath": "config/integrations/z-bot-international-trading.v1.json",
+    "notes": "Z Bot international trading automation for Z Swap + Z Trade on chain 44002."
+  }
+}

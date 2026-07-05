@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "brand": {
+    "name": "Z Ecosystem",
+    "tagline": "Z Chain · Z Wallet · Z Bank · Z Swap · Z Trade · Z Chart",
+    "style": "binance-production",
+    "primaryColor": "#F0B90B",
+    "backgroundColor": "#0B0E11"
+  },
+  "settlementChain": {
+    "id": "z-chain",
+    "name": "Z Chain",
+    "chainId": 44002,
+    "nativeSymbol": "Z",
+    "wrappedSymbol": "WZ",
+    "rpcPort": 8546,
+    "status": "Live"
+  },
+  "products": [
+    {
+      "id": "z-chain",
+      "name": "Z Chain",
+      "binanceAnalog": "BNB Chain",
+      "path": "/z-chain",
+      "apiPath": "/api/z-chain/chart",
+      "description": "Production permissioned EVM settlement layer for Z Bank liquidity."
+    },
+    {
+      "id": "z-wallet",
+      "name": "Z Wallet",
+      "binanceAnalog": "Binance Wallet",
+      "path": "/wallet",
+      "apiPath": "/api/z-wallet/overview",
+      "description": "Funding, spot, and earn accounts with production treasury signing."
+    },
+    {
+      "id": "z-bank",
+      "name": "Z Bank",
+      "binanceAnalog": "Binance Funding",
+      "path": "/zbank",
+      "apiPath": "/api/zbank/integration",
+      "description": "Online M1 fund loading rail into compliant Z Chain wallets."
+    },
+    {
+      "id": "z-swap",
+      "name": "Z Swap",
+      "binanceAnalog": "Binance Swap",
+      "path": "/zswap",
+      "apiPath": "/api/zswap/pools",
+      "description": "WZ liquidity pools for instant token swaps on Z Chain."
+    },
+    {
+      "id": "z-trade",
+      "name": "Z Trade",
+      "binanceAnalog": "Binance Spot",
+      "path": "/ztrade",
+      "apiPath": "/api/ztrade/markets",
+      "description": "Spot markets for M1FIAT, ACX, SHIVA, and clone assets."
+    },
+    {
+      "id": "z-chart",
+      "name": "Z Chart",
+      "binanceAnalog": "Binance Markets",
+      "path": "/zchart",
+      "apiPath": "/api/zchart/markets",
+      "description": "Live oracle-priced markets dashboard for all Z Chain tradable assets."
+    },
+    {
+      "id": "z-bot",
+      "name": "Z Bot",
+      "binanceAnalog": "Binance Trading Bots",
+      "path": "/zbot",
+      "apiPath": "/api/zbot/overview",
+      "description": "Automated international trading across TRON, Ethereum, BNB, and Z Chain settlement."
+    }
+  ],
+  "productionWallet": {
+    "address": "0xc2D6E6981D1A415967A683D615cf97bA9bC26F0f",
+    "registryPath": "config/integrations/z-wallet.v1.json"
+  },
+  "integrations": {
+    "zBankOnline": "config/integrations/z-bank-online.v1.json",
+    "zWallet": "config/integrations/z-wallet.v1.json",
+    "tradableTokens": "config/tokens/z-block-chain-tradable-tokens.v1.json",
+    "tradingPlatforms": "config/compliance/z-trading-platforms.v1.json",
+    "priceOracle": "config/oracles/z-block-chain-prices.v1.json",
+    "chainChart": "config/chains/z-block-chain.v1.json",
+    "internationalWiring": "config/integrations/z-international-wiring.v1.json",
+    "zBot": "config/integrations/z-bot-international-trading.v1.json"
+  },
+  "source": {
+    "registryPath": "config/integrations/z-ecosystem.v1.json",
+    "notes": "Standalone Z ecosystem — completely separate from Nova Trust."
+  }
+}

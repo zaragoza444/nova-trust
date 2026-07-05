@@ -1,0 +1,35 @@
+name: Z Ecosystem go live on VPS
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Git branch to deploy
+        required: false
+        default: cursor/z-bot-international-trading-4f28
+      wire_public:
+        description: Wire nginx + public URLs (recommended)
+        required: false
+        default: "true"
+
+jobs:
+  z-go-live:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Deploy Z Ecosystem over SSH
+        env:
+          VPS_SSH_HOST: ${{ secrets.VPS_SSH_HOST }}
+          VPS_SSH_USER: ${{ secrets.VPS_SSH_USER }}
+          VPS_SSH_PASSWORD: ${{ secrets.VPS_SSH_PASSWORD }}
+          VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          VPS_DEPLOY_BRANCH: ${{ inputs.branch }}
+          Z_VPS_USE_WIRE: ${{ inputs.wire_public }}
+        run: python scripts/remote-z-go-live-vps.py

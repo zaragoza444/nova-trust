@@ -11,8 +11,6 @@ const routeMap: Record<string, string> = {
   Settlement: "/",
   "Asset issuance": "/assets",
   "Token trading": "/trading",
-  "Z Bank load": "/zbank",
-  "Z Blockchain": "/z-chain",
   "Multi-network": "/networks",
   Treasury: "/admin",
   Governance: "/admin",

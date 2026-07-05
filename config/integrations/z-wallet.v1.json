@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "product": {
+    "id": "z-wallet",
+    "name": "Z Wallet",
+    "style": "binance-production",
+    "status": "active"
+  },
+  "settlementChain": {
+    "chainId": 44002,
+    "name": "Z Blockchain",
+    "nativeSymbol": "Z",
+    "wrappedSymbol": "WZ",
+    "explorerLabel": "Z Blockchain Mainnet"
+  },
+  "productionWallet": {
+    "address": "0xc2D6E6981D1A415967A683D615cf97bA9bC26F0f",
+    "role": "z-wallet-production",
+    "label": "Z Wallet Production Treasury",
+    "participantType": "z-wallet-production"
+  },
+  "accounts": [
+    {
+      "id": "funding",
+      "name": "Funding",
+      "description": "Deposits, withdrawals, and Z Bank online loads"
+    },
+    {
+      "id": "spot",
+      "name": "Spot",
+      "description": "Swap and trade on Z Blockchain liquidity pools"
+    },
+    {
+      "id": "earn",
+      "name": "Earn",
+      "description": "Liquidity and treasury yield positions"
+    }
+  ],
+  "capabilities": {
+    "deposit": true,
+    "withdraw": true,
+    "transfer": true,
+    "swap": true,
+    "trade": true,
+    "zBankLoad": true,
+    "multiNetwork": true
+  },
+  "integrations": {
+    "zBankOnline": "config/integrations/z-bank-online.v1.json",
+    "tradableTokenRegistry": "config/tokens/z-block-chain-tradable-tokens.v1.json",
+    "priceOracleRegistry": "config/oracles/z-block-chain-prices.v1.json",
+    "manifestPath": "contracts/deployments/z-blockchain-production-liquidity.json"
+  },
+  "source": {
+    "registryPath": "config/integrations/z-wallet.v1.json",
+    "notes": "Production Binance-style Z Wallet on Z Blockchain with Z Bank online integration."
+  }
+}

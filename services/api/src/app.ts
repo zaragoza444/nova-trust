@@ -4,14 +4,10 @@ import { handleAdminOverview, handleAdminQueue } from "./routes/admin";
 import { handleAssetsOverview } from "./routes/assets";
 import { handleDashboard } from "./routes/dashboard";
 import { handleHealth } from "./routes/health";
-import { handleZBlockChainChart } from "./routes/z-chain";
 import { handleMultiNetworkChart, handleMultiNetworkHealth } from "./routes/networks";
 import { handleTradingTokensOverview } from "./routes/trading";
-import { handleZBankIntegrationOverview, handleZBankLoadFunds } from "./routes/zbank";
-import { handleGoLiveStatus } from "./routes/go-live";
 import { handleInternationalWiring } from "./routes/international";
 import { handleCustodyHealth, handleCustodyOverview, handleCoboCallback, handleCoboWebhook } from "./routes/custody";
-import { handleOraclePricesGet, handleOraclePricesPut } from "./routes/oracle";
 import { canAccess, type NovaRole } from "./services/rbac";
 
 const config = loadApiConfig();
@@ -33,11 +29,6 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
 
   if (request.url === "/health") {
     handleHealth(request, response);
-    return;
-  }
-
-  if (request.url === "/api/go-live/status") {
-    void handleGoLiveStatus(request, response);
     return;
   }
 
@@ -90,36 +81,6 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
       return;
     }
     handleTradingTokensOverview(request, response);
-    return;
-  }
-
-  if (request.url === "/api/zbank/integration") {
-    if (!requestRole || !canAccess("/api/zbank/integration", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    handleZBankIntegrationOverview(request, response);
-    return;
-  }
-
-  if (request.url === "/api/zbank/load-funds" && request.method === "POST") {
-    if (!requestRole || !canAccess("/api/zbank/load-funds", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    void handleZBankLoadFunds(request, response);
-    return;
-  }
-
-  if (request.url === "/api/z-chain/chart") {
-    if (!requestRole || !canAccess("/api/z-chain/chart", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    handleZBlockChainChart(request, response);
     return;
   }
 
@@ -183,30 +144,10 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
     return;
   }
 
-  if (request.url === "/api/oracle/prices" && request.method === "GET") {
-    if (!requestRole || !canAccess("/api/oracle/prices", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    handleOraclePricesGet(request, response);
-    return;
-  }
-
-  if (request.url === "/api/oracle/prices" && request.method === "PUT") {
-    if (!requestRole || !canAccess("/api/oracle/prices", requestRole)) {
-      response.writeHead(403, { "content-type": "application/json" });
-      response.end(JSON.stringify({ error: "Forbidden" }));
-      return;
-    }
-    void handleOraclePricesPut(request, response);
-    return;
-  }
-
   response.writeHead(404, { "content-type": "application/json" });
   response.end(JSON.stringify({ error: "Route not found" }));
 });
 
-server.listen(config.port, () => {
-  console.log(`Nova API listening on port ${config.port}`);
+server.listen(config.port, config.host, () => {
+  console.log(`Nova API listening on ${config.host}:${config.port}`);
 });

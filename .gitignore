@@ -25,7 +25,9 @@ coverage/
 .env
 .env.local
 .env.*.local
-.deploy/.env.production
+deploy/.env.production
+deploy/.env.z-wallet
+deploy/.env.z-production
 deploy/.env.international
 custody.env
 **/custody.env
@@ -40,3 +42,4 @@ logs/
 data/
 services/indexer/runtime/
 contracts/deployments/*.json
+scripts/__pycache__/

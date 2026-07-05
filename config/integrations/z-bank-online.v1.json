@@ -48,16 +48,6 @@
       "networkType": "evm"
     },
     {
-      "chainId": 138,
-      "name": "Chain 138",
-      "networkType": "evm"
-    },
-    {
-      "chainId": 22016,
-      "name": "Nova One",
-      "networkType": "evm"
-    },
-    {
       "chainId": 44002,
       "name": "Z Blockchain",
       "networkType": "evm"
@@ -68,7 +58,7 @@
     "name": "Z Blockchain",
     "wrappedNativeSymbol": "WZ"
   },
-  "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "USDT", "USDC", "XRCUSDC", "CUSDT", "AUSDT"],
+  "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "USDT", "USDC", "XRCUSDC", "CUSDT", "AUSDT", "ETH", "BTC", "BNB"],
   "loadMethods": [
     {
       "id": "zbank-m1-online-transfer",
@@ -89,6 +79,6 @@
   },
   "source": {
     "registryPath": "config/integrations/z-bank-online.v1.json",
-    "notes": "Z Bank online fund loading rail with TRON basement, Ethereum, BNB, and permissioned settlement chains."
+    "notes": "Z Bank online fund loading rail with TRON basement, Ethereum, BNB, and Z Blockchain settlement only."
   }
 }

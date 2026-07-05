@@ -238,17 +238,28 @@ describe("Nova contract suite design", () => {
     assert.deepEqual(usdt?.networks, ["TRON", "Ethereum", "BNB Smart Chain"]);
   });
 
-  it("activates TRON permissioned bridge lanes to Z Blockchain and Nova One", () => {
+  it("activates TRON permissioned bridge lane to Nova One in Nova multi-network", () => {
     const chart = JSON.parse(
       readFileSync(path.resolve(repoRoot, "config", "chains", "multi-network.v1.json"), "utf8")
     ) as {
       permissionedBridges: Array<{ to: number; status: string }>;
     };
 
-    const zBridge = chart.permissionedBridges.find((lane) => lane.to === 44002);
     const novaBridge = chart.permissionedBridges.find((lane) => lane.to === 22016);
-    assert.equal(zBridge?.status, "active");
+    const zBridge = chart.permissionedBridges.find((lane) => lane.to === 44002);
     assert.equal(novaBridge?.status, "active");
+    assert.equal(zBridge, undefined);
+  });
+
+  it("activates TRON permissioned bridge lane to Z Chain in Z international wiring", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-international-wiring.v1.json"), "utf8")
+    ) as {
+      internationalBridgeLanes: Array<{ to: number; status: string }>;
+    };
+
+    const zBridge = registry.internationalBridgeLanes.find((lane) => lane.to === 44002);
+    assert.equal(zBridge?.status, "active");
   });
 
   it("documents production multi-network RPC defaults", () => {
@@ -397,5 +408,122 @@ describe("Nova contract suite design", () => {
     assert.match(source, /wire-multi-network-vps\.sh/);
     assert.match(source, /api\/networks\/international/);
     assert.match(source, /deploy\/nginx\/nova-trust\.conf/);
+  });
+
+  it("uses grep instead of rg in multi-network VPS wiring script", () => {
+    const source = readFileSync(path.resolve(repoRoot, "scripts", "wire-multi-network-vps.sh"), "utf8");
+
+    assert.match(source, /grep -q '\^export ZBC_RPC_URL='/);
+    assert.doesNotMatch(source, /\brg\b/);
+  });
+
+  it("uses docker manifest path in Z Blockchain deploy script", () => {
+    const source = readFileSync(path.resolve(repoRoot, "scripts", "deploy-z-blockchain-vps.sh"), "utf8");
+
+    assert.match(source, /MANIFEST_DOCKER="\/work\/contracts\/deployments\/z-blockchain-production-liquidity\.json"/);
+    assert.match(source, /ZBC_BOOTSTRAP_MANIFEST_PATH="\$MANIFEST_DOCKER"/);
+  });
+
+  it("binds API to configurable host and resolves CORS wildcard correctly", () => {
+    const configSource = readFileSync(path.resolve(repoRoot, "services", "api", "src", "config.ts"), "utf8");
+    const appSource = readFileSync(path.resolve(repoRoot, "services", "api", "src", "app.ts"), "utf8");
+    const productionEnv = readFileSync(path.resolve(repoRoot, "deploy", "production.env.example"), "utf8");
+
+    assert.match(configSource, /NOVA_API_HOST/);
+    assert.match(configSource, /return "\*";/);
+    assert.match(appSource, /server\.listen\(config\.port, config\.host/);
+    assert.match(productionEnv, /NOVA_API_HOST="0\.0\.0\.0"/);
+  });
+
+  it("runs contract and multi-network checks in release:check", () => {
+    const packageJson = readFileSync(path.resolve(repoRoot, "package.json"), "utf8");
+
+    assert.match(packageJson, /test:contracts/);
+    assert.match(packageJson, /test:multi-network/);
+  });
+
+  it("registers production Z Wallet integration for Z Blockchain", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-wallet.v1.json"), "utf8")
+    ) as {
+      product: { id: string; style: string };
+      settlementChain: { chainId: number };
+      productionWallet: { address: string; role: string };
+      accounts: Array<{ id: string }>;
+    };
+
+    assert.equal(registry.product.id, "z-wallet");
+    assert.equal(registry.product.style, "binance-production");
+    assert.equal(registry.settlementChain.chainId, 44002);
+    assert.equal(registry.productionWallet.address, "0xc2D6E6981D1A415967A683D615cf97bA9bC26F0f");
+    assert.deepEqual(
+      registry.accounts.map((account) => account.id),
+      ["funding", "spot", "earn"]
+    );
+  });
+
+  it("documents Z Wallet production setup script and Z API routes", () => {
+    const setupScript = readFileSync(path.resolve(repoRoot, "scripts", "setup-z-wallet-production.sh"), "utf8");
+    const zAppSource = readFileSync(path.resolve(repoRoot, "services", "z-api", "src", "app.ts"), "utf8");
+    const novaAppSource = readFileSync(path.resolve(repoRoot, "services", "api", "src", "app.ts"), "utf8");
+    const contractsPackage = readFileSync(path.resolve(contractsRoot, "package.json"), "utf8");
+
+    assert.match(setupScript, /setup:z-wallet:production/);
+    assert.match(contractsPackage, /setup:z-wallet:production/);
+    assert.match(zAppSource, /\/api\/z-wallet\/overview/);
+    assert.match(zAppSource, /\/api\/zchart\/markets/);
+    assert.match(zAppSource, /\/api\/zswap\/pools/);
+    assert.match(zAppSource, /\/api\/ztrade\/markets/);
+    assert.doesNotMatch(novaAppSource, /\/api\/z-wallet\/overview/);
+    assert.doesNotMatch(novaAppSource, /\/api\/zbank\/integration/);
+  });
+
+  it("registers standalone Z ecosystem products separate from Nova", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-ecosystem.v1.json"), "utf8")
+    ) as {
+      brand: { style: string };
+      products: Array<{ id: string; path: string }>;
+    };
+    const zChainChart = readFileSync(path.resolve(repoRoot, "config", "chains", "z-block-chain.v1.json"), "utf8");
+    const multiNetwork = readFileSync(path.resolve(repoRoot, "config", "chains", "multi-network.v1.json"), "utf8");
+
+    assert.equal(registry.brand.style, "binance-production");
+    assert.deepEqual(
+      registry.products.map((product) => product.id),
+      ["z-chain", "z-wallet", "z-bank", "z-swap", "z-trade", "z-chart", "z-bot"]
+    );
+    assert.doesNotMatch(zChainChart, /Nova One/);
+    assert.doesNotMatch(multiNetwork, /Z Blockchain/);
+  });
+
+  it("documents Z production go-live stack separate from Nova", () => {
+    const zGoLive = readFileSync(path.resolve(repoRoot, "scripts", "z-go-live.sh"), "utf8");
+    const packageJson = readFileSync(path.resolve(repoRoot, "package.json"), "utf8");
+
+    assert.match(zGoLive, /@z\/api/);
+    assert.match(zGoLive, /@z\/dashboard/);
+    assert.match(zGoLive, /\/zchart/);
+    assert.match(packageJson, /dev:z-dashboard/);
+    assert.match(packageJson, /start:z-api/);
+  });
+
+  it("registers Z Bot international trading automation", () => {
+    const botRegistry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "integrations", "z-bot-international-trading.v1.json"), "utf8")
+    ) as {
+      product: { id: string };
+      internationalNetworks: string[];
+      strategies: Array<{ id: string }>;
+    };
+    const zAppSource = readFileSync(path.resolve(repoRoot, "services", "z-api", "src", "app.ts"), "utf8");
+    const zBotScript = readFileSync(path.resolve(repoRoot, "scripts", "z-bot-run.sh"), "utf8");
+
+    assert.equal(botRegistry.product.id, "z-bot");
+    assert.deepEqual(botRegistry.internationalNetworks, ["TRON", "Ethereum", "BNB Smart Chain"]);
+    assert.ok(botRegistry.strategies.some((strategy) => strategy.id === "oracle-pool-arb"));
+    assert.match(zAppSource, /\/api\/zbot\/overview/);
+    assert.match(zAppSource, /\/api\/zswap\/swap/);
+    assert.match(zBotScript, /@z\/bot/);
   });
 });
