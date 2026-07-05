@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-contract WrappedZBlockChainToken {
-    string public constant name = "Wrapped Z Blockchain";
-    string public constant symbol = "WZ";
+contract WrappedNRWWorldToken {
+    string public constant name = "Wrapped NRW World";
+    string public constant symbol = "WNRW";
     uint8 public constant decimals = 18;
 
     uint256 public totalSupply;
@@ -20,7 +20,7 @@ contract WrappedZBlockChainToken {
     }
 
     function deposit() public payable {
-        require(msg.value > 0, "WrappedZBlockChainToken: zero deposit");
+        require(msg.value > 0, "WrappedNRWWorldToken: zero deposit");
 
         totalSupply += msg.value;
         balanceOf[msg.sender] += msg.value;
@@ -30,7 +30,7 @@ contract WrappedZBlockChainToken {
     }
 
     function withdraw(uint256 value) external {
-        require(balanceOf[msg.sender] >= value, "WrappedZBlockChainToken: insufficient balance");
+        require(balanceOf[msg.sender] >= value, "WrappedNRWWorldToken: insufficient balance");
 
         balanceOf[msg.sender] -= value;
         totalSupply -= value;
@@ -39,11 +39,11 @@ contract WrappedZBlockChainToken {
         emit Withdrawal(msg.sender, value);
 
         (bool sent, ) = payable(msg.sender).call{value: value}("");
-        require(sent, "WrappedZBlockChainToken: native transfer failed");
+        require(sent, "WrappedNRWWorldToken: native transfer failed");
     }
 
     function approve(address spender, uint256 value) external returns (bool) {
-        require(spender != address(0), "WrappedZBlockChainToken: zero spender");
+        require(spender != address(0), "WrappedNRWWorldToken: zero spender");
         allowance[msg.sender][spender] = value;
         emit Approval(msg.sender, spender, value);
         return true;
@@ -56,7 +56,7 @@ contract WrappedZBlockChainToken {
 
     function transferFrom(address from, address to, uint256 value) external returns (bool) {
         uint256 currentAllowance = allowance[from][msg.sender];
-        require(currentAllowance >= value, "WrappedZBlockChainToken: allowance exceeded");
+        require(currentAllowance >= value, "WrappedNRWWorldToken: allowance exceeded");
 
         allowance[from][msg.sender] = currentAllowance - value;
         _transfer(from, to, value);
@@ -64,8 +64,8 @@ contract WrappedZBlockChainToken {
     }
 
     function _transfer(address from, address to, uint256 value) internal {
-        require(to != address(0), "WrappedZBlockChainToken: zero recipient");
-        require(balanceOf[from] >= value, "WrappedZBlockChainToken: insufficient balance");
+        require(to != address(0), "WrappedNRWWorldToken: zero recipient");
+        require(balanceOf[from] >= value, "WrappedNRWWorldToken: insufficient balance");
 
         balanceOf[from] -= value;
         balanceOf[to] += value;

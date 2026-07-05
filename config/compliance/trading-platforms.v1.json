@@ -15,7 +15,7 @@
     },
     {
       "id": "z-block-chain-pool",
-      "name": "Z Block Chain Liquidity Pool",
+      "name": "Z Blockchain Liquidity Pool",
       "type": "dex",
       "supportedTokens": ["M1FIAT", "ACX", "SHIVA", "WZ"],
       "capabilities": ["swap", "add-liquidity", "remove-liquidity", "transfer", "trade"]

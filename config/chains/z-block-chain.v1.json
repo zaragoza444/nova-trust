@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "chain": {
-    "name": "Z Block Chain",
+    "name": "Z Blockchain",
     "chainId": 44002,
     "slug": "z-block-chain",
     "role": "Z Online Bank liquidity and world chain",
@@ -39,7 +39,7 @@
       "from": 33001,
       "to": 44002,
       "status": "active",
-      "purpose": "NRW World world liquidity to Z Block Chain"
+      "purpose": "NRW World world liquidity to Z Blockchain"
     },
     {
       "from": 138,
@@ -75,6 +75,6 @@
   },
   "source": {
     "registryPath": "config/chains/z-block-chain.v1.json",
-    "notes": "Full production chart for Z Block Chain with Z Online Bank liquidity support."
+    "notes": "Full production chart for Z Blockchain with Z Online Bank liquidity support."
   }
 }

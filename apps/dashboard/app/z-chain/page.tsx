@@ -8,7 +8,7 @@ export default async function ZBlockChainPage() {
 
   return (
     <PageShell
-      title="Z Block Chain production chart"
+      title="Z Blockchain production chart"
       description="Full production network for Z Online Bank on chain 44002 — swappable, tradable, and transferable M1FIAT, ACX, and SHIVA with WZ liquidity pools, aligned to NRW World 33001 architecture."
       signals={data.shellSignals}
       chains={data.chainProfiles}
@@ -23,9 +23,9 @@ export default async function ZBlockChainPage() {
       <section className="heroGrid">
         <article className="card heroCard heroCardPrimary">
           <span className="eyebrow">Production chart</span>
-          <h2>Z Block Chain is the Z Online Bank liquidity world chain.</h2>
+          <h2>Z Blockchain is the Z Online Bank liquidity world chain.</h2>
           <p>
-            Like NRW World on chain 33001, Z Block Chain on 44002 hosts full liquidity infrastructure for Z Bank online
+            Like NRW World on chain 33001, Z Blockchain on 44002 hosts full liquidity infrastructure for Z Bank online
             loads, partner bank transfers, and platform trading with compliance-approved pools.
           </p>
           <div className="highlightGrid">
@@ -61,7 +61,7 @@ export default async function ZBlockChainPage() {
           <div className="sectionHeader">
             <div>
               <span className="eyebrow">Tradable tokens</span>
-              <h3>Z Block Chain liquidity catalog</h3>
+              <h3>Z Blockchain liquidity catalog</h3>
             </div>
           </div>
           <div className="tableWrap">
@@ -116,7 +116,7 @@ export default async function ZBlockChainPage() {
             <div className="sectionHeader">
               <div>
                 <span className="eyebrow">Production bootstrap</span>
-                <h3>Deploy Z Block Chain liquidity</h3>
+                <h3>Deploy Z Blockchain liquidity</h3>
               </div>
             </div>
             <div className="featureChecklist">

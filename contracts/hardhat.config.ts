@@ -22,6 +22,11 @@ const config: HardhatUserConfig = {
       chainType: "l1",
       chainId: 44002
     },
+    nrwWorldHardhat: {
+      type: "edr-simulated",
+      chainType: "l1",
+      chainId: 33001
+    },
     localhost: {
       type: "http",
       chainType: "l1",

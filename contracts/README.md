@@ -29,7 +29,7 @@ Production deployments should replace direct EOAs with multisigs, service identi
 
 ## Nova One and NRW World Liquidity
 
-Nova One is the primary settlement chain with chain ID `22016`. NRW World is the world liquidity and bridge chain with chain ID `33001`. Z Block Chain is the Z Online Bank production world chain with chain ID `44002`.
+Nova One is the primary settlement chain with chain ID `22016`. NRW World is the world liquidity and bridge chain with chain ID `33001`. Z Blockchain is the Z Online Bank production world chain with chain ID `44002`.
 
 Issued asset tokens from `NovaAssetFactory` implement the ERC-20 transfer and approval methods required by Uniswap-style routers. Assets such as `M1FIAT`, `ACX`, and `SHIVA` can be paired directly with `WNOVA` on Nova One after the treasury approves the router and supplies both sides of the pool.
 
@@ -78,9 +78,9 @@ The deployer wallet must hold enough native NOVA to pay gas and wrap the configu
 
 For the one-command bootstrap, leave `NOVA_INITIAL_OWNER`, `NOVA_COMPLIANCE_ADMIN`, and `NOVA_ASSET_ISSUER` unset or set them to the deployer wallet. The script performs role-gated registration, asset issuance, and venue approval with the deployer key, then role transfers can be handled through governance after bootstrap.
 
-## Z Block Chain Production Bootstrap
+## Z Blockchain Production Bootstrap
 
-Z Block Chain (chain ID `44002`) mirrors the NRW World production model for Z Online Bank liquidity.
+Z Blockchain (chain ID `44002`) mirrors the NRW World production model for Z Online Bank liquidity.
 
 ```bash
 cp contracts/z-block-chain.env.example /tmp/z-block-chain-production.env

@@ -17,7 +17,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "Starting local Z Block Chain node on ${RPC_URL} (chain 44002)..."
+echo "Starting local Z Blockchain node on ${RPC_URL} (chain 44002)..."
 (cd "$CONTRACTS" && npx hardhat node --network zBlockChainHardhat --port "$PORT" --hostname 127.0.0.1) &
 HARDHAT_PID=$!
 
@@ -32,7 +32,7 @@ sleep 2
   ZBC_RPC_URL="$RPC_URL" \
   ZBC_DEPLOYER_PRIVATE_KEY="$HARDHAT_KEY" \
   ZBC_EXPECTED_CHAIN_ID="44002" \
-  ZBC_NETWORK_NAME="Z Block Chain Local" \
+  ZBC_NETWORK_NAME="Z Blockchain Local" \
   ZBC_M1FIAT_SUPPLY="1000000" \
   ZBC_M1FIAT_LIQUIDITY="100000" \
   ZBC_WZ_LIQUIDITY="100" \
@@ -46,4 +46,4 @@ sleep 2
   npm run setup:z-block-chain --workspace @nova/contracts
 )
 
-echo "Local Z Block Chain bootstrap complete. Manifest: ${MANIFEST}"
+echo "Local Z Blockchain bootstrap complete. Manifest: ${MANIFEST}"

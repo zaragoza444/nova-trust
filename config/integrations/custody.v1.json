@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "settlementChain": {
     "chainId": 44002,
-    "name": "Z Block Chain",
+    "name": "Z Blockchain",
     "wrappedNativeSymbol": "WZ"
   },
   "providers": [
@@ -18,7 +18,7 @@
         "treasury-deposits"
       ],
       "zBankUseCases": [
-        "Treasury wallet provisioning for Z Block Chain fund loads",
+        "Treasury wallet provisioning for Z Blockchain fund loads",
         "Signed settlement transfers to chain 44002"
       ]
     },
@@ -54,6 +54,6 @@
   },
   "source": {
     "registryPath": "config/integrations/custody.v1.json",
-    "notes": "Custody bindings for Z Block Chain and Z Bank Online. Secrets are loaded from environment variables only."
+    "notes": "Custody bindings for Z Blockchain and Z Bank Online. Secrets are loaded from environment variables only."
   }
 }

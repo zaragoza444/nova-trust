@@ -17,12 +17,12 @@
     },
     {
       "chainId": 44002,
-      "name": "Z Block Chain"
+      "name": "Z Blockchain"
     }
   ],
   "primaryLiquidityChain": {
     "chainId": 44002,
-    "name": "Z Block Chain",
+    "name": "Z Blockchain",
     "wrappedNativeSymbol": "WZ"
   },
   "supportedTokens": ["M1FIAT", "ACX", "SHIVA"],
@@ -30,7 +30,7 @@
     {
       "id": "zbank-m1-online-transfer",
       "label": "Z Bank Online M1 Transfer",
-      "description": "Load M1FIAT, ACX, or SHIVA from Z Bank online into a compliant Z Block Chain wallet.",
+      "description": "Load M1FIAT, ACX, or SHIVA from Z Bank online into a compliant Z Blockchain wallet.",
       "minAmount": "1",
       "settlementToken": "M1FIAT",
       "requiresKyc": true
@@ -45,6 +45,6 @@
   },
   "source": {
     "registryPath": "config/integrations/z-bank-online.v1.json",
-    "notes": "Z Bank online fund loading rail for Z Block Chain and partner settlement chains."
+    "notes": "Z Bank online fund loading rail for Z Blockchain and partner settlement chains."
   }
 }

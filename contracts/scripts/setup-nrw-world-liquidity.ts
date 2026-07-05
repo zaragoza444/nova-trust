@@ -20,9 +20,9 @@ interface BootstrapConfig {
   acxLiquidity: bigint;
   shivaSupply: bigint;
   shivaLiquidity: bigint;
-  wzLiquidity: bigint;
-  wzAcxLiquidity: bigint;
-  wzShivaLiquidity: bigint;
+  wnrwLiquidity: bigint;
+  wnrwAcxLiquidity: bigint;
+  wnrwShivaLiquidity: bigint;
 }
 
 interface DeploymentRecord {
@@ -46,7 +46,7 @@ const erc20Abi = [
 function requireEnv(name: string) {
   const value = process.env[name];
   if (!value) {
-    throw new Error(`${name} is required for Z Blockchain liquidity setup`);
+    throw new Error(`${name} is required for NRW World liquidity setup`);
   }
   return value;
 }
@@ -65,29 +65,29 @@ function loadArtifact(contractName: string) {
 }
 
 async function loadConfig(walletAddress: string): Promise<BootstrapConfig> {
-  const initialOwner = process.env.ZBC_INITIAL_OWNER ?? walletAddress;
+  const initialOwner = process.env.NRW_INITIAL_OWNER ?? walletAddress;
   return {
-    rpcUrl: requireEnv("ZBC_RPC_URL"),
-    privateKey: requireEnv("ZBC_DEPLOYER_PRIVATE_KEY"),
-    expectedChainId: BigInt(process.env.ZBC_EXPECTED_CHAIN_ID ?? "44002"),
+    rpcUrl: requireEnv("NRW_RPC_URL"),
+    privateKey: requireEnv("NRW_DEPLOYER_PRIVATE_KEY"),
+    expectedChainId: BigInt(process.env.NRW_EXPECTED_CHAIN_ID ?? "33001"),
     initialOwner,
-    complianceAdmin: process.env.ZBC_COMPLIANCE_ADMIN ?? initialOwner,
-    treasuryOperator: process.env.ZBC_TREASURY_OPERATOR ?? initialOwner,
-    assetIssuer: process.env.ZBC_ASSET_ISSUER ?? initialOwner,
-    auditor: process.env.ZBC_AUDITOR ?? initialOwner,
-    networkName: process.env.ZBC_NETWORK_NAME ?? "Z Blockchain",
+    complianceAdmin: process.env.NRW_COMPLIANCE_ADMIN ?? initialOwner,
+    treasuryOperator: process.env.NRW_TREASURY_OPERATOR ?? initialOwner,
+    assetIssuer: process.env.NRW_ASSET_ISSUER ?? initialOwner,
+    auditor: process.env.NRW_AUDITOR ?? initialOwner,
+    networkName: process.env.NRW_NETWORK_NAME ?? "NRW World",
     outputPath:
-      process.env.ZBC_BOOTSTRAP_MANIFEST_PATH ??
-      path.resolve(contractsRoot, "deployments", "z-block-chain-liquidity.json"),
-    m1FiatSupply: parseTokenAmount("ZBC_M1FIAT_SUPPLY"),
-    m1FiatLiquidity: parseTokenAmount("ZBC_M1FIAT_LIQUIDITY"),
-    acxSupply: parseTokenAmount("ZBC_ACX_SUPPLY"),
-    acxLiquidity: parseTokenAmount("ZBC_ACX_LIQUIDITY"),
-    shivaSupply: parseTokenAmount("ZBC_SHIVA_SUPPLY"),
-    shivaLiquidity: parseTokenAmount("ZBC_SHIVA_LIQUIDITY"),
-    wzLiquidity: parseTokenAmount("ZBC_WZ_LIQUIDITY"),
-    wzAcxLiquidity: parseTokenAmount("ZBC_WZ_ACX_LIQUIDITY"),
-    wzShivaLiquidity: parseTokenAmount("ZBC_WZ_SHIVA_LIQUIDITY")
+      process.env.NRW_BOOTSTRAP_MANIFEST_PATH ??
+      path.resolve(contractsRoot, "deployments", "nrw-world-liquidity.json"),
+    m1FiatSupply: parseTokenAmount("NRW_M1FIAT_SUPPLY"),
+    m1FiatLiquidity: parseTokenAmount("NRW_M1FIAT_LIQUIDITY"),
+    acxSupply: parseTokenAmount("NRW_ACX_SUPPLY"),
+    acxLiquidity: parseTokenAmount("NRW_ACX_LIQUIDITY"),
+    shivaSupply: parseTokenAmount("NRW_SHIVA_SUPPLY"),
+    shivaLiquidity: parseTokenAmount("NRW_SHIVA_LIQUIDITY"),
+    wnrwLiquidity: parseTokenAmount("NRW_WNRW_LIQUIDITY"),
+    wnrwAcxLiquidity: parseTokenAmount("NRW_WNRW_ACX_LIQUIDITY"),
+    wnrwShivaLiquidity: parseTokenAmount("NRW_WNRW_SHIVA_LIQUIDITY")
   };
 }
 
@@ -165,8 +165,8 @@ async function bootstrapLiquidityPool(
 }
 
 async function main() {
-  const provider = new JsonRpcProvider(process.env.ZBC_RPC_URL ?? "http://127.0.0.1:8546");
-  const wallet = new Wallet(requireEnv("ZBC_DEPLOYER_PRIVATE_KEY"), provider);
+  const provider = new JsonRpcProvider(process.env.NRW_RPC_URL ?? "http://127.0.0.1:8560");
+  const wallet = new Wallet(requireEnv("NRW_DEPLOYER_PRIVATE_KEY"), provider);
   const signer = new NonceManager(wallet);
   const walletAddress = await wallet.getAddress();
   const config = await loadConfig(walletAddress);
@@ -179,7 +179,7 @@ async function main() {
   const identity = await deployContract(signer, "IdentityRegistry", [config.initialOwner]);
   const compliance = await deployContract(signer, "ComplianceRegistry", [config.initialOwner, identity.record.address]);
   const settlement = await deployContract(signer, "NovaSettlementToken", [config.initialOwner, compliance.record.address]);
-  const wrappedZ = await deployContract(signer, "WrappedZBlockChainToken", []);
+  const wrappedNrw = await deployContract(signer, "WrappedNRWWorldToken", []);
   const assetFactory = await deployContract(signer, "NovaAssetFactory", [config.initialOwner]);
   const treasury = await deployContract(signer, "TreasuryController", [config.initialOwner, settlement.record.address]);
   const auditEvents = await deployContract(signer, "AuditEvents", [config.initialOwner]);
@@ -192,21 +192,21 @@ async function main() {
   await grantRole(auditEvents.contract, await auditEvents.contract.AUDITOR_ROLE(), config.auditor);
 
   await waitForTransaction(
-    await identity.contract.registerParticipant(walletAddress, "z-bank-treasury", "GLOBAL", id("ZBC_DEPLOYER_KYC"), ZeroHash)
+    await identity.contract.registerParticipant(walletAddress, "nrw-treasury", "GLOBAL", id("NRW_DEPLOYER_KYC"), ZeroHash)
   );
   await waitForTransaction(await compliance.contract.setStatus(walletAddress, false, false, 0, "GLOBAL"));
 
-  const m1FiatAddress = await issueAsset(assetFactory, "M1FIAT-ZBC-001", "Stablecoin", "M1 Fiat Token", "M1FIAT", config.m1FiatSupply, walletAddress);
-  const acxAddress = await issueAsset(assetFactory, "ACX-ZBC-001", "Exchange", "ACX Token", "ACX", config.acxSupply, walletAddress);
-  const shivaAddress = await issueAsset(assetFactory, "SHIVA-ZBC-001", "Utility", "Shiva Token", "SHIVA", config.shivaSupply, walletAddress);
+  const m1FiatAddress = await issueAsset(assetFactory, "M1FIAT-NRW-001", "Stablecoin", "M1 Fiat Token", "M1FIAT", config.m1FiatSupply, walletAddress);
+  const acxAddress = await issueAsset(assetFactory, "ACX-NRW-001", "Exchange", "ACX Token", "ACX", config.acxSupply, walletAddress);
+  const shivaAddress = await issueAsset(assetFactory, "SHIVA-NRW-001", "Utility", "Shiva Token", "SHIVA", config.shivaSupply, walletAddress);
 
-  const totalWzWrap = config.wzLiquidity + config.wzAcxLiquidity + config.wzShivaLiquidity;
-  await waitForTransaction(await wrappedZ.contract.deposit({ value: totalWzWrap }));
+  const totalWnrwWrap = config.wnrwLiquidity + config.wnrwAcxLiquidity + config.wnrwShivaLiquidity;
+  await waitForTransaction(await wrappedNrw.contract.deposit({ value: totalWnrwWrap }));
 
   const pools = [
-    await bootstrapLiquidityPool(signer, walletAddress, compliance, m1FiatAddress, wrappedZ.record.address, "M1FIAT / WZ Liquidity Pool", "NLP-M1FIAT-WZ", config.m1FiatLiquidity, config.wzLiquidity, "M1FIAT", "WZ"),
-    await bootstrapLiquidityPool(signer, walletAddress, compliance, acxAddress, wrappedZ.record.address, "ACX / WZ Liquidity Pool", "NLP-ACX-WZ", config.acxLiquidity, config.wzAcxLiquidity, "ACX", "WZ"),
-    await bootstrapLiquidityPool(signer, walletAddress, compliance, shivaAddress, wrappedZ.record.address, "SHIVA / WZ Liquidity Pool", "NLP-SHIVA-WZ", config.shivaLiquidity, config.wzShivaLiquidity, "SHIVA", "WZ")
+    await bootstrapLiquidityPool(signer, walletAddress, compliance, m1FiatAddress, wrappedNrw.record.address, "M1FIAT / WNRW Liquidity Pool", "NLP-M1FIAT-WNRW", config.m1FiatLiquidity, config.wnrwLiquidity, "M1FIAT", "WNRW"),
+    await bootstrapLiquidityPool(signer, walletAddress, compliance, acxAddress, wrappedNrw.record.address, "ACX / WNRW Liquidity Pool", "NLP-ACX-WNRW", config.acxLiquidity, config.wnrwAcxLiquidity, "ACX", "WNRW"),
+    await bootstrapLiquidityPool(signer, walletAddress, compliance, shivaAddress, wrappedNrw.record.address, "SHIVA / WNRW Liquidity Pool", "NLP-SHIVA-WNRW", config.shivaLiquidity, config.wnrwShivaLiquidity, "SHIVA", "WNRW")
   ];
 
   const manifest = {
@@ -214,16 +214,16 @@ async function main() {
       name: config.networkName,
       chainId: network.chainId.toString(),
       rpcUrl: config.rpcUrl,
-      chainChart: "config/chains/z-block-chain.v1.json",
+      chainChart: "config/chains/nrw-world.v1.json",
       zBankIntegration: "config/integrations/z-bank-online.v1.json",
-      tradableTokenRegistry: "config/tokens/z-block-chain-tradable-tokens.v1.json"
+      tradableTokenRegistry: "config/tokens/nrw-world-tradable-tokens.v1.json"
     },
     deployer: walletAddress,
     contracts: {
       identityRegistry: identity.record,
       complianceRegistry: compliance.record,
       settlementToken: settlement.record,
-      wrappedZBlockChainToken: wrappedZ.record,
+      wrappedNrwBlockChainToken: wrappedNrw.record,
       assetFactory: assetFactory.record,
       treasuryController: treasury.record,
       auditEvents: auditEvents.record
@@ -233,17 +233,17 @@ async function main() {
       { symbol: "ACX", address: acxAddress, capabilities: { transferable: true, tradable: true, swappable: true, zBankLoadable: true } },
       { symbol: "SHIVA", address: shivaAddress, capabilities: { transferable: true, tradable: true, swappable: true, zBankLoadable: true } }
     ],
-    liquidity: { wrappedNativeToken: { symbol: "WZ", address: wrappedZ.record.address }, pools, complianceVenueApproved: true },
+    liquidity: { wrappedNativeToken: { symbol: "WNRW", address: wrappedNrw.record.address }, pools, complianceVenueApproved: true },
     deployedAt: new Date().toISOString()
   };
 
   mkdirSync(path.dirname(config.outputPath), { recursive: true });
   writeFileSync(config.outputPath, JSON.stringify(manifest, null, 2));
-  console.log("Z Blockchain production liquidity bootstrap complete");
+  console.log("NRW World production liquidity bootstrap complete");
   console.log(JSON.stringify(manifest, null, 2));
 }
 
 main().catch((error) => {
-  console.error("Z Blockchain production liquidity bootstrap failed", error);
+  console.error("NRW World production liquidity bootstrap failed", error);
   process.exit(1);
 });

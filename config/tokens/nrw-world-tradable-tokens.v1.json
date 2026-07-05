@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "chain": {
-    "name": "Z Blockchain",
-    "chainId": 44002,
-    "nativeSymbol": "Z",
-    "wrappedSymbol": "WZ"
+    "name": "NRW World",
+    "chainId": 33001,
+    "nativeSymbol": "NRW",
+    "wrappedSymbol": "WNRW"
   },
   "tokens": [
     {
-      "assetId": "M1FIAT-ZBC-001",
+      "assetId": "M1FIAT-NRW-001",
       "symbol": "M1FIAT",
       "name": "M1 Fiat Token",
       "assetClass": "Stablecoin",
@@ -18,13 +18,13 @@
         "transferable": true,
         "tradable": true,
         "swappable": true,
-        "zBankLoadable": true
+        "zBankLoadable": false
       },
-      "liquidityPairs": ["WZ", "ACX", "SHIVA"],
-      "notes": "Primary Z Online Bank M1 rail on Z Blockchain."
+      "liquidityPairs": ["WNRW", "ACX", "SHIVA"],
+      "notes": "Primary M1 rail on NRW World."
     },
     {
-      "assetId": "ACX-ZBC-001",
+      "assetId": "ACX-NRW-001",
       "symbol": "ACX",
       "name": "ACX Token",
       "assetClass": "Exchange",
@@ -34,13 +34,13 @@
         "transferable": true,
         "tradable": true,
         "swappable": true,
-        "zBankLoadable": true
+        "zBankLoadable": false
       },
-      "liquidityPairs": ["WZ", "M1FIAT"],
-      "notes": "ACX exchange token on Z Blockchain."
+      "liquidityPairs": ["WNRW", "M1FIAT"],
+      "notes": "ACX exchange token on NRW World."
     },
     {
-      "assetId": "SHIVA-ZBC-001",
+      "assetId": "SHIVA-NRW-001",
       "symbol": "SHIVA",
       "name": "Shiva Token",
       "assetClass": "Utility",
@@ -50,14 +50,14 @@
         "transferable": true,
         "tradable": true,
         "swappable": true,
-        "zBankLoadable": true
+        "zBankLoadable": false
       },
-      "liquidityPairs": ["WZ", "M1FIAT"],
-      "notes": "SHIVA utility token on Z Blockchain."
+      "liquidityPairs": ["WNRW", "M1FIAT"],
+      "notes": "SHIVA utility token on NRW World."
     }
   ],
   "source": {
-    "registryPath": "config/tokens/z-block-chain-tradable-tokens.v1.json",
-    "notes": "Tradable token catalog for Z Blockchain liquidity pools."
+    "registryPath": "config/tokens/nrw-world-tradable-tokens.v1.json",
+    "notes": "Tradable token catalog for NRW World liquidity pools."
   }
 }

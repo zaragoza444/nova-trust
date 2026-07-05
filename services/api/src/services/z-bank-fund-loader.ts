@@ -165,8 +165,8 @@ export class ZBankFundLoaderService {
       },
       message:
         custody.status === "signed"
-          ? `Z Bank online accepted ${input.amount} ${token.symbol} load to ${input.walletAddress}. Dfns treasury signed settlement for Z Block Chain (${settlementChainId}).`
-          : `Z Bank online accepted ${input.amount} ${token.symbol} load to ${input.walletAddress}. Funds settle on Z Block Chain (${settlementChainId}) and become swappable, tradable, and transferable across approved banks and trading platforms.`,
+          ? `Z Bank online accepted ${input.amount} ${token.symbol} load to ${input.walletAddress}. Dfns treasury signed settlement for Z Blockchain (${settlementChainId}).`
+          : `Z Bank online accepted ${input.amount} ${token.symbol} load to ${input.walletAddress}. Funds settle on Z Blockchain (${settlementChainId}) and become swappable, tradable, and transferable across approved banks and trading platforms.`,
       createdAt: new Date().toISOString()
     };
   }

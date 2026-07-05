@@ -30,7 +30,7 @@ const apiHeaders = { "x-nova-role": process.env.NOVA_DASHBOARD_ROLE ?? "AUDITOR"
 function getFallback(): ZBlockChainOverview {
   return {
     shellSignals: [
-      { label: "Z Block Chain", value: "Chain 44002 production", tone: "positive" },
+      { label: "Z Blockchain", value: "Chain 44002 production", tone: "positive" },
       { label: "Z Online Bank", value: "M1 load rail active", tone: "positive" },
       { label: "Liquidity", value: "M1FIAT/ACX/SHIVA vs WZ", tone: "positive" },
       { label: "Capabilities", value: "Swap · Trade · Transfer", tone: "neutral" }
@@ -38,7 +38,7 @@ function getFallback(): ZBlockChainOverview {
     chainProfiles,
     summary: {
       chainId: 44002,
-      name: "Z Block Chain",
+      name: "Z Blockchain",
       nativeSymbol: "Z",
       wrappedSymbol: "WZ",
       liquidityPools: ["M1FIAT/WZ", "ACX/WZ", "SHIVA/WZ"],
@@ -54,7 +54,7 @@ function getFallback(): ZBlockChainOverview {
     },
     bridgeLanes: [
       { from: 22016, to: 44002, status: "active", purpose: "Nova One settlement to Z Online Bank liquidity" },
-      { from: 33001, to: 44002, status: "active", purpose: "NRW World world liquidity to Z Block Chain" },
+      { from: 33001, to: 44002, status: "active", purpose: "NRW World world liquidity to Z Blockchain" },
       { from: 138, to: 44002, status: "active", purpose: "Chain 138 bank rail to Z Online Bank" }
     ],
     pairedNetworks: [

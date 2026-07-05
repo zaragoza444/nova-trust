@@ -32,7 +32,7 @@ export const novaOneProfile: ChainProfile = {
 };
 
 export const zBlockChainProfile: ChainProfile = {
-  name: "Z Block Chain",
+  name: "Z Blockchain",
   chainId: 44002,
   slug: "z-block-chain",
   role: "Z Online Bank liquidity and world chain",

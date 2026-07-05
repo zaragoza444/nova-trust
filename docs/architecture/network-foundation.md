@@ -6,7 +6,7 @@
 - Primary chain ID: `22016`
 - Paired world network: `NRW World`
 - Paired world chain ID: `33001`
-- Z Online Bank world network: `Z Block Chain`
+- Z Online Bank world network: `Z Blockchain`
 - Z Online Bank world chain ID: `44002`
 - Consensus: `QBFT`
 - Chain family: permissioned EVM

@@ -121,7 +121,7 @@ describe("Nova contract suite design", () => {
     assert.ok(registry.platforms.every((platform) => platform.supportedTokens.length > 0));
   });
 
-  it("provides WZ for native Z Block Chain liquidity pairs", () => {
+  it("provides WZ for native Z Blockchain liquidity pairs", () => {
     const source = readContract("WrappedZBlockChainToken.sol");
 
     assert.match(source, /string public constant symbol = "WZ";/);
@@ -129,7 +129,7 @@ describe("Nova contract suite design", () => {
     assert.match(source, /function deposit\(\) public payable/);
   });
 
-  it("registers the Z Block Chain production chart on chain 44002", () => {
+  it("registers the Z Blockchain production chart on chain 44002", () => {
     const chart = JSON.parse(
       readFileSync(path.resolve(repoRoot, "config", "chains", "z-block-chain.v1.json"), "utf8")
     ) as {
@@ -139,7 +139,7 @@ describe("Nova contract suite design", () => {
     };
 
     assert.equal(chart.chain.chainId, 44002);
-    assert.equal(chart.chain.name, "Z Block Chain");
+    assert.equal(chart.chain.name, "Z Blockchain");
     assert.equal(chart.chain.wrappedSymbol, "WZ");
     assert.deepEqual(chart.liquidityPools, ["M1FIAT/WZ", "ACX/WZ", "SHIVA/WZ"]);
     assert.equal(chart.capabilities.swappable, true);
@@ -147,13 +147,21 @@ describe("Nova contract suite design", () => {
     assert.equal(chart.capabilities.transferable, true);
   });
 
-  it("documents Z Block Chain bootstrap scripts", () => {
+  it("documents Z Blockchain bootstrap scripts", () => {
     const source = readFileSync(path.resolve(contractsRoot, "scripts", "setup-z-block-chain-liquidity.ts"), "utf8");
 
     assert.match(source, /ZBC_RPC_URL/);
     assert.match(source, /WrappedZBlockChainToken/);
     assert.match(source, /NLP-M1FIAT-WZ/);
     assert.match(source, /setLiquidityVenue\(liquidityPool\.record\.address, true\)/);
+  });
+
+  it("documents NRW World bootstrap scripts on chain 33001", () => {
+    const source = readFileSync(path.resolve(contractsRoot, "scripts", "setup-nrw-world-liquidity.ts"), "utf8");
+
+    assert.match(source, /NRW_RPC_URL/);
+    assert.match(source, /WrappedNRWWorldToken/);
+    assert.match(source, /NLP-M1FIAT-WNRW/);
   });
 
   it("registers the canonical Chain 138 Safe contracts and deployed safes", () => {
