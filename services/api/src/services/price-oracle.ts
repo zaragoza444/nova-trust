@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-const repoRoot = path.resolve(__dirname, "../../..");
+const repoRoot = path.resolve(__dirname, "../../../..");
 
 function readJson<T>(relativePath: string): T {
   return JSON.parse(readFileSync(path.resolve(repoRoot, relativePath), "utf8")) as T;

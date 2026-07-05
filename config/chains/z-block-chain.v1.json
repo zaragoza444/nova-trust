@@ -7,7 +7,7 @@
     "role": "Z Online Bank liquidity and world chain",
     "nativeSymbol": "Z",
     "wrappedSymbol": "WZ",
-    "status": "Production",
+    "status": "Live",
     "consensus": "QBFT",
     "environment": "prod"
   },

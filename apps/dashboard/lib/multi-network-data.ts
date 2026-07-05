@@ -5,6 +5,25 @@ import {
   type ChainProfile
 } from "./chains";
 
+export interface BridgeLaneView {
+  from: number;
+  to: number;
+  fromName?: string;
+  toName?: string;
+  purpose?: string;
+  status?: string;
+}
+
+export interface PublicNetworkView {
+  name?: string;
+  chainId?: number;
+  networkType?: string;
+  networkId?: string;
+  nativeSymbol?: string;
+  wrappedSymbol?: string;
+  status?: string;
+}
+
 export interface MultiNetworkOverview {
   shellSignals: Array<{ label: string; value: string; tone: string }>;
   chainProfiles: ChainProfile[];
@@ -16,9 +35,9 @@ export interface MultiNetworkOverview {
     permissionedBridgeCount: number;
     capabilities: Record<string, boolean>;
   };
-  publicNetworks: Array<Record<string, unknown>>;
-  bridgeLanes: Array<Record<string, unknown>>;
-  permissionedBridges: Array<Record<string, unknown>>;
+  publicNetworks: PublicNetworkView[];
+  bridgeLanes: BridgeLaneView[];
+  permissionedBridges: BridgeLaneView[];
   tokens: Array<{
     symbol: string;
     name: string;
