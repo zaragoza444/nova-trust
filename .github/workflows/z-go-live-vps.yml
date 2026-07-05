@@ -6,7 +6,7 @@ on:
       branch:
         description: Git branch to deploy
         required: false
-        default: main
+        default: cursor/z-bot-international-trading-4f28
       wire_public:
         description: Wire nginx + public URLs (recommended)
         required: false

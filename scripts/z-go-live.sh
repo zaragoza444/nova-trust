@@ -118,6 +118,7 @@ Z Ecosystem is LIVE
   Z Wallet    ${dashboard_base}/wallet
   Z Bank      ${dashboard_base}/zbank
   Z Chain     ${dashboard_base}/z-chain
+  Z Bot       ${dashboard_base}/zbot
   Z API       ${api_base}/health
   Go-live     ${api_base}/api/go-live/status
 

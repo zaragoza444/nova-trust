@@ -89,6 +89,7 @@ git checkout -B {branch} FETCH_HEAD
 git pull origin {branch}
 export GO_LIVE_USE_DOCKER=true
 bash {deploy_script}
+docker compose -f deploy/docker-compose.z-production.yml up -d --build z-bot 2>/dev/null || true
 curl -sf -H "x-z-role: AUDITOR" http://127.0.0.1:4100/api/go-live/status
 """
 

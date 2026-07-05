@@ -102,7 +102,9 @@ Z Ecosystem wired for public VPS access
   Public Z Wallet    ${DASHBOARD_URL}/wallet
   Public Z Bank      ${DASHBOARD_URL}/zbank
   Public Z Chain     ${DASHBOARD_URL}/z-chain
+  Public Z Bot       ${DASHBOARD_URL}/zbot
   Public API         ${API_URL}/api/go-live/status
+  Z Bot status       ${API_URL}/api/zbot/status
   Health             ${API_URL}/health
 
   Public networks    TRON · Ethereum · BNB Smart Chain
