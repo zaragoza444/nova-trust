@@ -9,13 +9,14 @@ import { handleMultiNetworkChart, handleMultiNetworkHealth } from "./routes/netw
 import { handleTradingTokensOverview } from "./routes/trading";
 import { handleZBankIntegrationOverview, handleZBankLoadFunds } from "./routes/zbank";
 import { handleCustodyHealth, handleCustodyOverview, handleCoboCallback, handleCoboWebhook } from "./routes/custody";
+import { handleOraclePricesGet, handleOraclePricesPut } from "./routes/oracle";
 import { canAccess, type NovaRole } from "./services/rbac";
 
 const config = loadApiConfig();
 
 const server = createServer((request: IncomingMessage, response: ServerResponse) => {
   response.setHeader("access-control-allow-origin", config.corsOrigin);
-  response.setHeader("access-control-allow-methods", "GET,POST,OPTIONS");
+  response.setHeader("access-control-allow-methods", "GET,POST,PUT,OPTIONS");
   response.setHeader("access-control-allow-headers", "content-type,authorization,x-nova-role,biz_timestamp,biz_resp_signature");
 
   if (request.method === "OPTIONS") {
@@ -158,6 +159,26 @@ const server = createServer((request: IncomingMessage, response: ServerResponse)
 
   if (request.url === "/api/custody/cobo/callback" && request.method === "POST") {
     void handleCoboCallback(request, response);
+    return;
+  }
+
+  if (request.url === "/api/oracle/prices" && request.method === "GET") {
+    if (!requestRole || !canAccess("/api/oracle/prices", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    handleOraclePricesGet(request, response);
+    return;
+  }
+
+  if (request.url === "/api/oracle/prices" && request.method === "PUT") {
+    if (!requestRole || !canAccess("/api/oracle/prices", requestRole)) {
+      response.writeHead(403, { "content-type": "application/json" });
+      response.end(JSON.stringify({ error: "Forbidden" }));
+      return;
+    }
+    void handleOraclePricesPut(request, response);
     return;
   }
 

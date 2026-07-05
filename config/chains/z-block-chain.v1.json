@@ -116,7 +116,8 @@
     "zBankOnline": "config/integrations/z-bank-online.v1.json",
     "tradableTokens": "config/tokens/z-block-chain-tradable-tokens.v1.json",
     "tradingPlatforms": "config/compliance/trading-platforms.v1.json",
-    "multiNetwork": "config/chains/multi-network.v1.json"
+    "multiNetwork": "config/chains/multi-network.v1.json",
+    "priceOracle": "config/oracles/z-block-chain-prices.v1.json"
   },
   "source": {
     "registryPath": "config/chains/z-block-chain.v1.json",

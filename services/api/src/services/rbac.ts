@@ -71,6 +71,11 @@ export const accessPolicies: AccessPolicy[] = [
     route: "/api/custody/health",
     roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR"],
     approvalRequired: false
+  },
+  {
+    route: "/api/oracle/prices",
+    roles: ["SUPER_ADMIN", "COMPLIANCE_ADMIN", "TREASURY_OPERATOR", "ASSET_ISSUER", "AUDITOR"],
+    approvalRequired: false
   }
 ];
 

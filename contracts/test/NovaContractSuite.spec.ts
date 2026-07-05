@@ -21,11 +21,12 @@ describe("Nova contract suite design", () => {
       "WrappedNovaOneToken",
       "NovaAssetFactory",
       "NovaLiquidityPool",
+      "NovaPriceOracle",
       "TreasuryController",
       "AuditEvents"
     ];
 
-    assert.equal(modules.length, 9);
+    assert.equal(modules.length, 10);
   });
 
   it("keeps issued asset tokens compatible with liquidity pool routers", () => {
@@ -301,5 +302,46 @@ describe("Nova contract suite design", () => {
     assert.equal(registry.defaultSupply, "100000000000");
     assert.equal(registry.tokens.length, 9);
     assert.ok(registry.tokens.every((token) => token.assetId.includes("-100B-001")));
+  });
+
+  it("stores USD oracle prices for Z Blockchain tradable tokens", () => {
+    const source = readContract("NovaPriceOracle.sol");
+
+    assert.match(source, /ORACLE_OPERATOR_ROLE/);
+    assert.match(source, /function setPrices\(address\[] calldata tokens, uint256\[] calldata pricesUsd8\) external/);
+    assert.match(source, /function getPrice\(address token\) external view returns \(uint256 priceUsd8, uint64 updatedAt, bool active\)/);
+  });
+
+  it("registers Z Blockchain oracle price catalog for clone and bank tokens", () => {
+    const registry = JSON.parse(
+      readFileSync(path.resolve(repoRoot, "config", "oracles", "z-block-chain-prices.v1.json"), "utf8")
+    ) as {
+      chain: { chainId: number };
+      quoteCurrency: string;
+      priceDecimals: number;
+      prices: Array<{ symbol: string; priceUsd: string }>;
+    };
+
+    assert.equal(registry.chain.chainId, 44002);
+    assert.equal(registry.quoteCurrency, "USD");
+    assert.equal(registry.priceDecimals, 8);
+    assert.equal(registry.prices.length, 13);
+    for (const symbol of ["M1FIAT", "USDT", "ETH", "BNB", "CHAT", "WZ"]) {
+      const entry = registry.prices.find((item) => item.symbol === symbol);
+      assert.ok(entry, `missing oracle price for ${symbol}`);
+      assert.match(entry?.priceUsd ?? "", /^\d+(\.\d+)?$/);
+    }
+  });
+
+  it("documents Z Blockchain oracle bootstrap script", () => {
+    const source = readFileSync(
+      path.resolve(contractsRoot, "scripts", "setup-z-block-chain-oracle.ts"),
+      "utf8"
+    );
+
+    assert.match(source, /loadOraclePriceRegistry/);
+    assert.match(source, /NovaPriceOracle/);
+    assert.match(source, /setPrices/);
+    assert.match(source, /ZBC_ORACLE_REGISTRY_PATH/);
   });
 });

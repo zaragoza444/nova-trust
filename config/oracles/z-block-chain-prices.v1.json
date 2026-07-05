@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "chain": {
+    "name": "Z Blockchain",
+    "chainId": 44002
+  },
+  "quoteCurrency": "USD",
+  "priceDecimals": 8,
+  "prices": [
+    {
+      "symbol": "M1FIAT",
+      "priceUsd": "1.00",
+      "category": "fiat-stable",
+      "referenceSource": "z-bank-m1"
+    },
+    {
+      "symbol": "ACX",
+      "priceUsd": "1.00",
+      "category": "fiat-stable",
+      "referenceSource": "z-bank-m1"
+    },
+    {
+      "symbol": "SHIVA",
+      "priceUsd": "1.00",
+      "category": "fiat-stable",
+      "referenceSource": "z-bank-m1"
+    },
+    {
+      "symbol": "WZ",
+      "priceUsd": "1.00",
+      "category": "wrapped-native",
+      "referenceSource": "z-block-chain-native"
+    },
+    {
+      "symbol": "USDT",
+      "priceUsd": "1.00",
+      "category": "stablecoin",
+      "cloneOf": "USDT",
+      "referenceSource": "multi-network"
+    },
+    {
+      "symbol": "USDC",
+      "priceUsd": "1.00",
+      "category": "stablecoin",
+      "cloneOf": "USDC",
+      "referenceSource": "multi-network"
+    },
+    {
+      "symbol": "XRCUSDC",
+      "priceUsd": "1.00",
+      "category": "stablecoin",
+      "cloneOf": "USDC",
+      "referenceSource": "multi-network"
+    },
+    {
+      "symbol": "CUSDT",
+      "priceUsd": "1.00",
+      "category": "stablecoin",
+      "cloneOf": "USDT",
+      "referenceSource": "multi-network"
+    },
+    {
+      "symbol": "AUSDT",
+      "priceUsd": "1.00",
+      "category": "stablecoin",
+      "cloneOf": "USDT",
+      "referenceSource": "multi-network"
+    },
+    {
+      "symbol": "ETH",
+      "priceUsd": "2512.45",
+      "category": "synthetic-native",
+      "cloneOf": "ETH",
+      "referenceSource": "ethereum-mainnet"
+    },
+    {
+      "symbol": "BNB",
+      "priceUsd": "662.18",
+      "category": "synthetic-native",
+      "cloneOf": "BNB",
+      "referenceSource": "bnb-smart-chain"
+    },
+    {
+      "symbol": "ICX",
+      "priceUsd": "0.1184",
+      "category": "exchange",
+      "cloneOf": "ICX",
+      "referenceSource": "ethereum-mainnet"
+    },
+    {
+      "symbol": "CHAT",
+      "priceUsd": "0.05",
+      "category": "utility",
+      "cloneOf": "CHAT",
+      "referenceSource": "z-block-chain-native"
+    }
+  ],
+  "source": {
+    "registryPath": "config/oracles/z-block-chain-prices.v1.json",
+    "notes": "Reference USD oracle prices for Z Blockchain tradable tokens and clone assets."
+  }
+}
