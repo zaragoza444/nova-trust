@@ -79,6 +79,7 @@ def main() -> None:
         "ZBC_BOOTSTRAP_MANIFEST_PATH",
         f"{repo_dir}/contracts/deployments/z-blockchain-production-liquidity.json",
     )
+    manifest_docker = "/work/contracts/deployments/z-blockchain-production-liquidity.json"
 
     remote_script = f"""
 set -euo pipefail
@@ -87,8 +88,9 @@ if [ ! -d .git ]; then
   git clone https://github.com/zaragoza444/nova-trust.git .
 fi
 git fetch origin {branch}
-git checkout {branch}
+git checkout -B {branch} FETCH_HEAD
 git pull origin {branch}
+export ZBC_BOOTSTRAP_MANIFEST_PATH={manifest_docker}
 bash scripts/mint-clone-tokens-vps.sh
 """
 
