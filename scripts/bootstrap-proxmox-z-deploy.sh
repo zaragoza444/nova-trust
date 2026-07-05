@@ -10,7 +10,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEPLOY=false
-BRANCH="${Z_LXC_BRANCH:-cursor/z-proxmox-lxc-deploy-4f28}"
+BRANCH="${Z_LXC_BRANCH:-main}"
 
 for arg in "$@"; do
   case "$arg" in
